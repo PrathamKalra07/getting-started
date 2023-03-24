@@ -1,0 +1,42 @@
+.pdf-viewer-div {
+  margin-top: 100px !important;
+}
+
+.submit-btn {
+  color: #332f32 !important;
+  font-weight: 700 !important;
+  margin-right: 15px !important;
+  background-color: #ffc820 !important;
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+  border-radius: 2px;
+}
+
+.signature-indicator {
+  background-color: #ffc820;
+  width: 100px;
+  position: absolute;
+  z-index: 3;
+  padding: 5px;
+  top: 10px;
+  left: -70px;
+  text-align: center;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+/*  */
+
+#thankyou-container {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* z-index: 20; */
+}
