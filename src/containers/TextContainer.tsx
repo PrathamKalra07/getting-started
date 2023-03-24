@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { SignaturePad } from "../components/SignaturePad";
+import { useDispatch } from "react-redux";
+
+//
+import { TextPad } from "../components/TextPad";
+import { setTextData } from "../redux/slices/textReducer";
 
 interface Props {
   page: any;
@@ -9,7 +13,7 @@ interface Props {
   allCordinatesData: any;
 }
 
-export const SignatureContainer: React.FC<Props> = ({
+export const TextContainer: React.FC<Props> = ({
   page,
   addDrawing,
   signatureData,
@@ -63,6 +67,8 @@ export const SignatureContainer: React.FC<Props> = ({
   //   // },
   // ]);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     page
       .then((data: any) => {
@@ -76,24 +82,28 @@ export const SignatureContainer: React.FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    var signatureDataPagesWise: any = {};
+    var textDataPagesWise: any = {};
+
+    //
     allCordinatesData.map((item: any) => {
-      if (item.fieldType == "Signature") {
-        if (!signatureDataPagesWise[item.pageNo]) {
-          signatureDataPagesWise[item.pageNo] = [];
+      if (item.fieldType == "Text") {
+        if (!textDataPagesWise[item.pageNo]) {
+          textDataPagesWise[item.pageNo] = [];
         }
 
-        signatureDataPagesWise[item.pageNo] = [
-          ...signatureDataPagesWise[item.pageNo],
-          item,
+        textDataPagesWise[item.pageNo] = [
+          ...textDataPagesWise[item.pageNo],
+          { ...item, id: item.eleId, value: "" },
         ];
       }
     });
 
-    localStorage.setItem(
-      "signatureDataPagesWise",
-      JSON.stringify(signatureDataPagesWise)
-    );
+    dispatch(setTextData({ allTextData: textDataPagesWise }));
+
+    // localStorage.setItem(
+    //   "textDataPagesWise",
+    //   JSON.stringify(textDataPagesWise)
+    // );
 
     return () => {};
   }, [isFetchingCordinatesData]);
@@ -101,15 +111,8 @@ export const SignatureContainer: React.FC<Props> = ({
   return (
     <>
       {allCordinatesData.map((item: any, i: number) => {
-        if (item.pageNo == currentPageNo && item.fieldType == "Signature") {
-          return (
-            <SignaturePad
-              key={i}
-              {...item}
-              addDrawing={addDrawing}
-              signatureData={signatureData}
-            />
-          );
+        if (item.pageNo == currentPageNo && item.fieldType == "Text") {
+          return <TextPad key={i} {...item} />;
         }
         return null;
       })}

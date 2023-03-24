@@ -6,6 +6,9 @@ import { AllRoutes } from "./Routes";
 // import * as serviceWorker from "./serviceWorker";
 import { prepareAssets } from "./utils/prepareAssets";
 
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+
 //
 prepareAssets();
 
@@ -13,7 +16,9 @@ const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 root.render(
   <React.StrictMode>
-    <AllRoutes />
+    <Provider store={store}>
+      <AllRoutes />
+    </Provider>
   </React.StrictMode>
 );
 

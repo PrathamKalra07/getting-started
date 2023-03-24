@@ -2,6 +2,7 @@ import React, { useState, useLayoutEffect, useEffect } from "react";
 import Axios from "axios";
 import "semantic-ui-css/semantic.min.css";
 import { useSearchParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import "./App.css";
 
 import { Container, Grid, Button, Segment } from "semantic-ui-react";
@@ -16,6 +17,11 @@ import { Empty } from "./components/Empty";
 import { Page } from "./components/Page";
 import { Attachments } from "./components/Attachments";
 import { SignatureContainer } from "./containers/SignatureContainer";
+import { TextContainer } from "./containers/TextContainer";
+
+//
+import { setInfo } from "./redux/slices/basicInfoReducer";
+import { setCoordinateData } from "./redux/slices/coordinatesReducer";
 
 const App: React.FC = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
@@ -57,6 +63,10 @@ const App: React.FC = () => {
     width: 0,
     encodedImgData: "",
   });
+
+  //
+  const dispatch = useDispatch();
+  //
 
   const initializePageAndAttachments = (pdfDetails: Pdf) => {
     initialize(pdfDetails);
@@ -176,6 +186,11 @@ const App: React.FC = () => {
       };
 
       let response = await Axios.request(reqOptions);
+
+      console.log(response.data.data);
+
+      dispatch(setCoordinateData({ allCoordinateData: response.data.data }));
+
       setAllCordinatesData(response.data.data);
 
       setIsFetchingCordinatesData(false);
@@ -190,7 +205,9 @@ const App: React.FC = () => {
       const uuidTemplateInstance = searchParams.get("uuid_template_instance");
       const uuidSignatory = searchParams.get("uuid_signatory");
 
-      localStorage.setItem("uuid", uuid as string);
+      dispatch(setInfo({ uuid, uuidTemplateInstance, uuidSignatory }));
+
+      // localStorage.setItem("uuid", uuid as string);
       await uploadPdf(uuid);
 
       await fetchingCordinates(
@@ -275,6 +292,13 @@ const App: React.FC = () => {
                       />
                     )} */}
                       <SignatureContainer
+                        page={currentPage}
+                        addDrawing={() => setDrawingModalOpen(true)}
+                        isFetchingCordinatesData={isFetchingCordinatesData}
+                        signatureData={signatureData}
+                        allCordinatesData={allCordinatesData}
+                      />
+                      <TextContainer
                         page={currentPage}
                         addDrawing={() => setDrawingModalOpen(true)}
                         isFetchingCordinatesData={isFetchingCordinatesData}
