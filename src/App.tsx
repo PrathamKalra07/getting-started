@@ -2,7 +2,7 @@ import React, { useState, useLayoutEffect, useEffect } from "react";
 import Axios from "axios";
 import "semantic-ui-css/semantic.min.css";
 import { useSearchParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
 
 import { Container, Grid, Button, Segment } from "semantic-ui-react";
@@ -28,7 +28,10 @@ const App: React.FC = () => {
   const [isFetchingCordinatesData, setIsFetchingCordinatesData] =
     useState(true);
 
-  const [allCordinatesData, setAllCordinatesData] = useState([]);
+  //
+  const currentReduxState = useSelector((state) => state);
+
+  // const [allCordinatesData, setAllCordinatesData] = useState([]);
   const {
     file,
     initialize,
@@ -66,6 +69,7 @@ const App: React.FC = () => {
 
   //
   const dispatch = useDispatch();
+
   //
 
   const initializePageAndAttachments = (pdfDetails: Pdf) => {
@@ -159,7 +163,35 @@ const App: React.FC = () => {
     </>
   );
 
-  const handleSavePdf = () => savePdf(allPageAttachments);
+  const handleSavePdf = () => {
+    const tempState = currentReduxState as any;
+
+    const isSignatureDone =
+      tempState.signatureList.signaturePath.length > 0 ? true : false;
+    const textData = tempState.textList.allTextData;
+
+    var isTextDataDone = true;
+
+    for (const indexNo in textData) {
+      for (let i = 0; i < textData[indexNo].length; i++) {
+        const innerElement = textData[indexNo][i];
+
+        if (innerElement.value.length == 0) {
+          isTextDataDone = false;
+
+          break;
+        }
+      }
+    }
+
+    if (!isSignatureDone) {
+      alert("Please Fill Signature");
+    } else if (!isTextDataDone) {
+      alert("Please Fill All Text Data");
+    } else {
+      savePdf(allPageAttachments, tempState);
+    }
+  };
 
   //
   const [searchParams] = useSearchParams();
@@ -187,11 +219,11 @@ const App: React.FC = () => {
 
       let response = await Axios.request(reqOptions);
 
-      console.log(response.data.data);
+      // console.log(response.data.data);
 
       dispatch(setCoordinateData({ allCoordinateData: response.data.data }));
 
-      setAllCordinatesData(response.data.data);
+      // setAllCordinatesData(response.data.data);
 
       setIsFetchingCordinatesData(false);
     } catch (err) {
@@ -201,19 +233,23 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchParamsAndFetchPdf = async () => {
-      const uuid = searchParams.get("uuid");
-      const uuidTemplateInstance = searchParams.get("uuid_template_instance");
-      const uuidSignatory = searchParams.get("uuid_signatory");
+      try {
+        const uuid = searchParams.get("uuid");
+        const uuidTemplateInstance = searchParams.get("uuid_template_instance");
+        const uuidSignatory = searchParams.get("uuid_signatory");
 
-      dispatch(setInfo({ uuid, uuidTemplateInstance, uuidSignatory }));
+        dispatch(setInfo({ uuid, uuidTemplateInstance, uuidSignatory }));
 
-      // localStorage.setItem("uuid", uuid as string);
-      await uploadPdf(uuid);
+        // localStorage.setItem("uuid", uuid as string);
+        await uploadPdf(uuid);
 
-      await fetchingCordinates(
-        uuidTemplateInstance as string,
-        uuidSignatory as string
-      );
+        await fetchingCordinates(
+          uuidTemplateInstance as string,
+          uuidSignatory as string
+        );
+      } catch (err) {
+        console.log(err);
+      }
     };
     fetchParamsAndFetchPdf();
 
@@ -240,8 +276,9 @@ const App: React.FC = () => {
       {/*  */}
 
       <div className="pdf-viewer-div">
-        {!file ? (
-          <Empty loading={isUploading && isFetchingCordinatesData} />
+        {!file || isFetchingCordinatesData ? (
+          // <Empty loading={isUploading && isFetchingCordinatesData} />
+          <Empty loading={true} />
         ) : (
           <Grid>
             <Grid.Row>
@@ -295,15 +332,14 @@ const App: React.FC = () => {
                         page={currentPage}
                         addDrawing={() => setDrawingModalOpen(true)}
                         isFetchingCordinatesData={isFetchingCordinatesData}
-                        signatureData={signatureData}
-                        allCordinatesData={allCordinatesData}
+                        // signatureData={signatureData}
+                        // allCordinatesData={allCordinatesData}
                       />
                       <TextContainer
                         page={currentPage}
                         addDrawing={() => setDrawingModalOpen(true)}
                         isFetchingCordinatesData={isFetchingCordinatesData}
-                        signatureData={signatureData}
-                        allCordinatesData={allCordinatesData}
+                        // allCordinatesData={allCordinatesData}
                       />
                     </div>
                   </Segment>

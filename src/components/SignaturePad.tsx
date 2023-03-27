@@ -7,7 +7,8 @@ interface Props {
   width: number;
   height: number;
   addDrawing: any;
-  signatureData: any;
+  signatureEncodedImgData: string;
+  // signatureData: any;
 }
 
 export const SignaturePad = ({
@@ -16,8 +17,9 @@ export const SignaturePad = ({
   width,
   height,
   addDrawing,
-  signatureData,
-}: Props) => {
+  signatureEncodedImgData,
+}: // signatureData,
+Props) => {
   return (
     <>
       <div
@@ -35,7 +37,7 @@ export const SignaturePad = ({
         onClick={addDrawing}
       >
         {/* signatureData */}
-        {signatureData.height > 0 && signatureData.width > 0 ? (
+        {signatureEncodedImgData ? (
           <span
             style={{
               display: "flex",
@@ -46,7 +48,7 @@ export const SignaturePad = ({
             }}
           >
             <img
-              src={signatureData.encodedImgData}
+              src={signatureEncodedImgData}
               // style={{ maxHeight: 200, maxWidth: 200 }}
               alt={"imgg"}
               style={{ maxHeight: height - 5 }}

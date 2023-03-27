@@ -1,25 +1,27 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 export const signatureSlice = createSlice({
   name: "signatureSlice",
   initialState: {
-    value: 0,
+    allSignatureData: {},
+    signaturePath: "",
+    encodedImgData: "",
   },
   reducers: {
-    increment: (state) => {
-      state.value += 1;
+    setSignatureData: (state, action) => {
+      const { allSignatureData } = action.payload;
+      state.allSignatureData = allSignatureData;
     },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action) => {
-      state.value += action.payload;
+    setSignaturePathWithEncoddedImg: (state, action) => {
+      const { path, encodedImgData } = action.payload;
+      state.signaturePath = path;
+      state.encodedImgData = encodedImgData;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } =
+export const { setSignatureData, setSignaturePathWithEncoddedImg } =
   signatureSlice.actions;
 
 export default signatureSlice.reducer;

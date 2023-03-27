@@ -1,67 +1,43 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+//
 import { SignaturePad } from "../components/SignaturePad";
+
+//
+
+import { setSignatureData } from "../redux/slices/signatureReducer";
 
 interface Props {
   page: any;
   addDrawing: any;
-  signatureData: any;
+  // signatureData: any;
   isFetchingCordinatesData: any;
-  allCordinatesData: any;
+  // allCordinatesData: any;
 }
 
 export const SignatureContainer: React.FC<Props> = ({
   page,
   addDrawing,
-  signatureData,
+  // signatureData,
   isFetchingCordinatesData,
-  allCordinatesData,
+  // allCordinatesData,
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
-  // const [signatureCoordinates, setSignatureCoordinates] = useState([
-  //   // {
-  //   //   x: 73.4,
-  //   //   y: 593.4,
-  //   //   height: 40,
-  //   //   width: 160,
-  //   //   pageNo: 0,
-  //   // },
-  //   // {
-  //   //   x: 233.89999999999998,
-  //   //   y: 450.4,
-  //   //   height: 40,
-  //   //   width: 160,
-  //   //   pageNo: 0,
-  //   // },
-  //   // ###############
-  //   // {
-  //   //   x: 100,
-  //   //   y: 580,
-  //   //   height: 50,
-  //   //   width: 110,
-  //   //   pageNo: 0,
-  //   // },
-  //   // {
-  //   //   x: 350,
-  //   //   y: 580,
-  //   //   height: 50,
-  //   //   width: 110,
-  //   //   pageNo: 0,
-  //   // },
-  //   // {
-  //   //   x: 100,
-  //   //   y: 350,
-  //   //   height: 50,
-  //   //   width: 110,
-  //   //   pageNo: 1,
-  //   // },
-  //   // {
-  //   //   x: 100,
-  //   //   y: 580,
-  //   //   height: 50,
-  //   //   width: 110,
-  //   //   pageNo: 1,
-  //   // },
-  // ]);
+
+  const allCordinatesData = useSelector(
+    (state: any) => state.coordinatesList.allCoordinateData
+  );
+
+  const signatureEncodedImgData = useSelector(
+    (state: any) => state.signatureList.encodedImgData
+  );
+
+  const allCoordinatesElementDataSelector = useSelector(
+    (state: any) => state.signatureList.allSignatureData[currentPageNo]
+  );
+
+  //
+  const dispatch = useDispatch();
 
   useEffect(() => {
     page
@@ -77,42 +53,41 @@ export const SignatureContainer: React.FC<Props> = ({
 
   useEffect(() => {
     var signatureDataPagesWise: any = {};
-    allCordinatesData.map((item: any) => {
-      if (item.fieldType == "Signature") {
-        if (!signatureDataPagesWise[item.pageNo]) {
-          signatureDataPagesWise[item.pageNo] = [];
+
+    if (allCordinatesData) {
+      //
+      allCordinatesData.map((item: any, i: number) => {
+        if (item.fieldType == "Signature") {
+          if (!signatureDataPagesWise[item.pageNo]) {
+            signatureDataPagesWise[item.pageNo] = [];
+          }
+
+          signatureDataPagesWise[item.pageNo] = [
+            ...signatureDataPagesWise[item.pageNo],
+            { ...item, id: item.eleId, value: "", index: i },
+          ];
         }
+      });
 
-        signatureDataPagesWise[item.pageNo] = [
-          ...signatureDataPagesWise[item.pageNo],
-          item,
-        ];
-      }
-    });
-
-    localStorage.setItem(
-      "signatureDataPagesWise",
-      JSON.stringify(signatureDataPagesWise)
-    );
-
+      dispatch(setSignatureData({ allSignatureData: signatureDataPagesWise }));
+    }
     return () => {};
   }, [isFetchingCordinatesData]);
 
   return (
     <>
-      {allCordinatesData.map((item: any, i: number) => {
-        if (item.pageNo == currentPageNo && item.fieldType == "Signature") {
-          return (
-            <SignaturePad
-              key={i}
-              {...item}
-              addDrawing={addDrawing}
-              signatureData={signatureData}
-            />
-          );
-        }
-        return null;
-      })}
+      {allCoordinatesElementDataSelector
+        ? allCoordinatesElementDataSelector.map((item: any, i: number) => {
+            return (
+              <SignaturePad
+                key={i}
+                {...item}
+                addDrawing={addDrawing}
+                signatureEncodedImgData={signatureEncodedImgData}
+              />
+            );
+          })
+        : null}
     </>
   );
 };

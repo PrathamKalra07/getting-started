@@ -6,9 +6,20 @@ interface Props {
   y: number;
   width: number;
   height: number;
+  value: string;
+  textElementIndex: number;
+  handleTextChange: Function;
 }
 
-export const TextPad = ({ x, y, width, height }: Props) => {
+export const TextPad = ({
+  x,
+  y,
+  width,
+  height,
+  value: textInputValue,
+  textElementIndex,
+  handleTextChange,
+}: Props) => {
   return (
     <>
       <div
@@ -31,6 +42,8 @@ export const TextPad = ({ x, y, width, height }: Props) => {
           maxLength={width / 8.88}
           placeholder="Enter Data Here..."
           style={{ height: height, width: width }}
+          onChange={(e) => handleTextChange(e, textElementIndex)}
+          value={textInputValue}
         />
         {/* {signatureData.height > 0 && signatureData.width > 0 ? (
           <span

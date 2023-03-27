@@ -10,6 +10,6 @@ const rootReducer = combineReducers({
   signatureList: signatureReducer,
   coordinatesList: coordinatesReducer,
   basicInfoData: basicInfoReducer,
-  textReducerList: textReducer,
+  textList: textReducer,
 });
 export default rootReducer;

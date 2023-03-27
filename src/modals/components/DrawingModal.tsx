@@ -1,6 +1,12 @@
 import React, { useState, createRef, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Modal, Button, Menu, Dropdown, Label } from "semantic-ui-react";
+
+//
 import { Color } from "../../entities";
+
+//
+import { setSignaturePathWithEncoddedImg } from "../../redux/slices/signatureReducer";
 
 interface Props {
   open: boolean;
@@ -31,6 +37,9 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
   const [strokeWidth, setStrokeWidth] = useState(5);
   const [stroke, setStroke] = useState(Color.BLACK);
   const [strokeDropdownOpen, setStrokeDropdownOpen] = useState(false);
+
+  //
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -111,7 +120,15 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
 
     const svgSignaturePath = svg?.children.item(0)?.getAttribute("d");
 
-    localStorage.setItem("svgSignaturePath", svgSignaturePath!);
+    dispatch(
+      setSignaturePathWithEncoddedImg({
+        path: svgSignaturePath,
+        encodedImgData: encodedImgData,
+      })
+    );
+
+    //encodedImgData
+    // localStorage.setItem("svgSignaturePath", svgSignaturePath!);
 
     confirm({
       stroke,

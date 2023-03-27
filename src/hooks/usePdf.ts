@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { save } from "../utils/pdf";
+import { Save } from "../utils/pdf";
 
 export interface Pdf {
   name: string;
@@ -46,13 +46,13 @@ export const usePdf = () => {
     setIsLastPage(_pages.length === 1);
   };
 
-  const savePdf = async (attachments: Attachments[]) => {
+  const savePdf = async (attachments: Attachments[], tempState: any) => {
     if (isSaving || !file) return;
 
     setIsSaving(true);
 
     try {
-      await save(file, attachments, name);
+      await Save(file, attachments, name, tempState);
     } catch (e) {
       console.log(e);
     } finally {
