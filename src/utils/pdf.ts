@@ -61,7 +61,7 @@ export async function Save(
   // </div>`;
   //
 
-  const { signatureList, textList } = tempState;
+  const { signatureList, textList, basicInfoData } = tempState;
 
   const svgPath = signatureList.signaturePath;
   const signatureDataPagesWise = signatureList.allSignatureData;
@@ -260,58 +260,66 @@ export async function Save(
   try {
     const pdfBytes = await pdfDoc.save();
 
-    // const base64Pdf = Buffer.from(pdfBytes).toString("base64");
+    const base64Pdf = Buffer.from(pdfBytes).toString("base64");
 
-    // const uuid = localStorage.getItem("uuid");
+    const uuid = localStorage.getItem("uuid");
 
-    // const body = {
-    //   uuid: uuid,
-    //   fileInBase64: base64Pdf,
-    // };
+    const body = {
+      uuid: uuid,
+      fileInBase64: base64Pdf,
+      uuid_signatory: basicInfoData.uuidSignatory,
+    };
 
-    // fetch(`${process.env.REACT_APP_API_URL}/api/saveSignedDoc`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(body),
-    // })
-    //   .then((res) => res.json())
-    //   .then((response) => {
-    //     console.log("@@@ saveSignedDoc RESPONSE: " + JSON.stringify(response));
-    //   });
+    const res = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/saveSignedDoc`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+    const response = await res.json();
 
-    // const thankYouContainer: HTMLElement = document.getElementById(
-    //   "thankyou-container"
-    // ) as HTMLElement;
-    // thankYouContainer.innerHTML = `<div
-    //   style="
-    //     position: fixed;
-    //     z-index: 5;
-    //     top: 0;
-    //     left: 0;
-    //     right: 0;
-    //     bottom: 0;
-    //     background-color: #E8EFF5
-    //   "
-    // >
-    //   <div
-    //     style="
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: center;
-    //       height: 100vh;
-    //       width: 100vw;
-    //       flex-direction: column
-    //     "
-    //   >
-    //     <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTkxODQ2YzNhNGQ3MmY4YTkxN2ZiMzEzODAyMTA5OWI4Yzk3ZDk1OSZjdD1z/I5dflEG9U9haQ3fUUv/giphy.gif" />
-    //   </div>
-    // </div>`;
+    console.log("@@@ saveSignedDoc RESPONSE: " + JSON.stringify(response));
 
-    download(pdfBytes, name, "application/pdf");
+    const thankYouContainer: HTMLElement = document.getElementById(
+      "thankyou-container"
+    ) as HTMLElement;
+    thankYouContainer.innerHTML = `<div
+      style="
+        position: fixed;
+        z-index: 5;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #E8EFF5
+      "
+    >
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          width: 100vw;
+          flex-direction: column
+        "
+      >
+        <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTkxODQ2YzNhNGQ3MmY4YTkxN2ZiMzEzODAyMTA5OWI4Yzk3ZDk1OSZjdD1z/I5dflEG9U9haQ3fUUv/giphy.gif" />
+      </div>
+    </div>`;
+
+    setTimeout(() => {
+      window.close();
+    }, 5000);
+
+    // download(pdfBytes, name, "application/pdf");
   } catch (e) {
     console.log("Failed to save PDF.");
-    throw e;
+
+    console.log(e);
   }
 }

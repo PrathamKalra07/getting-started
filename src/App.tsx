@@ -22,11 +22,17 @@ import { TextContainer } from "./containers/TextContainer";
 //
 import { setInfo } from "./redux/slices/basicInfoReducer";
 import { setCoordinateData } from "./redux/slices/coordinatesReducer";
+import OtpModal from "./modals/components/OtpModal";
 
 const App: React.FC = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
   const [isFetchingCordinatesData, setIsFetchingCordinatesData] =
     useState(true);
+
+  const [originalOtpValue, setOriginalOtpValue] = useState("");
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [isAlreadySign, setIsAlreadySign] = useState(false);
+  const [isOtpVerificationDone, setIsOtpVerificationDone] = useState(false);
 
   //
   const currentReduxState = useSelector((state) => state);
@@ -219,17 +225,84 @@ const App: React.FC = () => {
 
       let response = await Axios.request(reqOptions);
 
-      // console.log(response.data.data);
+      // console.log(response.data);
 
       dispatch(setCoordinateData({ allCoordinateData: response.data.data }));
 
       // setAllCordinatesData(response.data.data);
 
       setIsFetchingCordinatesData(false);
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      // console.log(err);
+      console.log(err.response);
+
+      if (
+        err.response.data.msg.toLowerCase() ==
+        "Sorry Your Signature Is Already Done".toLowerCase()
+      ) {
+        setIsAlreadySign(true);
+      }
     }
   };
+
+  const sendOtp = async (signatoryUniqUUID: string) => {
+    try {
+      // {{baseUrl}}/api/fetchCordinatesData
+
+      let headersList = {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      };
+
+      let bodyContent = JSON.stringify({
+        uuid_signatory: signatoryUniqUUID,
+      });
+
+      let reqOptions = {
+        url: `${process.env.REACT_APP_API_URL}/api/sendOtp`,
+        method: "POST",
+        headers: headersList,
+        data: bodyContent,
+      };
+
+      let response = await Axios.request(reqOptions);
+
+      setOriginalOtpValue(response.data.data.otpValue);
+      console.log(response.data.data.otpValue);
+    } catch (err: any) {
+      console.log(err);
+      console.log(err.response);
+
+      if (
+        err.response.data.msg.toLowerCase() ==
+        "Sorry Your Signature Is Already Done".toLowerCase()
+      ) {
+        setIsAlreadySign(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isOtpVerificationDone) {
+      const fetchingAsync = async () => {
+        console.log("done");
+        const uuid = searchParams.get("uuid");
+        const uuidTemplateInstance = searchParams.get("uuid_template_instance");
+        const uuidSignatory = searchParams.get("uuid_signatory");
+
+        ////////// here
+        // localStorage.setItem("uuid", uuid as string);
+        await fetchingCordinates(
+          uuidTemplateInstance as string,
+          uuidSignatory as string
+        );
+        await uploadPdf(uuid);
+      };
+      fetchingAsync();
+    }
+
+    return () => {};
+  }, [isOtpVerificationDone]);
 
   useEffect(() => {
     const fetchParamsAndFetchPdf = async () => {
@@ -240,13 +313,7 @@ const App: React.FC = () => {
 
         dispatch(setInfo({ uuid, uuidTemplateInstance, uuidSignatory }));
 
-        // localStorage.setItem("uuid", uuid as string);
-        await uploadPdf(uuid);
-
-        await fetchingCordinates(
-          uuidTemplateInstance as string,
-          uuidSignatory as string
-        );
+        await sendOtp(uuidSignatory as string);
       } catch (err) {
         console.log(err);
       }
@@ -258,42 +325,93 @@ const App: React.FC = () => {
 
   return (
     <Container style={{ margin: 30 }}>
-      {hiddenInputs}
-      <MenuBar
-        savePdf={handleSavePdf}
-        addText={addText}
-        addImage={handleImageClick}
-        addDrawing={() => setDrawingModalOpen(true)}
-        savingPdfStatus={isSaving}
-        uploadNewPdf={handlePdfClick}
-        isPdfLoaded={!!file}
-      />
-
       {/* thank you */}
 
       <div id="thankyou-container"></div>
 
       {/*  */}
 
-      <div className="pdf-viewer-div">
-        {!file || isFetchingCordinatesData ? (
-          // <Empty loading={isUploading && isFetchingCordinatesData} />
-          <Empty loading={true} />
-        ) : (
-          <Grid>
-            <Grid.Row>
-              <Grid.Column width={3} verticalAlign="middle" textAlign="left">
-                {isMultiPage && !isFirstPage && (
-                  <Button
-                    circular
-                    icon="angle left"
-                    onClick={previousPage}
-                    size={"huge"}
-                  />
-                )}
-              </Grid.Column>
-              <Grid.Column width={10}>
-                {/* <div
+      {isAlreadySign ? (
+        <>
+          {/* error msg model */}
+          <div className="already-sign-model-container">
+            {/* https://mir-s3-cdn-cf.behance.net/project_modules/fs/628a4e68110473.5b511c318e34c.png */}
+            <div
+              style={{
+                position: "fixed",
+                zIndex: 5,
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "#E8EFF5",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100vh",
+                  width: "100vw",
+                  flexDirection: "column",
+                }}
+              >
+                <img
+                  src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/628a4e68110473.5b511c318e34c.png"
+                  alt="img"
+                  style={{ height: "50%" }}
+                />
+                <h3>You Had Already Done Your Work, Thank You</h3>
+              </div>
+            </div>
+          </div>
+
+          {/*  */}
+        </>
+      ) : (
+        <>
+          {!isOtpVerificationDone ? (
+            <OtpModal
+              otp={otp}
+              originalOtpValue={originalOtpValue}
+              setIsOtpVerificationDone={setIsOtpVerificationDone}
+            />
+          ) : (
+            <>
+              {hiddenInputs}
+              <MenuBar
+                savePdf={handleSavePdf}
+                addText={addText}
+                addImage={handleImageClick}
+                addDrawing={() => setDrawingModalOpen(true)}
+                savingPdfStatus={isSaving}
+                uploadNewPdf={handlePdfClick}
+                isPdfLoaded={!!file}
+              />
+              <div className="pdf-viewer-div">
+                {!file || isFetchingCordinatesData ? (
+                  // <Empty loading={isUploading && isFetchingCordinatesData} />
+                  <Empty loading={true} />
+                ) : (
+                  <Grid>
+                    <Grid.Row>
+                      <Grid.Column
+                        width={3}
+                        verticalAlign="middle"
+                        textAlign="left"
+                      >
+                        {isMultiPage && !isFirstPage && (
+                          <Button
+                            circular
+                            icon="angle left"
+                            onClick={previousPage}
+                            size={"huge"}
+                          />
+                        )}
+                      </Grid.Column>
+                      <Grid.Column width={10}>
+                        {/* <div
                   className="signature-indicator"
                   onClick={(e) => {
                     e.currentTarget.style.top = "600px";
@@ -307,19 +425,19 @@ const App: React.FC = () => {
                   Start
                 </div> */}
 
-                {currentPage && (
-                  <Segment
-                    data-testid="page"
-                    compact
-                    stacked={isMultiPage && !isLastPage}
-                  >
-                    <div style={{ position: "relative" }}>
-                      <Page
-                        dimensions={dimensions}
-                        updateDimensions={setDimensions}
-                        page={currentPage}
-                      />
-                      {/* {dimensions && (
+                        {currentPage && (
+                          <Segment
+                            data-testid="page"
+                            compact
+                            stacked={isMultiPage && !isLastPage}
+                          >
+                            <div style={{ position: "relative" }}>
+                              <Page
+                                dimensions={dimensions}
+                                updateDimensions={setDimensions}
+                                page={currentPage}
+                              />
+                              {/* {dimensions && (
                       <Attachments
                         pdfName={name}
                         removeAttachment={remove}
@@ -328,42 +446,54 @@ const App: React.FC = () => {
                         attachments={pageAttachments}
                       />
                     )} */}
-                      <SignatureContainer
-                        page={currentPage}
-                        addDrawing={() => setDrawingModalOpen(true)}
-                        isFetchingCordinatesData={isFetchingCordinatesData}
-                        // signatureData={signatureData}
-                        // allCordinatesData={allCordinatesData}
-                      />
-                      <TextContainer
-                        page={currentPage}
-                        addDrawing={() => setDrawingModalOpen(true)}
-                        isFetchingCordinatesData={isFetchingCordinatesData}
-                        // allCordinatesData={allCordinatesData}
-                      />
-                    </div>
-                  </Segment>
+                              <SignatureContainer
+                                page={currentPage}
+                                addDrawing={() => setDrawingModalOpen(true)}
+                                isFetchingCordinatesData={
+                                  isFetchingCordinatesData
+                                }
+                                // signatureData={signatureData}
+                                // allCordinatesData={allCordinatesData}
+                              />
+                              <TextContainer
+                                page={currentPage}
+                                addDrawing={() => setDrawingModalOpen(true)}
+                                isFetchingCordinatesData={
+                                  isFetchingCordinatesData
+                                }
+                                // allCordinatesData={allCordinatesData}
+                              />
+                            </div>
+                          </Segment>
+                        )}
+                      </Grid.Column>
+                      <Grid.Column
+                        width={3}
+                        verticalAlign="middle"
+                        textAlign="right"
+                      >
+                        {isMultiPage && !isLastPage && (
+                          <Button
+                            circular
+                            icon="angle right"
+                            onClick={nextPage}
+                            size={"huge"}
+                          />
+                        )}
+                      </Grid.Column>
+                    </Grid.Row>
+                  </Grid>
                 )}
-              </Grid.Column>
-              <Grid.Column width={3} verticalAlign="middle" textAlign="right">
-                {isMultiPage && !isLastPage && (
-                  <Button
-                    circular
-                    icon="angle right"
-                    onClick={nextPage}
-                    size={"huge"}
-                  />
-                )}
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        )}
-      </div>
-      <DrawingModal
-        open={drawingModalOpen}
-        dismiss={() => setDrawingModalOpen(false)}
-        confirm={addDrawing}
-      />
+              </div>
+              <DrawingModal
+                open={drawingModalOpen}
+                dismiss={() => setDrawingModalOpen(false)}
+                confirm={addDrawing}
+              />
+            </>
+          )}
+        </>
+      )}
     </Container>
   );
 };
