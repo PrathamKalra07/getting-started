@@ -18,6 +18,7 @@ import { Page } from "./components/Page";
 import { Attachments } from "./components/Attachments";
 import { SignatureContainer } from "./containers/SignatureContainer";
 import { TextContainer } from "./containers/TextContainer";
+import { DateContainer } from "./containers/DateContainer";
 
 //
 import { setInfo } from "./redux/slices/basicInfoReducer";
@@ -321,7 +322,8 @@ const App: React.FC = () => {
           uuidTemplateInstance &&
           uuidSignatory
         ) {
-          await sendOtp(uuidSignatory as string);
+          // await sendOtp(uuidSignatory as string);
+          setIsOtpVerificationDone(true);
         }
       } catch (err) {
         console.log(err);
@@ -470,7 +472,13 @@ const App: React.FC = () => {
                               />
                               <TextContainer
                                 page={currentPage}
-                                addDrawing={() => setDrawingModalOpen(true)}
+                                isFetchingCordinatesData={
+                                  isFetchingCordinatesData
+                                }
+                                // allCordinatesData={allCordinatesData}
+                              />
+                              <DateContainer
+                                page={currentPage}
                                 isFetchingCordinatesData={
                                   isFetchingCordinatesData
                                 }

@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 //
-import { TextPad } from "../components/TextPad";
-import { changeTextData, setTextData } from "../redux/slices/textReducer";
+import { DatePad } from "../components/DatePad";
+import { changeDateData, setDateData } from "../redux/slices/dateReducer";
 
 interface Props {
   page: any;
   isFetchingCordinatesData: any;
-  // allCordinatesData: any;
 }
 
-export const TextContainer: React.FC<Props> = ({
+export const DateContainer: React.FC<Props> = ({
   page,
   isFetchingCordinatesData,
-  // allCordinatesData,
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
 
@@ -22,8 +21,8 @@ export const TextContainer: React.FC<Props> = ({
     (state: any) => state.coordinatesList.allCoordinateData
   );
 
-  const allTextElementDataSelector = useSelector(
-    (state: any) => state.textList.allTextData[currentPageNo]
+  const allDateElementDataSelector = useSelector(
+    (state: any) => state.dateList.allDateData[currentPageNo]
   );
 
   const dispatch = useDispatch();
@@ -41,29 +40,24 @@ export const TextContainer: React.FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    var textDataPagesWise: any = {};
+    var dateDataPagesWise: any = {};
 
     if (allCordinatesData) {
       //
       allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType == "Text") {
-          if (!textDataPagesWise[item.pageNo]) {
-            textDataPagesWise[item.pageNo] = [];
+        if (item.fieldType == "Date") {
+          if (!dateDataPagesWise[item.pageNo]) {
+            dateDataPagesWise[item.pageNo] = [];
           }
 
-          textDataPagesWise[item.pageNo] = [
-            ...textDataPagesWise[item.pageNo],
+          dateDataPagesWise[item.pageNo] = [
+            ...dateDataPagesWise[item.pageNo],
             { ...item, id: item.eleId, value: "", index: i },
           ];
         }
       });
 
-      dispatch(setTextData({ allTextData: textDataPagesWise }));
-
-      // localStorage.setItem(
-      //   "textDataPagesWise",
-      //   JSON.stringify(textDataPagesWise)
-      // );
+      dispatch(setDateData({ allDateData: dateDataPagesWise }));
     }
     return () => {};
   }, [isFetchingCordinatesData]);
@@ -73,10 +67,12 @@ export const TextContainer: React.FC<Props> = ({
     try {
       const value = e.target.value;
 
+      const formatValue = moment(value, "YYYY-MM-DD").format("MM-DD-YYYY");
+
       dispatch(
-        changeTextData({
+        changeDateData({
           elementIndex: targetElementIndex,
-          textValue: value,
+          textValue: formatValue,
           currentPageNo: currentPageNo,
         })
       );
@@ -87,10 +83,10 @@ export const TextContainer: React.FC<Props> = ({
 
   return (
     <>
-      {allTextElementDataSelector
-        ? allTextElementDataSelector.map((item: any, i: number) => {
+      {allDateElementDataSelector
+        ? allDateElementDataSelector.map((item: any, i: number) => {
             return (
-              <TextPad
+              <DatePad
                 key={i}
                 {...item}
                 handleTextChange={handleTextChange}
@@ -99,19 +95,6 @@ export const TextContainer: React.FC<Props> = ({
             );
           })
         : null}
-      {/* {allCordinatesData.map((item: any, i: number) => {
-        if (item.pageNo == currentPageNo && item.fieldType == "Text") {
-          return (
-            <TextPad
-              key={i}
-              {...item}
-              handleTextChange={handleTextChange}
-              textElementIndex={i}
-            />
-          );
-        }
-        return null;
-      })} */}
     </>
   );
 };
