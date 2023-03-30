@@ -23,6 +23,7 @@ import { TextContainer } from "./containers/TextContainer";
 import { setInfo } from "./redux/slices/basicInfoReducer";
 import { setCoordinateData } from "./redux/slices/coordinatesReducer";
 import OtpModal from "./modals/components/OtpModal";
+import Loading from "./components/Loading";
 
 const App: React.FC = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
@@ -32,6 +33,7 @@ const App: React.FC = () => {
   const [originalOtpValue, setOriginalOtpValue] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isAlreadySign, setIsAlreadySign] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isOtpVerificationDone, setIsOtpVerificationDone] = useState(false);
 
   //
@@ -268,7 +270,7 @@ const App: React.FC = () => {
       let response = await Axios.request(reqOptions);
 
       setOriginalOtpValue(response.data.data.otpValue);
-      console.log(response.data.data.otpValue);
+      // console.log(response.data.data.otpValue);
     } catch (err: any) {
       console.log(err);
       console.log(err.response);
@@ -285,7 +287,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (isOtpVerificationDone) {
       const fetchingAsync = async () => {
-        console.log("done");
+        // console.log("done");
         const uuid = searchParams.get("uuid");
         const uuidTemplateInstance = searchParams.get("uuid_template_instance");
         const uuidSignatory = searchParams.get("uuid_signatory");
@@ -313,9 +315,18 @@ const App: React.FC = () => {
 
         dispatch(setInfo({ uuid, uuidTemplateInstance, uuidSignatory }));
 
-        await sendOtp(uuidSignatory as string);
+        if (
+          originalOtpValue.length == 0 &&
+          uuid &&
+          uuidTemplateInstance &&
+          uuidSignatory
+        ) {
+          await sendOtp(uuidSignatory as string);
+        }
       } catch (err) {
         console.log(err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchParamsAndFetchPdf();
@@ -330,6 +341,8 @@ const App: React.FC = () => {
       <div id="thankyou-container"></div>
 
       {/*  */}
+
+      {isLoading ? <Loading /> : null}
 
       {isAlreadySign ? (
         <>

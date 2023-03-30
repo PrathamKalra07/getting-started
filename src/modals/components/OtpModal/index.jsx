@@ -132,9 +132,10 @@ export default function OtpModal({
               {" "}
               <button
                 className="btn btn-danger px-4 validate"
+                style={{ cursor: "pointer" }}
                 onClick={() => {
-                  console.log("currnet otp", otp);
-                  console.log("originalOtpValue", originalOtpValue);
+                  // console.log("currnet otp", otp);
+                  // console.log("originalOtpValue", originalOtpValue);
 
                   // originalOtpValue
                   if (otp.join("") != originalOtpValue) {

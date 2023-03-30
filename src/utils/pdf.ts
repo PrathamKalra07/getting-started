@@ -2,7 +2,6 @@ import { readAsArrayBuffer } from "./asyncReader";
 import { getAsset } from "./prepareAssets";
 import { normalize } from "./helpers";
 import { Buffer } from "buffer";
-import { useSelector } from "react-redux";
 
 export async function Save(
   pdfFile: File,
@@ -224,7 +223,7 @@ export async function Save(
                   height: elementData.height,
                   width: elementData.width,
                   x: elementData.x,
-                  y: pageHeight - elementData.y!,
+                  y: pageHeight - elementData.y - 20,
                 });
               };
             }
@@ -262,12 +261,11 @@ export async function Save(
 
     const base64Pdf = Buffer.from(pdfBytes).toString("base64");
 
-    const uuid = localStorage.getItem("uuid");
-
     const body = {
-      uuid: uuid,
+      uuid: basicInfoData.uuid,
       fileInBase64: base64Pdf,
       uuid_signatory: basicInfoData.uuidSignatory,
+      uuid_template_instance: basicInfoData.uuidTemplateInstance,
     };
 
     const res = await fetch(
@@ -290,7 +288,7 @@ export async function Save(
     thankYouContainer.innerHTML = `<div
       style="
         position: fixed;
-        z-index: 5;
+        z-index: 6;
         top: 0;
         left: 0;
         right: 0;
@@ -311,10 +309,6 @@ export async function Save(
         <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTkxODQ2YzNhNGQ3MmY4YTkxN2ZiMzEzODAyMTA5OWI4Yzk3ZDk1OSZjdD1z/I5dflEG9U9haQ3fUUv/giphy.gif" />
       </div>
     </div>`;
-
-    setTimeout(() => {
-      window.close();
-    }, 5000);
 
     // download(pdfBytes, name, "application/pdf");
   } catch (e) {

@@ -40,13 +40,17 @@ export const Page = ({ page, dimensions, updateDimensions }: Props) => {
     renderPage(page);
   }, [page, updateDimensions]);
 
+  // console.log("width => ", width);
+  // console.log("height => ", height);
+
   return (
     <div>
       <canvas
         ref={canvasRef}
-        //  width={width} height={height}
-        width={595}
-        height={840}
+        width={width}
+        height={height}
+        // width={595}
+        // height={840}
       />
     </div>
   );
