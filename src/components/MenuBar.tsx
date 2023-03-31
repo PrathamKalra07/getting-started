@@ -31,7 +31,7 @@ export const MenuBar: React.FC<Props> = ({
       left: 0,
       right: 0,
       borderRadius: 0,
-      zIndex: 5,
+      zIndex: 3,
     }}
   >
     <Menu.Item header style={whiteText}>

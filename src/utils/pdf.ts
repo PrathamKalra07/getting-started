@@ -59,11 +59,12 @@ export async function Save(
     </div>
   </div>`;
 
-  const { signatureList, textList, basicInfoData } = tempState;
+  const { signatureList, textList, basicInfoData, dateList } = tempState;
 
   const svgPath = signatureList.signaturePath;
   const signatureDataPagesWise = signatureList.allSignatureData;
   const textDataPagesWise = textList.allTextData;
+  const dateDataPagesWise = dateList.allDateData;
 
   // const tempArr: any = [];
   // // for (let key in signatureDataPagesWise) {
@@ -93,6 +94,14 @@ export async function Save(
     }
     if (textDataPagesWise[i]) {
       element = textDataPagesWise[i];
+
+      pageWiseAllData[i] = element.map((item: any) => ({
+        id: item.coordinateId,
+        value: item.value,
+      }));
+    }
+    if (dateDataPagesWise[i]) {
+      element = dateDataPagesWise[i];
 
       pageWiseAllData[i] = element.map((item: any) => ({
         id: item.coordinateId,
@@ -270,6 +279,7 @@ export async function Save(
   try {
     // const pdfBytes = await pdfDoc.save();
     // const base64Pdf = Buffer.from(pdfBytes).toString("base64");
+
     const body = {
       uuid: basicInfoData.uuid,
       uuid_signatory: basicInfoData.uuidSignatory,
@@ -315,6 +325,7 @@ export async function Save(
         <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTkxODQ2YzNhNGQ3MmY4YTkxN2ZiMzEzODAyMTA5OWI4Yzk3ZDk1OSZjdD1z/I5dflEG9U9haQ3fUUv/giphy.gif" />
       </div>
     </div>`;
+
     // download(pdfBytes, name, "application/pdf");
   } catch (e) {
     console.log("Failed to save PDF.");
