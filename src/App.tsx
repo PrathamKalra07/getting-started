@@ -1,7 +1,7 @@
 import React, { useState, useLayoutEffect, useEffect } from "react";
 import Axios from "axios";
 import "semantic-ui-css/semantic.min.css";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
 
@@ -178,8 +178,10 @@ const App: React.FC = () => {
     const isSignatureDone =
       tempState.signatureList.signaturePath.length > 0 ? true : false;
     const textData = tempState.textList.allTextData;
+    const dateData = tempState.dateList.allDateData;
 
     var isTextDataDone = true;
+    var isDateDataDone = true;
 
     for (const indexNo in textData) {
       for (let i = 0; i < textData[indexNo].length; i++) {
@@ -192,11 +194,24 @@ const App: React.FC = () => {
         }
       }
     }
+    for (const indexNo in dateData) {
+      for (let i = 0; i < dateData[indexNo].length; i++) {
+        const innerElement = dateData[indexNo][i];
+
+        if (innerElement.value.length == 0) {
+          isDateDataDone = false;
+
+          break;
+        }
+      }
+    }
 
     if (!isSignatureDone) {
       alert("Please Fill Signature");
     } else if (!isTextDataDone) {
       alert("Please Fill All Text Data");
+    } else if (!isDateDataDone) {
+      alert("Please Fill All Date Data");
     } else {
       savePdf(allPageAttachments, tempState);
     }
@@ -204,6 +219,7 @@ const App: React.FC = () => {
 
   //
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const fetchingCordinates = async (uuidTI: string, uuidS: string) => {
     try {
@@ -314,6 +330,12 @@ const App: React.FC = () => {
         const uuidTemplateInstance = searchParams.get("uuid_template_instance");
         const uuidSignatory = searchParams.get("uuid_signatory");
 
+        if (!uuid || !uuidTemplateInstance || !uuidSignatory) {
+          navigate("/page404", { replace: true });
+
+          return;
+        }
+
         dispatch(setInfo({ uuid, uuidTemplateInstance, uuidSignatory }));
 
         if (
@@ -322,8 +344,8 @@ const App: React.FC = () => {
           uuidTemplateInstance &&
           uuidSignatory
         ) {
-          await sendOtp(uuidSignatory as string);
-          // setIsOtpVerificationDone(true);
+          // await sendOtp(uuidSignatory as string);
+          setIsOtpVerificationDone(true);
         }
       } catch (err) {
         console.log(err);

@@ -42,7 +42,7 @@ export async function Save(
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #E8EFF5
+      background-color: white
     "
   >
     <div
@@ -61,7 +61,8 @@ export async function Save(
 
   const { signatureList, textList, basicInfoData, dateList } = tempState;
 
-  const svgPath = signatureList.signaturePath;
+  // const svgPath = signatureList.signaturePath;
+  const svgPath = signatureList.encodedImgData;
   const signatureDataPagesWise = signatureList.allSignatureData;
   const textDataPagesWise = textList.allTextData;
   const dateDataPagesWise = dateList.allDateData;
@@ -87,26 +88,32 @@ export async function Save(
     if (signatureDataPagesWise[i]) {
       element = signatureDataPagesWise[i];
 
-      pageWiseAllData[i] = element.map((item: any) => ({
-        id: item.coordinateId,
-        value: svgPath,
-      }));
+      pageWiseAllData[i].push(
+        ...element.map((item: any) => ({
+          id: item.coordinateId,
+          value: svgPath,
+        }))
+      );
     }
     if (textDataPagesWise[i]) {
       element = textDataPagesWise[i];
 
-      pageWiseAllData[i] = element.map((item: any) => ({
-        id: item.coordinateId,
-        value: item.value,
-      }));
+      pageWiseAllData[i].push(
+        ...element.map((item: any) => ({
+          id: item.coordinateId,
+          value: item.value,
+        }))
+      );
     }
     if (dateDataPagesWise[i]) {
       element = dateDataPagesWise[i];
 
-      pageWiseAllData[i] = element.map((item: any) => ({
-        id: item.coordinateId,
-        value: item.value,
-      }));
+      pageWiseAllData[i].push(
+        ...element.map((item: any) => ({
+          id: item.coordinateId,
+          value: item.value,
+        }))
+      );
     }
   }
 
