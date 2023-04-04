@@ -344,8 +344,8 @@ const App: React.FC = () => {
           uuidTemplateInstance &&
           uuidSignatory
         ) {
-          // await sendOtp(uuidSignatory as string);
-          setIsOtpVerificationDone(true);
+          await sendOtp(uuidSignatory as string);
+          // setIsOtpVerificationDone(true);
         }
       } catch (err) {
         console.log(err);

@@ -62,7 +62,7 @@ export async function Save(
   const { signatureList, textList, basicInfoData, dateList } = tempState;
 
   // const svgPath = signatureList.signaturePath;
-  const svgPath = signatureList.encodedImgData;
+  const base64OfPng = signatureList.encodedImgData;
   const signatureDataPagesWise = signatureList.allSignatureData;
   const textDataPagesWise = textList.allTextData;
   const dateDataPagesWise = dateList.allDateData;
@@ -91,7 +91,7 @@ export async function Save(
       pageWiseAllData[i].push(
         ...element.map((item: any) => ({
           id: item.coordinateId,
-          value: svgPath,
+          value: base64OfPng,
         }))
       );
     }

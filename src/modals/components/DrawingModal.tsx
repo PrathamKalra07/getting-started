@@ -93,19 +93,72 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
     setStroke(Color.BLACK);
   };
 
-  const handleDone = () => {
+  const handleDone = async () => {
     const svg = svgRef.current;
 
     var bbox = svg!.getBBox();
 
-    var viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ");
+    var viewBox = [
+      bbox.x - 10,
+      bbox.y - 10,
+      bbox.width + 20,
+      bbox.height + 20,
+    ].join(" ");
     svg!.setAttribute("viewBox", viewBox);
 
     var s = new XMLSerializer().serializeToString(svg!);
 
-    const encodedImgData = `data:image/svg+xml;base64,${window.btoa(
-      unescape(s)
-    )}`;
+    // const encodedImgData = `data:image/svg+xml;base64,${window.btoa(
+    //   unescape(s)
+    // )}`;
+
+    function svgString2Image(
+      svgString: string,
+      width: number,
+      height: number
+    ): any {
+      // set default for format parameter
+      const format = "png";
+      // SVG data URL from SVG string
+      var svgData =
+        "data:image/svg+xml;base64," +
+        btoa(unescape(encodeURIComponent(svgString)));
+
+      // create canvas in memory(not in DOM)
+      var canvas = document.createElement("canvas");
+      // get canvas context for drawing on canvas
+      var context = canvas.getContext("2d");
+      // set canvas size
+      canvas.width = width;
+      canvas.height = height;
+      // create image in memory(not in DOM)
+      var image = new Image();
+      // later when image loads run this
+
+      return new Promise((resolve, reject) => {
+        image.onload = function () {
+          // async (happens later)
+          // clear canvas
+          context!.clearRect(0, 0, width, height);
+          // draw image with SVG data to canvas
+          context!.drawImage(image, 0, 0, width, height);
+          // snapshot canvas as png
+          var pngData = canvas.toDataURL("image/" + format);
+          // pass png data URL to callback
+
+          resolve(pngData);
+        }; // end async
+        // start loading SVG data into in memory image
+        image.src = svgData;
+      });
+    }
+
+    // const encodedImgData: string = await svgString2Image(s, 500, 500);
+    const encodedImgData: string = await svgString2Image(
+      s,
+      bbox.width,
+      bbox.height
+    );
 
     if (!paths.length) {
       confirm();
@@ -231,6 +284,8 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
           <div style={{ backgroundColor: "rgba(0,0,0,0.2)", width: "60%" }}>
             <svg
               ref={svgRef}
+              width={"500px"}
+              height={"500px"}
               style={{
                 width: "100%",
                 height: "30vh",

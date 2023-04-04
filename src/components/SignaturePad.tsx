@@ -44,6 +44,7 @@ Props) => {
               justifyContent: "center",
               alignItems: "center",
               height: "100%",
+              width: "100%",
               flexDirection: "column",
             }}
           >
@@ -51,7 +52,7 @@ Props) => {
               src={signatureEncodedImgData}
               // style={{ maxHeight: 200, maxWidth: 200 }}
               alt={"imgg"}
-              style={{ maxHeight: height - 5 }}
+              style={{ width: "70%", padding: 5 }}
             />
           </span>
         ) : (
