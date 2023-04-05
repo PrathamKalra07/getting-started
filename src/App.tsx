@@ -25,6 +25,7 @@ import { setInfo } from "./redux/slices/basicInfoReducer";
 import { setCoordinateData } from "./redux/slices/coordinatesReducer";
 import OtpModal from "./modals/components/OtpModal";
 import Loading from "./components/Loading";
+import { CheckboxContainer } from "./containers/CheckboxContainer";
 
 const App: React.FC = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
@@ -500,6 +501,13 @@ const App: React.FC = () => {
                                 // allCordinatesData={allCordinatesData}
                               />
                               <DateContainer
+                                page={currentPage}
+                                isFetchingCordinatesData={
+                                  isFetchingCordinatesData
+                                }
+                                // allCordinatesData={allCordinatesData}
+                              />
+                              <CheckboxContainer
                                 page={currentPage}
                                 isFetchingCordinatesData={
                                   isFetchingCordinatesData

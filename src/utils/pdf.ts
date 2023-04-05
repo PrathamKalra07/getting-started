@@ -59,13 +59,15 @@ export async function Save(
     </div>
   </div>`;
 
-  const { signatureList, textList, basicInfoData, dateList } = tempState;
+  const { signatureList, textList, basicInfoData, dateList, checkboxList } =
+    tempState;
 
   // const svgPath = signatureList.signaturePath;
   const base64OfPng = signatureList.encodedImgData;
   const signatureDataPagesWise = signatureList.allSignatureData;
   const textDataPagesWise = textList.allTextData;
   const dateDataPagesWise = dateList.allDateData;
+  const checkboxDataPagesWise = checkboxList.allCheckboxData;
 
   // const tempArr: any = [];
   // // for (let key in signatureDataPagesWise) {
@@ -107,6 +109,16 @@ export async function Save(
     }
     if (dateDataPagesWise[i]) {
       element = dateDataPagesWise[i];
+
+      pageWiseAllData[i].push(
+        ...element.map((item: any) => ({
+          id: item.coordinateId,
+          value: item.value,
+        }))
+      );
+    }
+    if (checkboxDataPagesWise[i]) {
+      element = checkboxDataPagesWise[i];
 
       pageWiseAllData[i].push(
         ...element.map((item: any) => ({
