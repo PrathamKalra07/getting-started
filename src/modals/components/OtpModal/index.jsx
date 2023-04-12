@@ -5,8 +5,10 @@ export default function OtpModal({
   otp,
   originalOtpValue,
   setIsOtpVerificationDone,
+  setIsResendOtp,
 }) {
   const [errorMsg, setErrorMsg] = useState("");
+  var [timer, setTimer] = useState(60);
 
   const OTPInput = () => {
     const inputs = document.querySelectorAll("#otp > *[id]");
@@ -36,6 +38,20 @@ export default function OtpModal({
     OTPInput();
     return () => {};
   }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      if (timer > 0) {
+        setTimer((timer) => timer - 1);
+      } else {
+        clearInterval(t);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(t);
+    };
+  }, [timer]);
 
   const inputList = [
     {
@@ -151,6 +167,23 @@ export default function OtpModal({
                 Confirm
               </button>{" "}
             </div>{" "}
+            {timer != 0 ? (
+              <b>
+                {" "}
+                Resend OTP In {"   "}
+                {timer}
+              </b>
+            ) : (
+              <a
+                style={{ color: "rgb(0, 92, 185)", cursor: "pointer" }}
+                onClick={() => {
+                  setIsResendOtp(Math.random());
+                  setTimer(60);
+                }}
+              >
+                Resend OTP
+              </a>
+            )}
           </div>{" "}
         </div>
       </div>

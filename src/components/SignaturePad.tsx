@@ -52,7 +52,7 @@ Props) => {
               src={signatureEncodedImgData}
               // style={{ maxHeight: 200, maxWidth: 200 }}
               alt={"imgg"}
-              style={{ width: "70%", padding: 5 }}
+              style={{ width: "80%", padding: 5 }}
             />
           </span>
         ) : (
@@ -62,7 +62,7 @@ Props) => {
               justifyContent: "center",
               alignItems: "center",
               height: "100%",
-              flexDirection: "column",
+              // flexDirection: "column",
             }}
           >
             <div>Sign</div>

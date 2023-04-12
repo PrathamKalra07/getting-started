@@ -35,6 +35,13 @@ export const usePdf = () => {
     setIsLastPage(newPageIndex === pages.length - 1);
   };
 
+  const goToPage = (pageNo: number) => {
+    const newPageIndex = pageNo - 1;
+    setPageIndex(newPageIndex);
+    setIsFirstPage(newPageIndex === 0);
+    setIsLastPage(newPageIndex === pages.length - 1);
+  };
+
   const initialize = ({ name, file, pages: _pages }: Pdf) => {
     const multi = _pages.length > 1;
     setName(name);
@@ -79,5 +86,6 @@ export const usePdf = () => {
     isFirstPage,
     isLastPage,
     isSaving,
+    goToPage,
   };
 };

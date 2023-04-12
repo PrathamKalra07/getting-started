@@ -37,6 +37,7 @@ const App: React.FC = () => {
   const [isAlreadySign, setIsAlreadySign] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isOtpVerificationDone, setIsOtpVerificationDone] = useState(false);
+  const [isResendOtp, setIsResendOtp] = useState(false);
 
   //
   const currentReduxState = useSelector((state) => state);
@@ -57,6 +58,8 @@ const App: React.FC = () => {
     setDimensions,
     name,
     dimensions,
+    pages,
+    goToPage,
   } = usePdf();
   const {
     add: addAttachment,
@@ -345,8 +348,8 @@ const App: React.FC = () => {
           uuidTemplateInstance &&
           uuidSignatory
         ) {
-          await sendOtp(uuidSignatory as string);
-          // setIsOtpVerificationDone(true);
+          // await sendOtp(uuidSignatory as string);
+          setIsOtpVerificationDone(true);
         }
       } catch (err) {
         console.log(err);
@@ -357,7 +360,7 @@ const App: React.FC = () => {
     fetchParamsAndFetchPdf();
 
     return () => {};
-  }, []);
+  }, [isResendOtp]);
 
   return (
     <Container style={{ margin: 30 }}>
@@ -414,6 +417,7 @@ const App: React.FC = () => {
               otp={otp}
               originalOtpValue={originalOtpValue}
               setIsOtpVerificationDone={setIsOtpVerificationDone}
+              setIsResendOtp={setIsResendOtp}
             />
           ) : (
             <>
@@ -439,14 +443,14 @@ const App: React.FC = () => {
                         verticalAlign="middle"
                         textAlign="left"
                       >
-                        {isMultiPage && !isFirstPage && (
+                        {/* {isMultiPage && !isFirstPage && (
                           <Button
                             circular
                             icon="angle left"
                             onClick={previousPage}
                             size={"huge"}
                           />
-                        )}
+                        )} */}
                       </Grid.Column>
                       <Grid.Column width={10}>
                         {/* <div
@@ -474,45 +478,36 @@ const App: React.FC = () => {
                                 dimensions={dimensions}
                                 updateDimensions={setDimensions}
                                 page={currentPage}
+                                allPages={pages}
+                                goToPage={goToPage}
                               />
-                              {/* {dimensions && (
-                      <Attachments
-                        pdfName={name}
-                        removeAttachment={remove}
-                        updateAttachment={update}
-                        pageDimensions={dimensions}
-                        attachments={pageAttachments}
-                      />
-                    )} */}
+
+                              {/*  */}
+
                               <SignatureContainer
                                 page={currentPage}
                                 addDrawing={() => setDrawingModalOpen(true)}
                                 isFetchingCordinatesData={
                                   isFetchingCordinatesData
                                 }
-                                // signatureData={signatureData}
-                                // allCordinatesData={allCordinatesData}
                               />
                               <TextContainer
                                 page={currentPage}
                                 isFetchingCordinatesData={
                                   isFetchingCordinatesData
                                 }
-                                // allCordinatesData={allCordinatesData}
                               />
                               <DateContainer
                                 page={currentPage}
                                 isFetchingCordinatesData={
                                   isFetchingCordinatesData
                                 }
-                                // allCordinatesData={allCordinatesData}
                               />
                               <CheckboxContainer
                                 page={currentPage}
                                 isFetchingCordinatesData={
                                   isFetchingCordinatesData
                                 }
-                                // allCordinatesData={allCordinatesData}
                               />
                             </div>
                           </Segment>
@@ -523,14 +518,14 @@ const App: React.FC = () => {
                         verticalAlign="middle"
                         textAlign="right"
                       >
-                        {isMultiPage && !isLastPage && (
+                        {/* {isMultiPage && !isLastPage && (
                           <Button
                             circular
                             icon="angle right"
                             onClick={nextPage}
                             size={"huge"}
                           />
-                        )}
+                        )} */}
                       </Grid.Column>
                     </Grid.Row>
                   </Grid>

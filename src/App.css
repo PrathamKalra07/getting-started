@@ -2,16 +2,6 @@
   margin-top: 100px !important;
 }
 
-.submit-btn {
-  color: #332f32 !important;
-  font-weight: 700 !important;
-  margin-right: 15px !important;
-  background-color: #ffc820 !important;
-  margin-top: 5px !important;
-  margin-bottom: 5px !important;
-  border-radius: 2px;
-}
-
 .signature-indicator {
   background-color: #ffc820;
   width: 100px;

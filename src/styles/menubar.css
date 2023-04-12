@@ -1,0 +1,19 @@
+.menubar-container {
+  background-color: var(--color2) !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  border-radius: 0px !important;
+}
+
+.submit-btn {
+  color: white !important;
+  font-weight: 700 !important;
+  margin-right: 15px !important;
+  background-color: var(--color3) !important;
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+  border-radius: 2px;
+}

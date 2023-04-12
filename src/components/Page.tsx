@@ -1,12 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
+import { PaginationContainer } from "../containers/PaginationContainer";
 
 interface Props {
   page: any;
   dimensions?: Dimensions;
   updateDimensions: ({ width, height }: Dimensions) => void;
+  allPages: any;
+  goToPage: (pageNo: number) => void;
 }
 
-export const Page = ({ page, dimensions, updateDimensions }: Props) => {
+export const Page = ({
+  page,
+  dimensions,
+  updateDimensions,
+  allPages,
+  goToPage,
+}: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [width, setWidth] = useState((dimensions && dimensions.width) || 0);
   const [height, setHeight] = useState((dimensions && dimensions.height) || 0);
@@ -44,7 +53,7 @@ export const Page = ({ page, dimensions, updateDimensions }: Props) => {
   // console.log("height => ", height);
 
   return (
-    <div>
+    <div style={{ position: "relative" }}>
       <canvas
         ref={canvasRef}
         width={width}
@@ -52,6 +61,16 @@ export const Page = ({ page, dimensions, updateDimensions }: Props) => {
         // width={595}
         // height={840}
       />
+
+      {/* pagination start */}
+
+      <PaginationContainer
+        page={page}
+        allPages={allPages}
+        goToPage={goToPage}
+      />
+
+      {/* pagination end */}
     </div>
   );
 };

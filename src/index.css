@@ -1,3 +1,24 @@
+:root {
+  /* --color1: #f6f1f1;
+  --color2: #19a7ce;
+  --color3: #146c94;
+  --color4: #000000; */
+  --color1: #0b2447;
+  --color2: #19376d;
+  --color3: #576cbc;
+  --color4: #a5d7e8;
+  --custom-blue: #005cb9;
+}
+
 body {
   margin: 0;
+  /* background-color: var(--color1) !important; */
 }
+
+/* background-color: var(--color3); */
+
+/* 
+var r = document.querySelector(':root');
+var rs = getComputedStyle(r);
+rs.getPropertyValue('--blue')
+ */
