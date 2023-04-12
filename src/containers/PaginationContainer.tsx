@@ -126,7 +126,7 @@ export const PaginationContainer: React.FC<Props> = ({
 
   return (
     <div className="pagination-container">
-      <div className="pagination-inner-container bg-light shadow">
+      <div className="pagination-inner-container shadow">
         <div
           className="px-1"
           style={{ cursor: leftArrowShown ? "pointer" : "default" }}
@@ -138,7 +138,7 @@ export const PaginationContainer: React.FC<Props> = ({
         >
           <i
             className="fa-solid fa-chevron-left"
-            style={{ color: leftArrowShown ? "black" : "gray" }}
+            style={{ color: leftArrowShown ? "white" : "gray" }}
           ></i>
         </div>
 
@@ -150,8 +150,8 @@ export const PaginationContainer: React.FC<Props> = ({
           max={totalPages}
           min={1}
         />
-        <span>/</span>
-        <span>{totalPages}</span>
+        <span className="text-light">/</span>
+        <span className="text-light">{totalPages}</span>
 
         <div
           className="px-1"
@@ -164,7 +164,7 @@ export const PaginationContainer: React.FC<Props> = ({
         >
           <i
             className="fa-solid fa-chevron-right"
-            style={{ color: rightArrowShown ? "black" : "gray" }}
+            style={{ color: rightArrowShown ? "white" : "gray" }}
           ></i>
         </div>
       </div>

@@ -17,6 +17,7 @@
   justify-content: space-around;
   width: 15%;
   border-radius: 10px;
+  background-color: var(--color4);
 }
 
 @media screen and (max-width: 992px) {
@@ -40,3 +41,5 @@
   height: 30px;
   text-align: center;
 }
+
+/*  */

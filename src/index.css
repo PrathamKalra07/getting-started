@@ -3,17 +3,69 @@
   --color2: #19a7ce;
   --color3: #146c94;
   --color4: #000000; */
-  --color1: #0b2447;
+  /* --color1: #0b2447;
   --color2: #19376d;
   --color3: #576cbc;
-  --color4: #a5d7e8;
+  --color4: #a5d7e8;*/
   --custom-blue: #005cb9;
+
+  /* --color1: #e9d5da;
+  --color2: #827397;
+  --color3: #4d4c7d;
+  --color4: #363062; */
+  --color1: #c2ded1;
+  --color2: #ece5c7;
+  --color3: #cdc2ae;
+  --color4: #354259;
 }
 
 body {
   margin: 0;
   /* background-color: var(--color1) !important; */
 }
+
+/* .roundpattern {
+  background-color: var(--color1) !important;
+  background-image: repeating-radial-gradient(
+      circle at 0 0,
+      transparent 0,
+      #c2ded1 12px
+    ),
+    repeating-linear-gradient(#ece5c755, #ece5c7) !important;
+}
+
+.starpattern {
+  background-color: var(--color1) !important;
+
+  background: radial-gradient(
+      circle,
+      transparent 20%,
+      #c2ded1 20%,
+      #c2ded1 80%,
+      transparent 80%,
+      transparent
+    ),
+    radial-gradient(
+        circle,
+        transparent 20%,
+        #c2ded1 20%,
+        #c2ded1 80%,
+        transparent 80%,
+        transparent
+      )
+      30px 30px,
+    linear-gradient(
+        #ece5c7 2.4000000000000004px,
+        transparent 2.4000000000000004px
+      )
+      0 -1.2000000000000002px,
+    linear-gradient(
+        90deg,
+        #ece5c7 2.4000000000000004px,
+        #c2ded1 2.4000000000000004px
+      ) -1.2000000000000002px 0;
+  background-size: 60px 60px, 60px 60px, 30px 30px, 30px 30px;
+} */
 
 /* background-color: var(--color3); */
 
@@ -22,3 +74,30 @@ var r = document.querySelector(':root');
 var rs = getComputedStyle(r);
 rs.getPropertyValue('--blue')
  */
+
+.custom-btn1 {
+  background-color: var(--color4) !important;
+  color: white !important;
+}
+.custom-btn2 {
+  background-color: var(--color1) !important;
+}
+.custom-btn3 {
+  background-color: var(--color2) !important;
+}
+.custom-btn4 {
+  background-color: var(--color3) !important;
+}
+
+/* extra */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

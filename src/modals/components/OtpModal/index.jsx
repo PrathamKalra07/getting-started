@@ -76,97 +76,85 @@ export default function OtpModal({
   return (
     <div className="otp-model-container">
       {/* https://mir-s3-cdn-cf.behance.net/project_modules/fs/628a4e68110473.5b511c318e34c.png */}
+
       <div
         style={{
-          position: "fixed",
-          zIndex: 5,
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "#E8EFF5",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          width: "100vw",
         }}
       >
+        {/*  */}
         <div
           style={{
             display: "flex",
+            flexDirection: "column",
+            backgroundColor: "white",
             alignItems: "center",
-            justifyContent: "center",
-            height: "100vh",
-            width: "100vw",
-            // flexDirection: "row",
+            justifyContent: "space-around",
+            textAlign: "center",
+            borderRadius: 10,
           }}
+          className="card py-5 custom-otp-card"
         >
-          {/*  */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              backgroundColor: "white",
-              alignItems: "center",
-              justifyContent: "space-around",
-              textAlign: "center",
-              borderRadius: 10,
-            }}
-            className="card "
-          >
+          {" "}
+          <h6>
+            Please enter the one time password <br /> to verify your account
+          </h6>{" "}
+          <div className="my-3">
             {" "}
-            <h6>
-              Please enter the one time password <br /> to verify your account
-            </h6>{" "}
-            <div>
-              {" "}
-              {errorMsg ? (
-                <span style={{ color: "red" }}>
-                  {errorMsg ? errorMsg : " "}
-                </span>
-              ) : (
-                <span>A code has been sent to your mail please check it</span>
-              )}
-            </div>{" "}
-            <div
-              id="otp"
-              className="inputs d-flex flex-row justify-content-center mt-2"
-            >
-              {inputList.map((item, i) => {
-                return (
-                  <input
-                    key={i}
-                    type="text"
-                    id={item.id}
-                    maxLength={1}
-                    autoFocus={i === 0 ? true : false}
-                    value={otp[i]}
-                    onKeyDown={(e) => {
-                      otp[i] = e.target.value;
-                    }}
-                  />
-                );
-              })}
-            </div>{" "}
-            <div className="mt-4">
-              {" "}
-              <button
-                className="btn btn-danger px-4 validate"
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  // console.log("currnet otp", otp);
-                  // console.log("originalOtpValue", originalOtpValue);
+            {errorMsg ? (
+              <span style={{ color: "red" }}>{errorMsg ? errorMsg : " "}</span>
+            ) : (
+              <span>A code has been sent to your mail please check it</span>
+            )}
+          </div>{" "}
+          <div
+            id="otp"
+            className="inputs d-flex flex-row justify-content-center mt-2"
+          >
+            {inputList.map((item, i) => {
+              return (
+                <input
+                  key={i}
+                  type="number"
+                  id={item.id}
+                  maxLength={1}
+                  autoFocus={i === 0 ? true : false}
+                  value={otp[i]}
+                  onKeyDown={(e) => {
+                    otp[i] = e.target.value;
+                  }}
+                />
+              );
+            })}
+          </div>{" "}
+          <div className="mt-4">
+            {" "}
+            <button
+              className="btn custom-btn3 px-4 validate"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                // console.log("currnet otp", otp);
+                // console.log("originalOtpValue", originalOtpValue);
 
-                  // originalOtpValue
-                  if (otp.join("") != originalOtpValue) {
-                    setErrorMsg("wrong otp please re enter");
-                    for (let i = 0; i < 6; i++) {
-                      otp[i] = "";
-                    }
-                  } else {
-                    setIsOtpVerificationDone(true);
+                // originalOtpValue
+                if (otp.join("") != originalOtpValue) {
+                  setErrorMsg("wrong otp please re enter");
+                  for (let i = 0; i < 6; i++) {
+                    otp[i] = "";
                   }
-                }}
-              >
-                Confirm
-              </button>{" "}
-            </div>{" "}
+                } else {
+                  setIsOtpVerificationDone(true);
+                }
+              }}
+            >
+              Confirm
+            </button>{" "}
+          </div>{" "}
+          <div className="mt-3">
             {timer != 0 ? (
               <b>
                 {" "}
@@ -174,18 +162,19 @@ export default function OtpModal({
                 {timer}
               </b>
             ) : (
-              <a
+              <b
                 style={{ color: "rgb(0, 92, 185)", cursor: "pointer" }}
+                className="text-light"
                 onClick={() => {
                   setIsResendOtp(Math.random());
                   setTimer(60);
                 }}
               >
                 Resend OTP
-              </a>
+              </b>
             )}
-          </div>{" "}
-        </div>
+          </div>
+        </div>{" "}
       </div>
     </div>
   );

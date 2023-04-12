@@ -23,16 +23,12 @@ Props) => {
   return (
     <>
       <div
+        className="signature-pad-container"
         style={{
-          backgroundColor: "#ffe185",
-          position: "absolute",
           height: height,
           width: width,
           top: y,
           left: x,
-          right: 0,
-          bottom: 0,
-          borderRadius: 5,
         }}
         onClick={addDrawing}
       >

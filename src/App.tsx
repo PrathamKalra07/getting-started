@@ -6,6 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
 
 import { Container, Grid, Button, Segment } from "semantic-ui-react";
+
+import { Container as BootstrapContainer } from "reactstrap";
+
 import { MenuBar } from "./components/MenuBar";
 import { DrawingModal } from "./modals/components/DrawingModal";
 import { usePdf, Pdf } from "./hooks/usePdf";
@@ -35,7 +38,6 @@ const App: React.FC = () => {
   const [originalOtpValue, setOriginalOtpValue] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isAlreadySign, setIsAlreadySign] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [isOtpVerificationDone, setIsOtpVerificationDone] = useState(false);
   const [isResendOtp, setIsResendOtp] = useState(false);
 
@@ -322,6 +324,8 @@ const App: React.FC = () => {
         await uploadPdf(uuid);
       };
       fetchingAsync();
+      // starpattern
+      document.body.classList.add("starpattern");
     }
 
     return () => {};
@@ -353,8 +357,6 @@ const App: React.FC = () => {
         }
       } catch (err) {
         console.log(err);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchParamsAndFetchPdf();
@@ -370,7 +372,7 @@ const App: React.FC = () => {
 
       {/*  */}
 
-      {isLoading ? <Loading /> : null}
+      {/* {isLoading ? <Loading /> : null} loadingState*/}
 
       {isAlreadySign ? (
         <>
@@ -436,101 +438,99 @@ const App: React.FC = () => {
                   // <Empty loading={isUploading && isFetchingCordinatesData} />
                   <Empty loading={true} />
                 ) : (
-                  <Grid>
-                    <Grid.Row>
-                      <Grid.Column
-                        width={3}
-                        verticalAlign="middle"
-                        textAlign="left"
-                      >
-                        {/* {isMultiPage && !isFirstPage && (
-                          <Button
-                            circular
-                            icon="angle left"
-                            onClick={previousPage}
-                            size={"huge"}
-                          />
-                        )} */}
-                      </Grid.Column>
-                      <Grid.Column width={10}>
-                        {/* <div
-                  className="signature-indicator"
-                  onClick={(e) => {
-                    e.currentTarget.style.top = "600px";
+                  <BootstrapContainer className=" d-flex justify-content-center align-items-center overflow-x-scroll">
+                    <div>
+                      {currentPage && (
+                        // <Segment
+                        //   data-testid="page"
+                        //   compact
+                        //   stacked={isMultiPage && !isLastPage}
+                        // >
+                        //   <div style={{ position: "relative" }}>
+                        //     <Page
+                        //       dimensions={dimensions}
+                        //       updateDimensions={setDimensions}
+                        //       page={currentPage}
+                        //       allPages={pages}
+                        //       goToPage={goToPage}
+                        //     />
 
-                    window.scroll({
-                      top: 400,
-                      behavior: "smooth",
-                    });
-                  }}
-                >
-                  Start
-                </div> */}
+                        //     {/*  */}
 
-                        {currentPage && (
-                          <Segment
-                            data-testid="page"
-                            compact
-                            stacked={isMultiPage && !isLastPage}
-                          >
-                            <div style={{ position: "relative" }}>
-                              <Page
-                                dimensions={dimensions}
-                                updateDimensions={setDimensions}
-                                page={currentPage}
-                                allPages={pages}
-                                goToPage={goToPage}
-                              />
+                        //     <SignatureContainer
+                        //       page={currentPage}
+                        //       addDrawing={() => setDrawingModalOpen(true)}
+                        //       isFetchingCordinatesData={
+                        //         isFetchingCordinatesData
+                        //       }
+                        //     />
+                        //     <TextContainer
+                        //       page={currentPage}
+                        //       isFetchingCordinatesData={
+                        //         isFetchingCordinatesData
+                        //       }
+                        //     />
+                        //     <DateContainer
+                        //       page={currentPage}
+                        //       isFetchingCordinatesData={
+                        //         isFetchingCordinatesData
+                        //       }
+                        //     />
+                        //     <CheckboxContainer
+                        //       page={currentPage}
+                        //       isFetchingCordinatesData={
+                        //         isFetchingCordinatesData
+                        //       }
+                        //     />
+                        //   </div>
+                        // </Segment>
 
-                              {/*  */}
+                        <div className="border mb-5">
+                          {" "}
+                          <div style={{ position: "relative" }}>
+                            <Page
+                              dimensions={dimensions}
+                              updateDimensions={setDimensions}
+                              page={currentPage}
+                              allPages={pages}
+                              goToPage={goToPage}
+                            />
 
-                              <SignatureContainer
-                                page={currentPage}
-                                addDrawing={() => setDrawingModalOpen(true)}
-                                isFetchingCordinatesData={
-                                  isFetchingCordinatesData
-                                }
-                              />
-                              <TextContainer
-                                page={currentPage}
-                                isFetchingCordinatesData={
-                                  isFetchingCordinatesData
-                                }
-                              />
-                              <DateContainer
-                                page={currentPage}
-                                isFetchingCordinatesData={
-                                  isFetchingCordinatesData
-                                }
-                              />
-                              <CheckboxContainer
-                                page={currentPage}
-                                isFetchingCordinatesData={
-                                  isFetchingCordinatesData
-                                }
-                              />
-                            </div>
-                          </Segment>
-                        )}
-                      </Grid.Column>
-                      <Grid.Column
-                        width={3}
-                        verticalAlign="middle"
-                        textAlign="right"
-                      >
-                        {/* {isMultiPage && !isLastPage && (
-                          <Button
-                            circular
-                            icon="angle right"
-                            onClick={nextPage}
-                            size={"huge"}
-                          />
-                        )} */}
-                      </Grid.Column>
-                    </Grid.Row>
-                  </Grid>
+                            {/*  */}
+
+                            <SignatureContainer
+                              page={currentPage}
+                              addDrawing={() => setDrawingModalOpen(true)}
+                              isFetchingCordinatesData={
+                                isFetchingCordinatesData
+                              }
+                            />
+                            <TextContainer
+                              page={currentPage}
+                              isFetchingCordinatesData={
+                                isFetchingCordinatesData
+                              }
+                            />
+                            <DateContainer
+                              page={currentPage}
+                              isFetchingCordinatesData={
+                                isFetchingCordinatesData
+                              }
+                            />
+                            <CheckboxContainer
+                              page={currentPage}
+                              isFetchingCordinatesData={
+                                isFetchingCordinatesData
+                              }
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </BootstrapContainer>
                 )}
               </div>
+
               <DrawingModal
                 open={drawingModalOpen}
                 dismiss={() => setDrawingModalOpen(false)}

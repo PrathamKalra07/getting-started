@@ -8,6 +8,7 @@ import textReducer from "./textReducer";
 import dateReducer from "./dateReducer";
 import checkboxReducer from "./checkboxReducer";
 import colorsReducer from "./colorsReducer";
+import loadingReducer from "./loadingReducer";
 
 const rootReducer = combineReducers({
   signatureList: signatureReducer,
@@ -17,5 +18,6 @@ const rootReducer = combineReducers({
   dateList: dateReducer,
   checkboxList: checkboxReducer,
   colorsList: colorsReducer,
+  loadingState: loadingReducer,
 });
 export default rootReducer;

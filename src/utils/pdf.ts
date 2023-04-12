@@ -42,7 +42,7 @@ export async function Save(
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: white
+      background-color: #F4EDE4;
     "
   >
     <div
@@ -55,7 +55,9 @@ export async function Save(
         flex-direction: column
       "
     >
-      <img src="https://superstorefinder.net/support/wp-content/uploads/2018/01/elastic.gif" />
+      <img src="https://d34u8crftukxnk.cloudfront.net/slackpress/prod/sites/6/sales-Image2%402x.gif" style="width:70%" />
+
+      <span class="mb-3"><b>Saving Your Document </b></span>
     </div>
   </div>`;
 
@@ -323,12 +325,12 @@ export async function Save(
     thankYouContainer.innerHTML = `<div
       style="
         position: fixed;
-        z-index: 6;
+        z-index: 5;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: #E8EFF5
+        background-color: #F4EDE4;
       "
     >
       <div
@@ -341,7 +343,9 @@ export async function Save(
           flex-direction: column
         "
       >
-        <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTkxODQ2YzNhNGQ3MmY4YTkxN2ZiMzEzODAyMTA5OWI4Yzk3ZDk1OSZjdD1z/I5dflEG9U9haQ3fUUv/giphy.gif" />
+        <img src="https://ouch-cdn2.icons8.com/tDVPnO7F3kdD0xVzd2VnMPmlb_Bhb841G_CUofgmuqk/rs:fit:256:324/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9wbmcvNjgy/L2ExZGYxMGE0LTFk/NjMtNDA0Mi04ZWNj/LWI3OWU4N2ViM2Iw/Zi5wbmc.png" style="width:30%" />
+  
+        <span class="mb-5"><b>Thank You Your Work Is Done </b></span>
       </div>
     </div>`;
 

@@ -60,6 +60,8 @@ export const Page = ({
         height={height}
         // width={595}
         // height={840}
+        style={{ borderRadius: "5px", boxShadow: "0 2px 5px gray" }}
+        // className="shadow"
       />
 
       {/* pagination start */}

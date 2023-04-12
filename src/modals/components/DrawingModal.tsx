@@ -1,6 +1,16 @@
 import React, { useState, createRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Modal, Button, Menu, Dropdown, Label } from "semantic-ui-react";
+import {
+  // Modal,
+  // Button,
+  Menu,
+  Dropdown,
+  Label,
+  Card,
+  Icon,
+} from "semantic-ui-react";
+
+import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 
 //
 import { Color } from "../../entities";
@@ -213,13 +223,24 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
   };
 
   return (
-    <Modal size="small" dimmer="inverted" open={open} onClose={closeModal}>
-      <Modal.Header>Add your Drawing</Modal.Header>
-      <Modal.Content>
+    <Modal
+      isOpen={open}
+      onClosed={closeModal}
+      centered
+      className="modal-container"
+      toggle={closeModal}
+      fade={false}
+    >
+      <ModalHeader>Add your Drawing</ModalHeader>
+      <ModalBody>
         <Menu size="tiny">
           <Menu.Item header>Tools</Menu.Item>
-          {/* <Menu.Item><Icon name="undo" /></Menu.Item>
-                    <Menu.Item><Icon name="redo" /></Menu.Item> */}
+          <Menu.Item>
+            <Icon name="undo" />
+          </Menu.Item>
+          <Menu.Item>
+            <Icon name="redo" />
+          </Menu.Item>
           <Menu.Menu position="right">
             <Dropdown item text={`${strokeWidth}`}>
               <Dropdown.Menu>
@@ -259,29 +280,29 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
                 </div>
               </Dropdown.Menu>
             </Dropdown>
-            {/* <Dropdown item text={stroke}>
-                            <Dropdown.Menu>
-                                <Card.Group itemsPerRow={3}>
-                                    {Object.values(Color).map((color, index) => (
-                                        <Card inverted key={index} color={color} />
-                                    ))}
-                                </Card.Group>
-                            </Dropdown.Menu>
-                        </Dropdown> */}
+            <Dropdown item text={stroke}>
+              <Dropdown.Menu>
+                <Card.Group itemsPerRow={3}>
+                  {Object.values(Color).map((color, index) => (
+                    <Card inverted key={index} color={color} />
+                  ))}
+                </Card.Group>
+              </Dropdown.Menu>
+            </Dropdown>
           </Menu.Menu>
         </Menu>
         <div
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
-          style={{
-            width: "100%",
-            height: "30vh",
-            display: "flex",
-            justifyContent: "center",
-          }}
+          className="drawing-modal-grey-container"
         >
-          <div style={{ backgroundColor: "rgba(0,0,0,0.2)", width: "60%" }}>
+          <div
+            style={{
+              backgroundColor: "rgba(0,0,0,0.2)",
+              width: "100%",
+            }}
+          >
             <svg
               ref={svgRef}
               width={"500px"}
@@ -302,17 +323,127 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
             </svg>
           </div>
         </div>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button color="black" content="Cancel" onClick={closeModal} />
-        <Button
-          content="Done"
-          labelPosition="right"
-          icon="checkmark"
-          onClick={handleDone}
-          positive
-        />
-      </Modal.Actions>
+      </ModalBody>
+      <ModalFooter>
+        <button className="btn " onClick={closeModal}>
+          Cancel
+        </button>
+        <span className="px-2"> </span>
+        <button onClick={handleDone} className="btn custom-btn1">
+          Done
+        </button>
+      </ModalFooter>
     </Modal>
+    // <Modal
+    //   size="small"
+    //   dimmer="inverted"
+    //   open={open}
+    //   onClose={closeModal}
+    //   centered
+    // >
+    //   <Modal.Header>Add your Drawing</Modal.Header>
+    //   <Modal.Content>
+    //     <Menu size="tiny">
+    //       <Menu.Item header>Tools</Menu.Item>
+    //       <Menu.Item>
+    //         <Icon name="undo" />
+    //       </Menu.Item>
+    //       <Menu.Item>
+    //         <Icon name="redo" />
+    //       </Menu.Item>
+    //       <Menu.Menu position="right">
+    //         <Dropdown item text={`${strokeWidth}`}>
+    //           <Dropdown.Menu>
+    //             {strokeSizes.map((size) => (
+    //               <Dropdown.Item
+    //                 key={size}
+    //                 selected={size === strokeWidth}
+    //                 onClick={() => setStrokeWidth(size)}
+    //               >
+    //                 {size}
+    //               </Dropdown.Item>
+    //             ))}
+    //           </Dropdown.Menu>
+    //         </Dropdown>
+    //         <Dropdown
+    //           item
+    //           trigger={<Label color={stroke} />}
+    //           onClick={() => setStrokeDropdownOpen(true)}
+    //           onBlur={() => setStrokeDropdownOpen(false)}
+    //         >
+    //           <Dropdown.Menu open={strokeDropdownOpen}>
+    //             <div
+    //               style={{
+    //                 display: "grid",
+    //                 gridTemplateColumns: "repeat(3, 1fr)",
+    //                 padding: 5,
+    //               }}
+    //             >
+    //               {Object.values(Color).map((color, index) => (
+    //                 <div style={{ margin: 2.5 }} key={index}>
+    //                   <Label
+    //                     color={color}
+    //                     onClick={handleStrokeSelect(color)}
+    //                   />
+    //                 </div>
+    //               ))}
+    //             </div>
+    //           </Dropdown.Menu>
+    //         </Dropdown>
+    //         <Dropdown item text={stroke}>
+    //           <Dropdown.Menu>
+    //             <Card.Group itemsPerRow={3}>
+    //               {Object.values(Color).map((color, index) => (
+    //                 <Card inverted key={index} color={color} />
+    //               ))}
+    //             </Card.Group>
+    //           </Dropdown.Menu>
+    //         </Dropdown>
+    //       </Menu.Menu>
+    //     </Menu>
+    //     <div
+    //       onMouseDown={handleMouseDown}
+    //       onMouseMove={handleMouseMove}
+    //       onMouseUp={handleMouseUp}
+    //       style={{
+    //         width: "100%",
+    //         height: "30vh",
+    //         display: "flex",
+    //         justifyContent: "center",
+    //       }}
+    //     >
+    //       <div style={{ backgroundColor: "rgba(0,0,0,0.2)", width: "60%" }}>
+    //         <svg
+    //           ref={svgRef}
+    //           width={"500px"}
+    //           height={"500px"}
+    //           style={{
+    //             width: "100%",
+    //             height: "30vh",
+    //           }}
+    //         >
+    //           <path
+    //             strokeWidth={strokeWidth}
+    //             strokeLinejoin="round"
+    //             strokeLinecap="round"
+    //             stroke={stroke}
+    //             fill="none"
+    //             d={path}
+    //           />
+    //         </svg>
+    //       </div>
+    //     </div>
+    //   </Modal.Content>
+    //   <Modal.Actions>
+    //     <Button color="black" content="Cancel" onClick={closeModal} />
+    //     <Button
+    //       content="Done"
+    //       labelPosition="right"
+    //       icon="checkmark"
+    //       onClick={handleDone}
+    //       positive
+    //     />
+    //   </Modal.Actions>
+    // </Modal>
   );
 };
