@@ -9,10 +9,19 @@
 }
 
 .submit-btn {
-  color: white !important;
+  /* color: white !important; */
   font-weight: 700 !important;
   margin-right: 15px !important;
   background-color: var(--color3) !important;
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+  border-radius: 2px;
+}
+.submit-btn:hover {
+  color: rgba(255, 255, 255, 0.733) !important;
+  font-weight: 700 !important;
+  margin-right: 15px !important;
+  background-color: #cdc2aeab !important;
   margin-top: 5px !important;
   margin-bottom: 5px !important;
   border-radius: 2px;

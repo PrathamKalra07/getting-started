@@ -227,7 +227,7 @@ const App: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const fetchingCordinates = async (uuidTI: string, uuidS: string) => {
+  const fetchingCordinates = async (uuid: string, uuidS: string) => {
     try {
       // {{baseUrl}}/api/fetchCordinatesData
 
@@ -237,12 +237,12 @@ const App: React.FC = () => {
       };
 
       let bodyContent = JSON.stringify({
-        uuid_template_instance: uuidTI,
+        uuid: uuid,
         uuid_signatory: uuidS,
       });
 
       let reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/fetchCordinatesData`,
+        url: `${process.env.REACT_APP_API_URL}/api/common/fetchCordinatesData`,
         method: "POST",
         headers: headersList,
         data: bodyContent,
@@ -317,10 +317,7 @@ const App: React.FC = () => {
 
         ////////// here
         // localStorage.setItem("uuid", uuid as string);
-        await fetchingCordinates(
-          uuidTemplateInstance as string,
-          uuidSignatory as string
-        );
+        await fetchingCordinates(uuid as string, uuidSignatory as string);
         await uploadPdf(uuid);
       };
       fetchingAsync();
@@ -352,8 +349,8 @@ const App: React.FC = () => {
           uuidTemplateInstance &&
           uuidSignatory
         ) {
-          // await sendOtp(uuidSignatory as string);
-          setIsOtpVerificationDone(true);
+          await sendOtp(uuidSignatory as string);
+          // setIsOtpVerificationDone(true);
         }
       } catch (err) {
         console.log(err);

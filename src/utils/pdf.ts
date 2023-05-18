@@ -2,6 +2,7 @@ import { readAsArrayBuffer } from "./asyncReader";
 import { getAsset } from "./prepareAssets";
 import { normalize } from "./helpers";
 import { Buffer } from "buffer";
+import axios from "axios";
 
 export async function Save(
   pdfFile: File,
@@ -301,24 +302,21 @@ export async function Save(
     // const pdfBytes = await pdfDoc.save();
     // const base64Pdf = Buffer.from(pdfBytes).toString("base64");
 
-    const body = {
+    //
+    const bodyContent = {
       uuid: basicInfoData.uuid,
       uuid_signatory: basicInfoData.uuidSignatory,
       uuid_template_instance: basicInfoData.uuidTemplateInstance,
       allElementsData: pageWiseAllData,
     };
-    const res = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/saveSignedDoc`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      }
-    );
-    const response = await res.json();
-    console.log("@@@ saveSignedDoc RESPONSE: " + JSON.stringify(response));
+    const { data } = await axios.request({
+      url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
+      method: "POST",
+      data: bodyContent,
+    });
+
+    // console.log("@@@ saveSignedDoc RESPONSE: " + data);
+
     const thankYouContainer: HTMLElement = document.getElementById(
       "thankyou-container"
     ) as HTMLElement;
@@ -352,6 +350,13 @@ export async function Save(
     // download(pdfBytes, name, "application/pdf");
   } catch (e) {
     console.log("Failed to save PDF.");
+
+    const thankYouContainer: HTMLElement = document.getElementById(
+      "thankyou-container"
+    ) as HTMLElement;
+    thankYouContainer.innerHTML = "";
+    alert("Something Want Wrong Try Again");
+    //
 
     console.log(e);
   }

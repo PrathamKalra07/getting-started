@@ -29,13 +29,13 @@ export const MenuBar: React.FC<Props> = ({
     <Menu.Menu position="right">
       {isPdfLoaded && (
         <>
-          {/* <Menu.Item
+          <Menu.Item
             data-testid="save-menu-item"
             name={savingPdfStatus ? "Submiting..." : "Submit"}
             disabled={savingPdfStatus}
             onClick={savePdf}
             className="submit-btn"
-          /> */}
+          />
         </>
       )}
     </Menu.Menu>

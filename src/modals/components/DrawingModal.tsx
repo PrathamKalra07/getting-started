@@ -305,8 +305,8 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
           >
             <svg
               ref={svgRef}
-              width={"500px"}
-              height={"500px"}
+              width={"450px"}
+              height={"450px"}
               style={{
                 width: "100%",
                 height: "30vh",
