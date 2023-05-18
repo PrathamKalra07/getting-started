@@ -54,6 +54,7 @@ const App: React.FC = () => {
     isLastPage,
     currentPage,
     isSaving,
+    setIsSaving,
     savePdf,
     previousPage,
     nextPage,
@@ -177,6 +178,65 @@ const App: React.FC = () => {
       />
     </>
   );
+  
+  const handleSignRejection = async () => {
+    setIsSaving(true);
+    console.log('@@@ handleSignRejection.');
+    const tempState = currentReduxState as any;
+    console.log('@@@ tempState: '+ JSON.stringify(tempState));
+
+    const signatoryUUID = tempState.basicInfoData.uuidSignatory;
+
+    let headersList = {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+    };
+
+    let bodyContent = JSON.stringify({
+      uuid_signatory: signatoryUUID,
+    });
+    
+    let reqOptions = {
+      url: `${process.env.REACT_APP_API_URL}/api/common/handleSignRejection`,
+      method: "POST",
+      headers: headersList,
+      data: bodyContent,
+    };
+
+    let response = await Axios.request(reqOptions);
+    console.log(response);
+    setIsSaving(false);
+
+    const thankYouContainer: HTMLElement = document.getElementById(
+      "thankyou-container"
+    ) as HTMLElement;
+    thankYouContainer.innerHTML = `<div
+      style="
+        position: fixed;
+        z-index: 5;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #F4EDE4;
+      "
+    >
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          width: 100vw;
+          flex-direction: column
+        "
+      >
+        <img src="https://ouch-cdn2.icons8.com/tDVPnO7F3kdD0xVzd2VnMPmlb_Bhb841G_CUofgmuqk/rs:fit:256:324/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9wbmcvNjgy/L2ExZGYxMGE0LTFk/NjMtNDA0Mi04ZWNj/LWI3OWU4N2ViM2Iw/Zi5wbmc.png" style="width:30%" />
+  
+        <span class="mb-5"><b>Thank You Your Work Is Done </b></span>
+      </div>
+    </div>`;
+  };
 
   const handleSavePdf = () => {
     const tempState = currentReduxState as any;
@@ -349,8 +409,8 @@ const App: React.FC = () => {
           uuidTemplateInstance &&
           uuidSignatory
         ) {
-          await sendOtp(uuidSignatory as string);
-          // setIsOtpVerificationDone(true);
+          // await sendOtp(uuidSignatory as string);
+          setIsOtpVerificationDone(true);
         }
       } catch (err) {
         console.log(err);
@@ -422,6 +482,7 @@ const App: React.FC = () => {
             <>
               {hiddenInputs}
               <MenuBar
+                rejectSign={handleSignRejection}
                 savePdf={handleSavePdf}
                 addText={addText}
                 addImage={handleImageClick}

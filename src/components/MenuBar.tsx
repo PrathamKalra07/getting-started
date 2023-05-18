@@ -9,6 +9,7 @@ interface Props {
   isPdfLoaded: boolean;
   savingPdfStatus: boolean;
   savePdf: () => void;
+  rejectSign: () => void;
 }
 
 const whiteText = { color: "white" };
@@ -21,6 +22,7 @@ export const MenuBar: React.FC<Props> = ({
   isPdfLoaded,
   savingPdfStatus,
   savePdf,
+  rejectSign
 }) => (
   <Menu pointing className="menubar-container p-2">
     <Menu.Item header style={whiteText}>
@@ -29,6 +31,14 @@ export const MenuBar: React.FC<Props> = ({
     <Menu.Menu position="right">
       {isPdfLoaded && (
         <>
+          <Menu.Item
+            data-testid="save-menu-item"
+            name={savingPdfStatus ? "Processing..." : "Reject"}
+            disabled={savingPdfStatus}
+            onClick={rejectSign}
+            className="submit-btn"
+          />
+
           <Menu.Item
             data-testid="save-menu-item"
             name={savingPdfStatus ? "Submiting..." : "Submit"}

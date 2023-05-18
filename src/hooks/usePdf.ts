@@ -86,6 +86,7 @@ export const usePdf = () => {
     isFirstPage,
     isLastPage,
     isSaving,
+    setIsSaving,
     goToPage,
   };
 };

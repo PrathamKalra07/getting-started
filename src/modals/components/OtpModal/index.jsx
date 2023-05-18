@@ -65,13 +65,7 @@ export default function OtpModal({
     },
     {
       id: "fourth",
-    },
-    {
-      id: "fifth",
-    },
-    {
-      id: "sixth",
-    },
+    }
   ];
   return (
     <div className="otp-model-container">
@@ -143,7 +137,7 @@ export default function OtpModal({
                 // originalOtpValue
                 if (otp.join("") != originalOtpValue) {
                   setErrorMsg("wrong otp please re enter");
-                  for (let i = 0; i < 6; i++) {
+                  for (let i = 0; i < 4; i++) {
                     otp[i] = "";
                   }
                 } else {
