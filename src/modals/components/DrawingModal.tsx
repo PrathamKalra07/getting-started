@@ -55,6 +55,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
     const svg = svgRef.current;
     if (!svg) return;
     const { x, y } = svg.getBoundingClientRect();
+
     setSvgX(x);
     setSvgY(y);
   }, [svgRef]);
@@ -164,10 +165,16 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
     }
 
     // const encodedImgData: string = await svgString2Image(s, 500, 500);
+    // const encodedImgData: string = await svgString2Image(
+    //   s,
+    //   bbox.width,
+    //   bbox.height
+    // );
+
     const encodedImgData: string = await svgString2Image(
       s,
-      bbox.width,
-      bbox.height
+      parseInt(localStorage.getItem("tempWidth") as string),
+      parseInt(localStorage.getItem("tempHeight") as string)
     );
 
     if (!paths.length) {
@@ -206,6 +213,9 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
       encodedImgData: encodedImgData,
     });
 
+    localStorage.removeItem("tempWidth");
+    localStorage.removeItem("tempHeight");
+
     closeModal();
   };
 
@@ -235,12 +245,15 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
       <ModalBody>
         <Menu size="tiny">
           <Menu.Item header>Tools</Menu.Item>
-          <Menu.Item>
+          <Menu.Item onClick={() => setPath("")} active>
+            <Icon name="eraser" />
+          </Menu.Item>
+          {/* <Menu.Item>
             <Icon name="undo" />
           </Menu.Item>
           <Menu.Item>
             <Icon name="redo" />
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Menu position="right">
             <Dropdown item text={`${strokeWidth}`}>
               <Dropdown.Menu>
@@ -305,12 +318,14 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
           >
             <svg
               ref={svgRef}
-              width={"450px"}
-              height={"450px"}
-              style={{
-                width: "100%",
-                height: "30vh",
-              }}
+              // width={"450px"}
+              // height={"450px"}
+              width={"100%"}
+              height={"30vh"}
+              // style={{
+              //   width: "100%",
+              //   height: "30vh",
+              // }}
             >
               <path
                 strokeWidth={strokeWidth}

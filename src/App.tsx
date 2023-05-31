@@ -16,12 +16,14 @@ import { AttachmentTypes } from "./entities";
 import { ggID } from "./utils/helpers";
 import { useAttachments } from "./hooks/useAttachments";
 import { useUploader, UploadTypes } from "./hooks/useUploader";
-import { Empty } from "./components/Empty";
 import { Page } from "./components/Page";
 import { Attachments } from "./components/Attachments";
 import { SignatureContainer } from "./containers/SignatureContainer";
 import { TextContainer } from "./containers/TextContainer";
 import { DateContainer } from "./containers/DateContainer";
+
+//
+import AlreadySignedComponent from "./components/AlreadySignedComponent";
 
 //
 import { setInfo } from "./redux/slices/basicInfoReducer";
@@ -40,6 +42,7 @@ const App: React.FC = () => {
   const [isAlreadySign, setIsAlreadySign] = useState(false);
   const [isOtpVerificationDone, setIsOtpVerificationDone] = useState(false);
   const [isResendOtp, setIsResendOtp] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   //
   const currentReduxState = useSelector((state) => state);
@@ -178,12 +181,10 @@ const App: React.FC = () => {
       />
     </>
   );
-  
+
   const handleSignRejection = async () => {
     setIsSaving(true);
-    console.log('@@@ handleSignRejection.');
     const tempState = currentReduxState as any;
-    console.log('@@@ tempState: '+ JSON.stringify(tempState));
 
     const signatoryUUID = tempState.basicInfoData.uuidSignatory;
 
@@ -195,7 +196,7 @@ const App: React.FC = () => {
     let bodyContent = JSON.stringify({
       uuid_signatory: signatoryUUID,
     });
-    
+
     let reqOptions = {
       url: `${process.env.REACT_APP_API_URL}/api/common/handleSignRejection`,
       method: "POST",
@@ -204,7 +205,7 @@ const App: React.FC = () => {
     };
 
     let response = await Axios.request(reqOptions);
-    console.log(response);
+
     setIsSaving(false);
 
     const thankYouContainer: HTMLElement = document.getElementById(
@@ -330,7 +331,10 @@ const App: React.FC = () => {
     }
   };
 
-  const sendOtp = async (signatoryUniqUUID: string) => {
+  const sendOtp = async (
+    signatoryUniqUUID: string,
+    uuidTemplateInstance: string
+  ) => {
     try {
       // {{baseUrl}}/api/fetchCordinatesData
 
@@ -341,6 +345,7 @@ const App: React.FC = () => {
 
       let bodyContent = JSON.stringify({
         uuid_signatory: signatoryUniqUUID,
+        uuid_template_instance: uuidTemplateInstance,
       });
 
       let reqOptions = {
@@ -363,7 +368,14 @@ const App: React.FC = () => {
         "Sorry Your Signature Is Already Done".toLowerCase()
       ) {
         setIsAlreadySign(true);
+      } else if (
+        err.response.data.msg.toLowerCase() ==
+        "Sorry Your Template Is Already Signed".toLowerCase()
+      ) {
+        setIsAlreadySign(true);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -375,14 +387,10 @@ const App: React.FC = () => {
         const uuidTemplateInstance = searchParams.get("uuid_template_instance");
         const uuidSignatory = searchParams.get("uuid_signatory");
 
-        ////////// here
-        // localStorage.setItem("uuid", uuid as string);
         await fetchingCordinates(uuid as string, uuidSignatory as string);
         await uploadPdf(uuid);
       };
       fetchingAsync();
-      // starpattern
-      document.body.classList.add("starpattern");
     }
 
     return () => {};
@@ -409,8 +417,11 @@ const App: React.FC = () => {
           uuidTemplateInstance &&
           uuidSignatory
         ) {
-          // await sendOtp(uuidSignatory as string);
-          setIsOtpVerificationDone(true);
+          await sendOtp(
+            uuidSignatory as string,
+            uuidTemplateInstance as string
+          );
+          // setIsOtpVerificationDone(true);
         }
       } catch (err) {
         console.log(err);
@@ -429,46 +440,10 @@ const App: React.FC = () => {
 
       {/*  */}
 
-      {/* {isLoading ? <Loading /> : null} loadingState*/}
+      {isLoading ? <Loading /> : null}
 
       {isAlreadySign ? (
-        <>
-          {/* error msg model */}
-          <div className="already-sign-model-container">
-            {/* https://mir-s3-cdn-cf.behance.net/project_modules/fs/628a4e68110473.5b511c318e34c.png */}
-            <div
-              style={{
-                position: "fixed",
-                zIndex: 5,
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: "#E8EFF5",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100vh",
-                  width: "100vw",
-                  flexDirection: "column",
-                }}
-              >
-                <img
-                  src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/628a4e68110473.5b511c318e34c.png"
-                  alt="img"
-                  style={{ height: "50%" }}
-                />
-                <h3>You Had Already Done Your Work, Thank You</h3>
-              </div>
-            </div>
-          </div>
-
-          {/*  */}
-        </>
+        <AlreadySignedComponent />
       ) : (
         <>
           {!isOtpVerificationDone ? (
@@ -493,56 +468,11 @@ const App: React.FC = () => {
               />
               <div className="pdf-viewer-div">
                 {!file || isFetchingCordinatesData ? (
-                  // <Empty loading={isUploading && isFetchingCordinatesData} />
-                  <Empty loading={true} />
+                  <Loading />
                 ) : (
                   <BootstrapContainer className=" d-flex justify-content-center align-items-center overflow-x-scroll">
                     <div>
                       {currentPage && (
-                        // <Segment
-                        //   data-testid="page"
-                        //   compact
-                        //   stacked={isMultiPage && !isLastPage}
-                        // >
-                        //   <div style={{ position: "relative" }}>
-                        //     <Page
-                        //       dimensions={dimensions}
-                        //       updateDimensions={setDimensions}
-                        //       page={currentPage}
-                        //       allPages={pages}
-                        //       goToPage={goToPage}
-                        //     />
-
-                        //     {/*  */}
-
-                        //     <SignatureContainer
-                        //       page={currentPage}
-                        //       addDrawing={() => setDrawingModalOpen(true)}
-                        //       isFetchingCordinatesData={
-                        //         isFetchingCordinatesData
-                        //       }
-                        //     />
-                        //     <TextContainer
-                        //       page={currentPage}
-                        //       isFetchingCordinatesData={
-                        //         isFetchingCordinatesData
-                        //       }
-                        //     />
-                        //     <DateContainer
-                        //       page={currentPage}
-                        //       isFetchingCordinatesData={
-                        //         isFetchingCordinatesData
-                        //       }
-                        //     />
-                        //     <CheckboxContainer
-                        //       page={currentPage}
-                        //       isFetchingCordinatesData={
-                        //         isFetchingCordinatesData
-                        //       }
-                        //     />
-                        //   </div>
-                        // </Segment>
-
                         <div className="border mb-5">
                           {" "}
                           <div style={{ position: "relative" }}>
