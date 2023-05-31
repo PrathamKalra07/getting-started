@@ -6,7 +6,7 @@ export default function Loading({}) {
       <div
         className="bg-light d-flex justify-content-center align-items-center flex-column"
         style={{
-          position: "absolute",
+          position: "fixed",
           top: 0,
           left: 0,
           right: 0,

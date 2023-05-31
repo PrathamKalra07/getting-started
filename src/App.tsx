@@ -139,19 +139,17 @@ const App: React.FC = () => {
     path: string;
     encodedImgData: string;
   }) => {
-    if (!drawing) return;
-
-    setSignatureData(drawing);
-
-    const newDrawingAttachment: DrawingAttachment = {
-      id: ggID(),
-      type: AttachmentTypes.SIGNATURE,
-      ...drawing,
-      x: 0,
-      y: 0,
-      scale: 1,
-    };
-    addAttachment(newDrawingAttachment);
+    // if (!drawing) return;
+    // setSignatureData(drawing);
+    // const newDrawingAttachment: DrawingAttachment = {
+    //   id: ggID(),
+    //   type: AttachmentTypes.SIGNATURE,
+    //   ...drawing,
+    //   x: 0,
+    //   y: 0,
+    //   scale: 1,
+    // };
+    // addAttachment(newDrawingAttachment);
   };
 
   useLayoutEffect(() => setPageIndex(pageIndex), [pageIndex, setPageIndex]);
@@ -243,7 +241,7 @@ const App: React.FC = () => {
     const tempState = currentReduxState as any;
 
     const isSignatureDone =
-      tempState.signatureList.signaturePath.length > 0 ? true : false;
+      tempState.signatureList.encodedImgData.length > 0 ? true : false;
     const textData = tempState.textList.allTextData;
     const dateData = tempState.dateList.allDateData;
 
@@ -417,11 +415,12 @@ const App: React.FC = () => {
           uuidTemplateInstance &&
           uuidSignatory
         ) {
-          await sendOtp(
-            uuidSignatory as string,
-            uuidTemplateInstance as string
-          );
-          // setIsOtpVerificationDone(true);
+          // await sendOtp(
+          //   uuidSignatory as string,
+          //   uuidTemplateInstance as string
+          // );
+          setIsOtpVerificationDone(true);
+          setIsLoading(false);
         }
       } catch (err) {
         console.log(err);
@@ -519,11 +518,13 @@ const App: React.FC = () => {
                 )}
               </div>
 
-              <DrawingModal
-                open={drawingModalOpen}
-                dismiss={() => setDrawingModalOpen(false)}
-                confirm={addDrawing}
-              />
+              {drawingModalOpen ? (
+                <DrawingModal
+                  open={drawingModalOpen}
+                  dismiss={() => setDrawingModalOpen(false)}
+                  confirm={addDrawing}
+                />
+              ) : null}
             </>
           )}
         </>

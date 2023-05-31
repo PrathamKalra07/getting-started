@@ -7688,6 +7688,13 @@ react-scripts@5.0.1:
   optionalDependencies:
     fsevents "^2.3.2"
 
+react-signature-pad-wrapper@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/react-signature-pad-wrapper/-/react-signature-pad-wrapper-3.3.1.tgz#7af4ceefec5cf30a147c853a407e035f0181bc2b"
+  integrity sha512-409/N1cHHyoK7PtpO0JhL/p9gk87aSir/wd0k/Pk0Pmu7g9UqI+jwAVc17b3LD6npwwwd8ohN/nk1mJ4fXqdgw==
+  dependencies:
+    signature_pad "^4.0.0"
+
 react-spinners@^0.13.8:
   version "0.13.8"
   resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.13.8.tgz#5262571be0f745d86bbd49a1e6b49f9f9cb19acc"
@@ -8216,6 +8223,11 @@ signal-exit@^3.0.2, signal-exit@^3.0.3:
   version "3.0.7"
   resolved "https://registry.npmjs.org/signal-exit/-/signal-exit-3.0.7.tgz"
   integrity sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==
+
+signature_pad@^4.0.0:
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/signature_pad/-/signature_pad-4.1.5.tgz#d2ff3e9b21b479f46ae145e98e973b7928f9a22d"
+  integrity sha512-VOE846UbQMeLBbcR08KwjwE1wNLgp3gqC7yr/AELkgSMs/BdRpxIZna6K5XyZJpA7IWq9GiInw1C8PLm57VO6Q==
 
 sisteransi@^1.0.5:
   version "1.0.5"

@@ -13,4 +13,5 @@
   display: flex;
   /* justifyContent: center; */
   margin-top: 10px !important;
+  background-color: rgba(0, 0, 0, 0.1);
 }

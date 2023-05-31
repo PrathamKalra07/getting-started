@@ -65,20 +65,11 @@ export async function Save(
   const { signatureList, textList, basicInfoData, dateList, checkboxList } =
     tempState;
 
-  // const svgPath = signatureList.signaturePath;
   const base64OfPng = signatureList.encodedImgData;
   const signatureDataPagesWise = signatureList.allSignatureData;
   const textDataPagesWise = textList.allTextData;
   const dateDataPagesWise = dateList.allDateData;
   const checkboxDataPagesWise = checkboxList.allCheckboxData;
-
-  // const tempArr: any = [];
-  // // for (let key in signatureDataPagesWise) {
-  // //   tempArr.push(signatureDataPagesWise[key]);
-  // // }
-  // // for (let key in textDataPagesWise) {
-  // //   tempArr.push(textDataPagesWise[key]);
-  // // }
 
   const totalPages = pdfDoc.getPages().length;
   const pageWiseAllData: any = {};
@@ -132,176 +123,7 @@ export async function Save(
     }
   }
 
-  // const pagesProcesses = pdfDoc.getPages().map(async (page, pageIndex) => {
-  //   const pageObjects = objects[pageIndex];
-
-  //   //
-  //   // 'y' starts from bottom in PDFLib, use this to calculate y
-  //   const pageHeight = page.getHeight();
-  //   // const embedProcesses = pageObjects.map(async (object: Attachment) => {
-  //   //   if (object.type === "image") {
-  //   //     const { file, x, y, width, height, encodedImgData } = object as any;
-  //   //     let img: any;
-  //   //     try {
-  //   //       if (file.type === "image/jpeg") {
-  //   //         img = await pdfDoc.embedJpg(await readAsArrayBuffer(file));
-  //   //       } else {
-  //   //         img = await pdfDoc.embedPng(await readAsArrayBuffer(file));
-  //   //       }
-  //   //       return () =>
-  //   //         page.drawImage(img, {
-  //   //           x,
-  //   //           y: pageHeight - y - height,
-  //   //           width,
-  //   //           height,
-  //   //         });
-  //   //     } catch (e) {
-  //   //       console.log("Failed to embed image.", e);
-  //   //       throw e;
-  //   //     }
-  //   //   } else if (object.type === "text") {
-  //   //     const { x, y, text, lineHeight, size, fontFamily, width } =
-  //   //       object as TextAttachment;
-  //   //     const pdfFont = await pdfDoc.embedFont(fontFamily);
-  //   //     return () =>
-  //   //       page.drawText(text, {
-  //   //         maxWidth: width,
-  //   //         font: pdfFont,
-  //   //         size,
-  //   //         lineHeight,
-  //   //         x,
-  //   //         y: pageHeight - size! - y,
-  //   //       });
-  //   //   } else if (object.type === "drawing") {
-  //   //     const { x, y, path, scale, stroke, strokeWidth } =
-  //   //       object as DrawingAttachment;
-  //   //     const {
-  //   //       pushGraphicsState,
-  //   //       setLineCap,
-  //   //       popGraphicsState,
-  //   //       setLineJoin,
-  //   //       LineCapStyle,
-  //   //       LineJoinStyle,
-  //   //       rgb,
-  //   //     } = PDFLib;
-  //   //     return () => {
-  //   //       page.pushOperators(
-  //   //         pushGraphicsState(),
-  //   //         setLineCap(LineCapStyle.Round),
-  //   //         setLineJoin(LineJoinStyle.Round)
-  //   //       );
-
-  //   //       const color = window.w3color(stroke!).toRgb();
-
-  //   //       page.drawSvgPath(path, {
-  //   //         borderColor: rgb(
-  //   //           normalize(color.r),
-  //   //           normalize(color.g),
-  //   //           normalize(color.b)
-  //   //         ),
-  //   //         borderWidth: strokeWidth,
-  //   //         scale,
-  //   //         x,
-  //   //         y: pageHeight - y,
-  //   //       });
-  //   //       page.pushOperators(popGraphicsState());
-  //   //     };
-  //   //   } else if (object.type == "signature") {
-  //   //     // const { x, y, width, height, encodedImgData } =
-  //   //     //   object as ImageAttachment;
-  //   //     // let img: any;
-
-  //   //     try {
-  //   //       const svgPath = localStorage.getItem("svgSignaturePath");
-  //   //       const signatureDataPagesWise = JSON.parse(
-  //   //         localStorage.getItem("signatureDataPagesWise")!
-  //   //       );
-
-  //   //       return () => {
-  //   //         console.log(signatureDataPagesWise[pageIndex]);
-
-  //   //         // allSignatures[pageIndex].map((item: any) => {
-  //   //         //   page.drawSvgPath(svgPath, {
-  //   //         //     x: item.x - 20,
-  //   //         //     y: pageHeight + 20 - item.y,
-  //   //         //     maxHeight: item.height,
-  //   //         //     maxWidth: item.width,
-  //   //         //     scale: 0.5,
-  //   //         //   });
-  //   //         // });
-  //   //       };
-  //   //     } catch (e) {
-  //   //       console.log("Failed to embed signature image.", e);
-  //   //       throw e;
-  //   //     }
-  //   //   }
-  //   // });
-
-  //   if (pageWiseAllData[pageIndex]) {
-  //     const embedProcesses = pageWiseAllData[pageIndex].map(
-  //       async (elementData: any) => {
-  //         try {
-  //           if (elementData.fieldType == "Signature") {
-  //             return () => {
-  //               page.drawSvgPath(svgPath, {
-  //                 // x: item.x - 25,
-  //                 // y: pageHeight + 20 - item.y,
-  //                 x: elementData.x,
-  //                 y: pageHeight - elementData.y,
-  //                 maxHeight: elementData.height,
-  //                 maxWidth: elementData.width,
-  //                 scale: 0.4,
-  //               });
-  //             };
-  //           } else if (elementData.fieldType == "Text") {
-  //             return () => {
-  //               page.drawText(elementData.value, {
-  //                 // maxWidth: elementData.width,
-  //                 // font: pdfFont,
-  //                 // size,
-  //                 // lineHeight,
-  //                 // lineHeight: 10,
-  //                 size: 15,
-  //                 height: elementData.height,
-  //                 width: elementData.width,
-  //                 x: elementData.x,
-  //                 y: pageHeight - elementData.y - 20,
-  //               });
-  //             };
-  //           }
-
-  //           // return () => {
-  //           //   signatureDataPagesWise[pageIndex].map((item: any) => {
-  //           //     // page.drawSvgPath(svgPath, {
-  //           //     //   // x: item.x - 25,
-  //           //     //   // y: pageHeight + 20 - item.y,
-  //           //     //   x: item.x,
-  //           //     //   y: pageHeight - item.y,
-  //           //     //   maxHeight: item.height,
-  //           //     //   maxWidth: item.width,
-  //           //     //   scale: 0.4,
-  //           //     // });
-  //           //   });
-  //           // };
-  //         } catch (e) {
-  //           console.log("Failed to embed signature image.", e);
-  //           throw e;
-  //         }
-  //       }
-  //     );
-
-  //     // embed objects in order
-  //     const drawProcesses: any[] = await Promise.all(embedProcesses);
-
-  //     drawProcesses.forEach((p) => p());
-  //   }
-  // });
-
-  // await Promise.all(pagesProcesses);
   try {
-    // const pdfBytes = await pdfDoc.save();
-    // const base64Pdf = Buffer.from(pdfBytes).toString("base64");
-
     //
     const bodyContent = {
       uuid: basicInfoData.uuid,
@@ -309,13 +131,16 @@ export async function Save(
       uuid_template_instance: basicInfoData.uuidTemplateInstance,
       allElementsData: pageWiseAllData,
     };
+
+    console.log(bodyContent);
+
     const { data } = await axios.request({
       url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
       method: "POST",
       data: bodyContent,
     });
 
-    // console.log("@@@ saveSignedDoc RESPONSE: " + data);
+    console.log(data);
 
     const thankYouContainer: HTMLElement = document.getElementById(
       "thankyou-container"
@@ -346,8 +171,6 @@ export async function Save(
         <span class="mb-5"><b>Thank You Your Work Is Done </b></span>
       </div>
     </div>`;
-
-    // download(pdfBytes, name, "application/pdf");
   } catch (e) {
     console.log("Failed to save PDF.");
 
