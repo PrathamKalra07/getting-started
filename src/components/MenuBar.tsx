@@ -22,7 +22,7 @@ export const MenuBar: React.FC<Props> = ({
   isPdfLoaded,
   savingPdfStatus,
   savePdf,
-  rejectSign
+  rejectSign,
 }) => (
   <Menu pointing className="menubar-container p-2">
     <Menu.Item header style={whiteText}>
@@ -33,16 +33,16 @@ export const MenuBar: React.FC<Props> = ({
         <>
           <Menu.Item
             data-testid="save-menu-item"
-            name={savingPdfStatus ? "Processing..." : "Reject"}
-            disabled={savingPdfStatus}
+            name={"Reject"}
+            // disabled={savingPdfStatus}
             onClick={rejectSign}
             className="submit-btn"
           />
 
           <Menu.Item
             data-testid="save-menu-item"
-            name={savingPdfStatus ? "Submiting..." : "Submit"}
-            disabled={savingPdfStatus}
+            name={"Submit"}
+            // disabled={savingPdfStatus}
             onClick={savePdf}
             className="submit-btn"
           />

@@ -39,7 +39,7 @@ export const TextPad = ({
         {/* signatureData */}
 
         <input
-          maxLength={width / 8}
+          maxLength={width / 7}
           placeholder="Enter Data Here..."
           style={{ height: height, width: width }}
           onChange={(e) => handleTextChange(e, textElementIndex)}

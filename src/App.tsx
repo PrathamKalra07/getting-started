@@ -286,7 +286,10 @@ const App: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const fetchingCordinates = async (uuid: string, uuidS: string) => {
+  const fetchingCordinates = async (
+    uuid_template_instance: string,
+    uuidS: string
+  ) => {
     try {
       // {{baseUrl}}/api/fetchCordinatesData
 
@@ -296,7 +299,7 @@ const App: React.FC = () => {
       };
 
       let bodyContent = JSON.stringify({
-        uuid: uuid,
+        uuid_template_instance: uuid_template_instance,
         uuid_signatory: uuidS,
       });
 
@@ -385,7 +388,10 @@ const App: React.FC = () => {
         const uuidTemplateInstance = searchParams.get("uuid_template_instance");
         const uuidSignatory = searchParams.get("uuid_signatory");
 
-        await fetchingCordinates(uuid as string, uuidSignatory as string);
+        await fetchingCordinates(
+          uuidTemplateInstance as string,
+          uuidSignatory as string
+        );
         await uploadPdf(uuid);
       };
       fetchingAsync();
