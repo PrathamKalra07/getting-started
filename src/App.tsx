@@ -3,6 +3,8 @@ import Axios from "axios";
 import "semantic-ui-css/semantic.min.css";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { createTextSignature } from "./utils/textSignature";
+
 import "./App.css";
 
 import { Container, Grid, Button, Segment } from "semantic-ui-react";
@@ -43,11 +45,14 @@ const App: React.FC = () => {
   const [isOtpVerificationDone, setIsOtpVerificationDone] = useState(false);
   const [isResendOtp, setIsResendOtp] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentElementIndexNo, setCurrentElementIndexNo] = useState(-1);
 
   //
   const currentReduxState = useSelector((state) => state);
+  const allCoordinateDataWithCordinates = useSelector(
+    (state: any) => state.coordinatesList.allCoordinateData
+  );
 
-  // const [allCordinatesData, setAllCordinatesData] = useState([]);
   const {
     file,
     initialize,
@@ -76,15 +81,6 @@ const App: React.FC = () => {
     remove,
     setPageIndex,
   } = useAttachments();
-
-  const [signatureData, setSignatureData]: any = useState({
-    height: 0,
-    path: "",
-    stroke: "",
-    strokeWidth: 0,
-    width: 0,
-    encodedImgData: "",
-  });
 
   //
   const dispatch = useDispatch();
@@ -286,6 +282,33 @@ const App: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  const handleStartAndScrollElement = async (e: any) => {
+    try {
+      const indexNo =
+        currentElementIndexNo == allCoordinateDataWithCordinates.length - 1
+          ? 0
+          : currentElementIndexNo + 1;
+      const currentElementData = allCoordinateDataWithCordinates[indexNo];
+
+      document.getElementsByClassName(
+        "signature-indicator"
+      )[0].innerHTML = `<i class="fa-solid fa-circle-arrow-right"></i> Next`;
+
+      goToPage(currentElementData.pageNo + 1);
+
+      e.currentTarget.style.top = `${currentElementData.y}px`;
+
+      window.scroll({
+        top: currentElementData.y,
+        behavior: "smooth",
+      });
+
+      setCurrentElementIndexNo(indexNo);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const fetchingCordinates = async (
     uuid_template_instance: string,
     uuidS: string
@@ -312,11 +335,30 @@ const App: React.FC = () => {
 
       let response = await Axios.request(reqOptions);
 
-      // console.log(response.data);
+      const responseData = response.data.data;
 
-      dispatch(setCoordinateData({ allCoordinateData: response.data.data }));
+      const sortedCoordinateData: any = [
+        ...(new Set(
+          responseData
+            .map((item: any) => item.pageNo)
+            .sort((a: number, b: number) => a - b)
+        ) as any),
+      ];
 
-      // setAllCordinatesData(response.data.data);
+      const finalData: Array<Object> = [];
+
+      sortedCoordinateData.map((currentPageNo: number) => {
+        const data = responseData.filter(
+          (item: any) => item.pageNo == currentPageNo
+        );
+
+        const t = data.sort((a: any, b: any) => {
+          return a.y - b.y;
+        });
+        finalData.push(...t);
+      });
+
+      dispatch(setCoordinateData({ allCoordinateData: finalData }));
 
       setIsFetchingCordinatesData(false);
     } catch (err: any) {
@@ -476,7 +518,22 @@ const App: React.FC = () => {
                   <Loading />
                 ) : (
                   <BootstrapContainer className=" d-flex justify-content-center align-items-center overflow-x-scroll">
-                    <div>
+                    <div style={{ position: "relative" }}>
+                      <div
+                        className="signature-indicator"
+                        onClick={handleStartAndScrollElement}
+                        // onClick={(e) => {
+                        //   e.currentTarget.style.top = "600px";
+
+                        //   window.scroll({
+                        //     top: 400,
+                        //     behavior: "smooth",
+                        //   });
+                        // }}
+                      >
+                        Start
+                      </div>
+
                       {currentPage && (
                         <div className="border mb-5">
                           {" "}

@@ -21,6 +21,7 @@
 
 body {
   margin: 0;
+  scroll-behavior: smooth;
   /* background-color: var(--color1) !important; */
 }
 

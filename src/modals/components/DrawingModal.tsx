@@ -6,11 +6,11 @@ import {
   Menu,
   Dropdown,
   Label,
-  Card,
   Icon,
 } from "semantic-ui-react";
 
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
+import { Row, Col, Card, CardBody, CardSubtitle, Button } from "reactstrap";
 import SignaturePad from "react-signature-pad-wrapper";
 
 //
@@ -34,11 +34,155 @@ interface Props {
 }
 
 export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
+  const [currentView, setCurrentView] = useState("options");
+
+  const closeModal = () => {
+    // resetDrawingBoard();
+    dismiss();
+  };
+
+  const RenderElement = ({ view }: { view: any }): any => {
+    switch (view) {
+      case "options":
+        return (
+          <OptionsList
+            closeModal={closeModal as Function}
+            setCurrentView={setCurrentView}
+          />
+        );
+      case "draw":
+        return (
+          <DrawSignature
+            closeModal={closeModal as Function}
+            setCurrentView={setCurrentView}
+          />
+        );
+      case "generate":
+        return (
+          <GenerateSignature
+            closeModal={closeModal as Function}
+            setCurrentView={setCurrentView}
+          />
+        );
+
+      default:
+        return <>Nothing Is Here To See</>;
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={open}
+      onClosed={closeModal}
+      centered
+      className="modal-container"
+      toggle={closeModal}
+      fade={false}
+      size={"lg"}
+      fullscreen={"md"}
+    >
+      {}
+      <RenderElement view={currentView} />
+    </Modal>
+  );
+};
+
+const OptionsList = ({
+  closeModal,
+  setCurrentView,
+}: {
+  closeModal: any;
+  setCurrentView: any;
+}) => {
+  return (
+    <>
+      <ModalHeader>Choose Option</ModalHeader>
+      <ModalBody>
+        <div className="">
+          {/*  */}
+          <Row>
+            <Col sm="6" lg="6" className="my-2">
+              <Card
+                style={{ maxWidth: "100%" }}
+                className="p-5 h-100 custom-cards"
+                onClick={() => setCurrentView("draw")}
+              >
+                <img
+                  alt="Sample"
+                  style={{ maxWidth: "100%" }}
+                  src={require("../../assets/illustrations/undraw_learning_sketching_nd4f.png")}
+                  className="h-100"
+                />
+                <CardBody>
+                  <CardSubtitle
+                    className="mb-2 text-muted text-center"
+                    tag="h6"
+                  >
+                    Manually Sign
+                  </CardSubtitle>
+                </CardBody>
+              </Card>
+            </Col>
+            {/*  */}{" "}
+            <Col sm="6" lg="6" className="my-2">
+              <Card
+                style={{ maxWidth: "100%" }}
+                className="p-5 h-100 custom-cards"
+                onClick={() => setCurrentView("generate")}
+              >
+                <img
+                  alt="Sample"
+                  style={{ maxWidth: "100%" }}
+                  src={require("../../assets/illustrations/undraw_search_app_oso2.png")}
+                  className="h-100"
+                />
+                <CardBody>
+                  <CardSubtitle
+                    className="mb-2 text-muted text-center"
+                    tag="h6"
+                  >
+                    Generate Sign
+                  </CardSubtitle>
+                </CardBody>
+              </Card>
+            </Col>
+            {/*  */}
+          </Row>
+          {/*  */}
+        </div>
+      </ModalBody>
+      <ModalFooter>
+        <button className="btn " onClick={closeModal}>
+          Cancel
+        </button>
+        <span className="px-2"> </span>
+        <button onClick={closeModal} className="btn custom-btn1">
+          Done
+        </button>
+      </ModalFooter>
+    </>
+  );
+};
+
+const DrawSignature = ({
+  closeModal,
+  setCurrentView,
+}: {
+  closeModal: any;
+  setCurrentView: any;
+}) => {
   //
   const svgRef = createRef<any>();
-
   //
   const dispatch = useDispatch();
+
+  //
+  const undoSign = () => {
+    const data = svgRef.current.toData();
+    data.pop();
+
+    svgRef.current.fromData(data);
+  };
 
   const handleDone = async () => {
     const encodedImgData = svgRef.current.toDataURL();
@@ -50,49 +194,12 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
       })
     );
 
-    // confirm({
-    //   stroke,
-    //   strokeWidth,
-    //   width: boundingWidth + 20,
-    //   height: boundingHeight + 20,
-    //   path: paths.reduce(
-    //     (fullPath, lineItem) =>
-    //       `${fullPath}${lineItem[0]}${lineItem[1] + dx}, ${lineItem[2] + dy}`,
-    //     ""
-    //   ),
-    //   encodedImgData: encodedImgData,
-    // });
-
-    localStorage.removeItem("tempWidth");
-    localStorage.removeItem("tempHeight");
-
     closeModal();
   };
 
-  const closeModal = () => {
-    // resetDrawingBoard();
-    localStorage.removeItem("tempWidth");
-    localStorage.removeItem("tempHeight");
-    dismiss();
-  };
-
-  const undoSign = () => {
-    const data = svgRef.current.toData();
-    data.pop();
-
-    svgRef.current.fromData(data);
-  };
-
   return (
-    <Modal
-      isOpen={open}
-      onClosed={closeModal}
-      centered
-      className="modal-container"
-      toggle={closeModal}
-      fade={false}
-    >
-      <ModalHeader>Add your Drawing</ModalHeader>
+    <>
+      <ModalHeader>Draw Your Sign</ModalHeader>
       <ModalBody>
         <Menu size="tiny">
           <Menu.Item header>Tools</Menu.Item>
@@ -106,15 +213,6 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
           >
             <Icon name="eraser" />
           </Menu.Item>
-
-          {/* <Menu.Item>
-            <Icon name="redo" />
-          </Menu.Item> */}
-          {/* <Menu.Menu position="right">
-            <Dropdown item text={""}>
-              <Dropdown.Menu></Dropdown.Menu>
-            </Dropdown>
-          </Menu.Menu> */}
         </Menu>
         <div className="drawing-modal-grey-container">
           <SignaturePad
@@ -129,6 +227,12 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
         </div>
       </ModalBody>
       <ModalFooter>
+        <button
+          className="btn go-back-button custom-btn2"
+          onClick={() => setCurrentView("options")}
+        >
+          Go Back
+        </button>
         <button className="btn " onClick={closeModal}>
           Cancel
         </button>
@@ -137,478 +241,75 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
           Done
         </button>
       </ModalFooter>
-    </Modal>
+    </>
   );
 };
+const GenerateSignature = ({
+  closeModal,
+  setCurrentView,
+}: {
+  closeModal: any;
+  setCurrentView: any;
+}) => {
+  // //
+  // const svgRef = createRef<any>();
+  // //
+  // const dispatch = useDispatch();
 
-// import React, { useState, createRef, useEffect } from "react";
-// import { useDispatch } from "react-redux";
-// import {
-//   // Modal,
-//   // Button,
-//   Menu,
-//   Dropdown,
-//   Label,
-//   Card,
-//   Icon,
-// } from "semantic-ui-react";
+  // //
+  // const undoSign = () => {
+  //   const data = svgRef.current.toData();
+  //   data.pop();
 
-// import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
+  //   svgRef.current.fromData(data);
+  // };
 
-// //
-// import { Color } from "../../entities";
+  const handleDone = async () => {
+    // const encodedImgData = svgRef.current.toDataURL();
 
-// //
-// import { setSignaturePathWithEncoddedImg } from "../../redux/slices/signatureReducer";
+    // dispatch(
+    //   setSignaturePathWithEncoddedImg({
+    //     path: "",
+    //     encodedImgData: encodedImgData,
+    //   })
+    // );
 
-// interface Props {
-//   open: boolean;
-//   dismiss: () => void;
-//   confirm: (drawing?: {
-//     width: number;
-//     height: number;
-//     path: string;
-//     strokeWidth: number;
-//     stroke: string;
-//     encodedImgData: string;
-//   }) => void;
-//   drawing?: DrawingAttachment;
-// }
+    closeModal();
+  };
 
-// export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
-//   const svgRef = createRef<SVGSVGElement>();
-
-//   const [paths, setPaths] = useState<Array<[string, number, number]>>([]);
-//   const [path, setPath] = useState((drawing && drawing.path) || "");
-//   const [svgX, setSvgX] = useState(0);
-//   const [svgY, setSvgY] = useState(0);
-//   const [minX, setMinX] = useState(Infinity);
-//   const [maxX, setMaxX] = useState(0);
-//   const [minY, setMinY] = useState(Infinity);
-//   const [maxY, setMaxY] = useState(0);
-//   const [mouseDown, setMouseDown] = useState(false);
-//   const [strokeWidth, setStrokeWidth] = useState(5);
-//   const [stroke, setStroke] = useState(Color.BLACK);
-//   const [strokeDropdownOpen, setStrokeDropdownOpen] = useState(false);
-
-//   //
-//   const dispatch = useDispatch();
-
-//   useEffect(() => {
-//     const svg = svgRef.current;
-//     if (!svg) return;
-//     const { x, y } = svg.getBoundingClientRect();
-
-//     setSvgX(x);
-//     setSvgY(y);
-//   }, [svgRef]);
-
-//   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-//     event.preventDefault();
-//     setMouseDown(true);
-
-//     const x = event.clientX - svgX;
-//     const y = event.clientY - svgY;
-//     setMinX(Math.min(minX, x));
-//     setMaxX(Math.max(maxX, x));
-//     setMinY(Math.min(minY, y));
-//     setMaxY(Math.max(maxY, y));
-//     setPath(path + `M${x},${y}`);
-//     setPaths([...paths, ["M", x, y]]);
-//   };
-
-//   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-//     event.preventDefault();
-//     if (!mouseDown) return;
-
-//     const x = event.clientX - svgX;
-//     const y = event.clientY - svgY;
-//     setMinX(Math.min(minX, x));
-//     setMaxX(Math.max(maxX, x));
-//     setMinY(Math.min(minY, y));
-//     setMaxY(Math.max(maxY, y));
-//     setPath(path + `L${x},${y}`);
-//     setPaths([...paths, ["L", x, y]]);
-//   };
-
-//   const handleMouseUp = (event: React.MouseEvent<HTMLDivElement>) => {
-//     event.preventDefault();
-//     setMouseDown(false);
-//   };
-
-//   const resetDrawingBoard = () => {
-//     setPaths([]);
-//     setPath("");
-//     setMinX(Infinity);
-//     setMaxX(0);
-//     setMinY(Infinity);
-//     setMaxY(0);
-//     setStrokeWidth(5);
-//     setStroke(Color.BLACK);
-//   };
-
-//   const handleDone = async () => {
-//     const svg = svgRef.current;
-
-//     var bbox = svg!.getBBox();
-
-//     var viewBox = [
-//       bbox.x - 10,
-//       bbox.y - 10,
-//       bbox.width + 20,
-//       bbox.height + 20,
-//     ].join(" ");
-//     svg!.setAttribute("viewBox", viewBox);
-
-//     var s = new XMLSerializer().serializeToString(svg!);
-
-//     // const encodedImgData = `data:image/svg+xml;base64,${window.btoa(
-//     //   unescape(s)
-//     // )}`;
-
-//     function svgString2Image(
-//       svgString: string,
-//       width: number,
-//       height: number
-//     ): any {
-//       // set default for format parameter
-//       const format = "png";
-//       // SVG data URL from SVG string
-//       var svgData =
-//         "data:image/svg+xml;base64," +
-//         btoa(unescape(encodeURIComponent(svgString)));
-
-//       // create canvas in memory(not in DOM)
-//       var canvas = document.createElement("canvas");
-//       // get canvas context for drawing on canvas
-//       var context = canvas.getContext("2d");
-//       // set canvas size
-//       canvas.width = width;
-//       canvas.height = height;
-//       // create image in memory(not in DOM)
-//       var image = new Image();
-//       // later when image loads run this
-
-//       return new Promise((resolve, reject) => {
-//         image.onload = function () {
-//           // async (happens later)
-//           // clear canvas
-//           context!.clearRect(0, 0, width, height);
-//           // draw image with SVG data to canvas
-//           context!.drawImage(image, 0, 0, width, height);
-//           // snapshot canvas as png
-//           var pngData = canvas.toDataURL("image/" + format);
-//           // pass png data URL to callback
-
-//           resolve(pngData);
-//         }; // end async
-//         // start loading SVG data into in memory image
-//         image.src = svgData;
-//       });
-//     }
-
-//     // const encodedImgData: string = await svgString2Image(s, 500, 500);
-//     // const encodedImgData: string = await svgString2Image(
-//     //   s,
-//     //   bbox.width,
-//     //   bbox.height
-//     // );
-
-//     const encodedImgData: string = await svgString2Image(
-//       s,
-//       parseInt(localStorage.getItem("tempWidth") as string),
-//       parseInt(localStorage.getItem("tempHeight") as string)
-//     );
-
-//     console.log(localStorage.getItem("tempWidth"));
-//     console.log(localStorage.getItem("tempHeight"));
-//     console.log(s);
-//     console.log(encodedImgData);
-
-//     if (!paths.length) {
-//       confirm();
-//       return;
-//     }
-
-//     const boundingWidth = maxX - minX;
-//     const boundingHeight = maxY - minY;
-
-//     const dx = -(minX - 10);
-//     const dy = -(minY - 10);
-
-//     const svgSignaturePath = svg?.children.item(0)?.getAttribute("d");
-
-//     dispatch(
-//       setSignaturePathWithEncoddedImg({
-//         path: svgSignaturePath,
-//         encodedImgData: encodedImgData,
-//       })
-//     );
-
-//     //encodedImgData
-//     // localStorage.setItem("svgSignaturePath", svgSignaturePath!);
-
-//     confirm({
-//       stroke,
-//       strokeWidth,
-//       width: boundingWidth + 20,
-//       height: boundingHeight + 20,
-//       path: paths.reduce(
-//         (fullPath, lineItem) =>
-//           `${fullPath}${lineItem[0]}${lineItem[1] + dx}, ${lineItem[2] + dy}`,
-//         ""
-//       ),
-//       encodedImgData: encodedImgData,
-//     });
-
-//     localStorage.removeItem("tempWidth");
-//     localStorage.removeItem("tempHeight");
-
-//     closeModal();
-//   };
-
-//   const closeModal = () => {
-//     resetDrawingBoard();
-//     dismiss();
-//   };
-
-//   // TODO: Move to config
-//   const strokeSizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
-//   const handleStrokeSelect = (color: Color) => () => {
-//     setStroke(color);
-//     setStrokeDropdownOpen(false);
-//   };
-
-//   return (
-//     <Modal
-//       isOpen={open}
-//       onClosed={closeModal}
-//       centered
-//       className="modal-container"
-//       toggle={closeModal}
-//       fade={false}
-//     >
-//       <ModalHeader>Add your Drawing</ModalHeader>
-//       <ModalBody>
-//         <Menu size="tiny">
-//           <Menu.Item header>Tools</Menu.Item>
-//           <Menu.Item onClick={() => setPath("")} active>
-//             <Icon name="eraser" />
-//           </Menu.Item>
-//           {/* <Menu.Item>
-//             <Icon name="undo" />
-//           </Menu.Item>
-//           <Menu.Item>
-//             <Icon name="redo" />
-//           </Menu.Item> */}
-//           <Menu.Menu position="right">
-//             <Dropdown item text={`${strokeWidth}`}>
-//               <Dropdown.Menu>
-//                 {strokeSizes.map((size) => (
-//                   <Dropdown.Item
-//                     key={size}
-//                     selected={size === strokeWidth}
-//                     onClick={() => setStrokeWidth(size)}
-//                   >
-//                     {size}
-//                   </Dropdown.Item>
-//                 ))}
-//               </Dropdown.Menu>
-//             </Dropdown>
-//             <Dropdown
-//               item
-//               trigger={<Label color={stroke} />}
-//               onClick={() => setStrokeDropdownOpen(true)}
-//               onBlur={() => setStrokeDropdownOpen(false)}
-//             >
-//               <Dropdown.Menu open={strokeDropdownOpen}>
-//                 <div
-//                   style={{
-//                     display: "grid",
-//                     gridTemplateColumns: "repeat(3, 1fr)",
-//                     padding: 5,
-//                   }}
-//                 >
-//                   {Object.values(Color).map((color, index) => (
-//                     <div style={{ margin: 2.5 }} key={index}>
-//                       <Label
-//                         color={color}
-//                         onClick={handleStrokeSelect(color)}
-//                       />
-//                     </div>
-//                   ))}
-//                 </div>
-//               </Dropdown.Menu>
-//             </Dropdown>
-//             <Dropdown item text={stroke}>
-//               <Dropdown.Menu>
-//                 <Card.Group itemsPerRow={3}>
-//                   {Object.values(Color).map((color, index) => (
-//                     <Card inverted key={index} color={color} />
-//                   ))}
-//                 </Card.Group>
-//               </Dropdown.Menu>
-//             </Dropdown>
-//           </Menu.Menu>
-//         </Menu>
-//         <div
-//           onMouseDown={handleMouseDown}
-//           onMouseMove={handleMouseMove}
-//           onMouseUp={handleMouseUp}
-//           className="drawing-modal-grey-container"
-//         >
-//           <div
-//             style={{
-//               backgroundColor: "rgba(0,0,0,0.2)",
-//               width: "100%",
-//               height: "180px",
-//             }}
-//           >
-//             <svg
-//               ref={svgRef}
-//               // width={"450px"}
-//               // height={"450px"}
-//               // width={"100%"}
-//               // height={"30vh"}
-//               style={{
-//                 width: "100%",
-//                 height: "180px",
-//                 // height: "30vh",
-//               }}
-//             >
-//               <path
-//                 strokeWidth={strokeWidth}
-//                 strokeLinejoin="round"
-//                 strokeLinecap="round"
-//                 stroke={stroke}
-//                 fill="none"
-//                 d={path}
-//               />
-//             </svg>
-//           </div>
-//         </div>
-//       </ModalBody>
-//       <ModalFooter>
-//         <button className="btn " onClick={closeModal}>
-//           Cancel
-//         </button>
-//         <span className="px-2"> </span>
-//         <button onClick={handleDone} className="btn custom-btn1">
-//           Done
-//         </button>
-//       </ModalFooter>
-//     </Modal>
-//     // <Modal
-//     //   size="small"
-//     //   dimmer="inverted"
-//     //   open={open}
-//     //   onClose={closeModal}
-//     //   centered
-//     // >
-//     //   <Modal.Header>Add your Drawing</Modal.Header>
-//     //   <Modal.Content>
-//     //     <Menu size="tiny">
-//     //       <Menu.Item header>Tools</Menu.Item>
-//     //       <Menu.Item>
-//     //         <Icon name="undo" />
-//     //       </Menu.Item>
-//     //       <Menu.Item>
-//     //         <Icon name="redo" />
-//     //       </Menu.Item>
-//     //       <Menu.Menu position="right">
-//     //         <Dropdown item text={`${strokeWidth}`}>
-//     //           <Dropdown.Menu>
-//     //             {strokeSizes.map((size) => (
-//     //               <Dropdown.Item
-//     //                 key={size}
-//     //                 selected={size === strokeWidth}
-//     //                 onClick={() => setStrokeWidth(size)}
-//     //               >
-//     //                 {size}
-//     //               </Dropdown.Item>
-//     //             ))}
-//     //           </Dropdown.Menu>
-//     //         </Dropdown>
-//     //         <Dropdown
-//     //           item
-//     //           trigger={<Label color={stroke} />}
-//     //           onClick={() => setStrokeDropdownOpen(true)}
-//     //           onBlur={() => setStrokeDropdownOpen(false)}
-//     //         >
-//     //           <Dropdown.Menu open={strokeDropdownOpen}>
-//     //             <div
-//     //               style={{
-//     //                 display: "grid",
-//     //                 gridTemplateColumns: "repeat(3, 1fr)",
-//     //                 padding: 5,
-//     //               }}
-//     //             >
-//     //               {Object.values(Color).map((color, index) => (
-//     //                 <div style={{ margin: 2.5 }} key={index}>
-//     //                   <Label
-//     //                     color={color}
-//     //                     onClick={handleStrokeSelect(color)}
-//     //                   />
-//     //                 </div>
-//     //               ))}
-//     //             </div>
-//     //           </Dropdown.Menu>
-//     //         </Dropdown>
-//     //         <Dropdown item text={stroke}>
-//     //           <Dropdown.Menu>
-//     //             <Card.Group itemsPerRow={3}>
-//     //               {Object.values(Color).map((color, index) => (
-//     //                 <Card inverted key={index} color={color} />
-//     //               ))}
-//     //             </Card.Group>
-//     //           </Dropdown.Menu>
-//     //         </Dropdown>
-//     //       </Menu.Menu>
-//     //     </Menu>
-//     //     <div
-//     //       onMouseDown={handleMouseDown}
-//     //       onMouseMove={handleMouseMove}
-//     //       onMouseUp={handleMouseUp}
-//     //       style={{
-//     //         width: "100%",
-//     //         height: "30vh",
-//     //         display: "flex",
-//     //         justifyContent: "center",
-//     //       }}
-//     //     >
-//     //       <div style={{ backgroundColor: "rgba(0,0,0,0.2)", width: "60%" }}>
-//     //         <svg
-//     //           ref={svgRef}
-//     //           width={"500px"}
-//     //           height={"500px"}
-//     //           style={{
-//     //             width: "100%",
-//     //             height: "30vh",
-//     //           }}
-//     //         >
-//     //           <path
-//     //             strokeWidth={strokeWidth}
-//     //             strokeLinejoin="round"
-//     //             strokeLinecap="round"
-//     //             stroke={stroke}
-//     //             fill="none"
-//     //             d={path}
-//     //           />
-//     //         </svg>
-//     //       </div>
-//     //     </div>
-//     //   </Modal.Content>
-//     //   <Modal.Actions>
-//     //     <Button color="black" content="Cancel" onClick={closeModal} />
-//     //     <Button
-//     //       content="Done"
-//     //       labelPosition="right"
-//     //       icon="checkmark"
-//     //       onClick={handleDone}
-//     //       positive
-//     //     />
-//     //   </Modal.Actions>
-//     // </Modal>
-//   );
-// };
+  return (
+    <>
+      <ModalHeader>Generating Sign</ModalHeader>
+      <ModalBody>
+        <Menu size="tiny">
+          <Menu.Item header>Tools</Menu.Item>
+          <Menu.Item>
+            <Icon name="undo" />
+          </Menu.Item>
+          <Menu.Item>
+            <Icon name="eraser" />
+          </Menu.Item>
+        </Menu>
+        <div className="container">
+          Here Is Your Sign List That Are Currently In Development Phase
+        </div>
+      </ModalBody>
+      <ModalFooter>
+        <button
+          className="btn go-back-button custom-btn2"
+          onClick={() => setCurrentView("options")}
+        >
+          Go Back
+        </button>
+        <span className="px-2"> </span>
+        <button className="btn " onClick={closeModal}>
+          Cancel
+        </button>
+        <span className="px-2"> </span>
+        <button onClick={handleDone} className="btn custom-btn1">
+          Done
+        </button>
+      </ModalFooter>
+    </>
+  );
+};

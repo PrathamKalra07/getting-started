@@ -32,8 +32,6 @@ Props) => {
         }}
         onClick={() => {
           addDrawing();
-          localStorage.setItem("tempHeight", height.toString());
-          localStorage.setItem("tempWidth", width.toString());
         }}
       >
         {/* signatureData */}
