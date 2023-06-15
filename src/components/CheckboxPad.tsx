@@ -40,6 +40,7 @@ export const CheckboxPad = ({
           // style={{ height: height, width: width }}
           onChange={(e) => handleTextChange(e, textElementIndex)}
           type="checkbox"
+          className="form-check-input"
         />
       </div>
     </>

@@ -522,14 +522,6 @@ const App: React.FC = () => {
                       <div
                         className="signature-indicator"
                         onClick={handleStartAndScrollElement}
-                        // onClick={(e) => {
-                        //   e.currentTarget.style.top = "600px";
-
-                        //   window.scroll({
-                        //     top: 400,
-                        //     behavior: "smooth",
-                        //   });
-                        // }}
                       >
                         Start
                       </div>

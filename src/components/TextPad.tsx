@@ -44,6 +44,7 @@ export const TextPad = ({
           style={{ height: height, width: width }}
           onChange={(e) => handleTextChange(e, textElementIndex)}
           value={textInputValue}
+          className="form-control"
         />
         {/* {signatureData.height > 0 && signatureData.width > 0 ? (
           <span

@@ -42,6 +42,7 @@ export const DatePad = ({
           onChange={(e) => handleTextChange(e, textElementIndex)}
           value={moment(textInputValue, "MM-DD-YYYY").format("YYYY-MM-DD")}
           type="date"
+          className="form-control"
         />
       </div>
     </>

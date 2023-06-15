@@ -1,10 +1,14 @@
 import TextSignature from "./module/TextSignature";
 
-const createTextSignature = () => {
+const createTextSignature = async (textValue) => {
   const listOfFonts = [
     {
       name: "'Great Vibes'",
       url: "https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap",
+    },
+    {
+      name: "'Sofia'",
+      url: "https://fonts.googleapis.com/css2?family=Sofia&display=swap",
     },
     {
       name: "'Allura'",
@@ -73,17 +77,17 @@ const createTextSignature = () => {
     },
   ];
 
-  const listOfObjects = listOfFonts.map((item, i) => {
+  const listOfObjects = listOfFonts.map(async (item, i) => {
     var optionsParameter = {
-      width: 600,
-      height: 200,
-      paddingX: 100,
-      paddingY: 100,
+      width: textValue.length * 100,
+      height: 120,
+      paddingX: 10,
+      paddingY: 50,
+      // paddingY: 100,
       canvasTargetDom: ".js-canvasTargetDom",
       font: ["50px", item.name],
       color: "black",
-      textString: "Haresh",
-      //   textString: "Your Text HERE 123",
+      textString: textValue,
       customFont: {
         name: item.name,
         url: item.url,
@@ -92,10 +96,14 @@ const createTextSignature = () => {
     };
 
     const textSignature = new TextSignature(optionsParameter);
-    textSignature.generateImage(optionsParameter);
+    await textSignature.generateImage(optionsParameter);
 
     return textSignature.getImageData();
   });
+
+  return await Promise.all(listOfObjects);
+
+  // return listOfObjects;
 
   //   console.log(listOfObjects[17]);
 
