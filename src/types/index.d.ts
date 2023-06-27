@@ -61,3 +61,8 @@ type Attachment =
 type Attachments = Attachment[];
 
 type DragEventListener<T> = (e: React.MouseEvent<T>) => void;
+
+interface SignatureObject {
+  id: number;
+  data: string;
+}

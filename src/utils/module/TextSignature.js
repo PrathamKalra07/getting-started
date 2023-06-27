@@ -1,7 +1,5 @@
 const $ = require("jquery");
-var textSignature = {};
-
-textSignature = function (options) {
+var textSignature = function (options) {
   var self = this;
   self.isInitiated = false;
   self.imageData = null;
@@ -28,6 +26,7 @@ textSignature = function (options) {
           "load",
           function () {
             // wait abit slonger and call again -  if first time
+            console.log("fonts loaded");
 
             self.generateImage(options);
             if (!self.isInitiated) {
@@ -42,6 +41,20 @@ textSignature = function (options) {
           false
         );
       }
+
+      //
+      setTimeout(() => {
+        console.log("font timeout called");
+        self.generateImage(options);
+        if (!self.isInitiated) {
+          setTimeout(function () {
+            $(options.canvasTargetDom).html(" ");
+            self.generateImage(options);
+          }, 2800);
+        }
+
+        self.isInitiated = true;
+      }, 500);
     }
   };
   this.formatInput = function (options) {

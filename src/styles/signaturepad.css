@@ -1,8 +1,170 @@
 .signature-pad-container {
-  background-color: var(--color2) !important;
+  /* background-color: var(--color2) !important; */
   position: absolute;
   right: 0;
   bottom: 0;
   border-radius: 5px;
   cursor: pointer;
 }
+
+/* signature css start */
+
+.empty-data-container-signature {
+  background-color: #354259;
+  border-radius: 4px;
+  color: white;
+}
+.empty-data-container-signature:hover {
+  background-color: #4f709c;
+}
+
+.filled-data-container-signature {
+  background-color: white;
+  border: 3px solid #22a699;
+  color: black;
+  border-radius: 4px;
+}
+.filled-data-container-signature:hover {
+  background-color: #22a69988 !important;
+  border: 3px solid #22a699;
+  color: black;
+}
+
+.active-data-container-signature {
+  background-color: #22a699;
+  color: white;
+  /* background-color: #fdff47;
+  border: 3px solid black; */
+  border-radius: 5px;
+  font-weight: bold;
+}
+.active-data-container-signature:hover {
+  border: 3px solid #22a699;
+  background-color: white;
+  border-radius: 5px;
+  color: black;
+}
+/* signature css end */
+
+/* input text css start */
+
+.empty-data-container-input-text {
+  background-color: #354259 !important;
+  border-radius: 4px;
+  color: white;
+}
+.empty-data-container-input-text::placeholder {
+  color: white !important;
+}
+.empty-data-container-input-text:hover {
+  background-color: #4f709c !important;
+}
+
+.filled-data-container-input-text {
+  background-color: white;
+  border: 3px solid #22a699;
+  color: black;
+  border-radius: 4px;
+}
+.filled-data-container-input-text:hover {
+  background-color: #22a69988;
+}
+
+.active-data-container-input-text {
+  background-color: #22a699 !important;
+  color: white !important;
+  /* background-color: #fdff47;
+  border: 3px solid black; */
+  border-radius: 5px;
+  font-weight: bold;
+  border: none !important;
+  outline: none !important;
+  padding: 2px 4px;
+}
+
+.active-data-container-input-text::placeholder {
+  color: white !important;
+}
+
+/* input text css end */
+
+/* date text css start */
+
+.empty-data-container-input-date {
+  background-color: #354259 !important;
+  border-radius: 4px;
+  color: white !important;
+}
+.empty-data-container-input-date::placeholder {
+  color: white !important;
+}
+.empty-data-container-input-date:hover {
+  background-color: #4f709c !important;
+}
+
+.filled-data-container-input-date {
+  background-color: white;
+  border: 3px solid #22a699;
+  color: black;
+  border-radius: 4px;
+}
+.filled-data-container-input-date:hover {
+  background-color: #22a69988;
+}
+
+.active-data-container-input-date {
+  background-color: #22a699 !important;
+  color: white !important;
+  /* background-color: #fdff47;
+  border: 3px solid black; */
+  border-radius: 5px;
+  font-weight: bold;
+  border: none !important;
+  outline: none !important;
+  padding: 2px 4px;
+}
+
+.active-data-container-input-date::placeholder {
+  color: white !important;
+}
+
+/* date text css end */
+
+/* checkbox css start */
+
+.empty-data-container-input-checkbox {
+  background-color: #354259 !important;
+  border-radius: 4px;
+  color: white;
+}
+.empty-data-container-input-checkbox::placeholder {
+  color: white !important;
+}
+.empty-data-container-input-checkbox:hover {
+  background-color: #4f709c !important;
+}
+
+.filled-data-container-input-checkbox {
+  /* background-color: #22a69988 !important;
+  border: 1px solid #22a699 !important;
+  color: black !important; */
+  border-radius: 4px;
+}
+
+.active-data-container-input-checkbox {
+  background-color: #22a699 !important;
+  color: white !important;
+  /* background-color: #fdff47;
+  border: 3px solid black; */
+  border-radius: 5px;
+  font-weight: bold;
+  border: none !important;
+  outline: none !important;
+  padding: 2px 4px;
+}
+
+.active-data-container-input-checkbox::placeholder {
+  color: white !important;
+}
+
+/* checkbox css end */

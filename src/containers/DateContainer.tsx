@@ -17,6 +17,7 @@ export const DateContainer: React.FC<Props> = ({
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
 
+  const reduxState = useSelector((state: any) => state);
   const allCordinatesData = useSelector(
     (state: any) => state.coordinatesList.allCoordinateData
   );
@@ -67,13 +68,16 @@ export const DateContainer: React.FC<Props> = ({
     try {
       const value = e.target.value;
 
-      const formatValue = moment(value, "YYYY-MM-DD").format("MM-DD-YYYY");
+      const formatValue = value
+        ? moment(value, "YYYY-MM-DD").format("MM-DD-YYYY")
+        : "";
 
       dispatch(
         changeDateData({
           elementIndex: targetElementIndex,
           textValue: formatValue,
           currentPageNo: currentPageNo,
+          reduxState,
         })
       );
     } catch (err) {

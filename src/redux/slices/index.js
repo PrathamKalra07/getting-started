@@ -7,8 +7,9 @@ import basicInfoReducer from "./basicInfoReducer";
 import textReducer from "./textReducer";
 import dateReducer from "./dateReducer";
 import checkboxReducer from "./checkboxReducer";
-import colorsReducer from "./colorsReducer";
-import loadingReducer from "./loadingReducer";
+import externalUserReducer from "./externalUserReducer";
+import allFinalDataReducer from "./allFinalDataReducer";
+import elementsNavigationHelperReducer from "./elementsNavigationHelperReducer";
 
 const rootReducer = combineReducers({
   signatureList: signatureReducer,
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
   textList: textReducer,
   dateList: dateReducer,
   checkboxList: checkboxReducer,
-  colorsList: colorsReducer,
-  loadingState: loadingReducer,
+  externalUser: externalUserReducer,
+  allFinalDataReducer: allFinalDataReducer,
+  elementsNavigationHelper: elementsNavigationHelperReducer,
 });
 export default rootReducer;

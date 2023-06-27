@@ -25,6 +25,7 @@ export const TextContainer: React.FC<Props> = ({
   const allTextElementDataSelector = useSelector(
     (state: any) => state.textList.allTextData[currentPageNo]
   );
+  const reduxState = useSelector((state: any) => state);
 
   const dispatch = useDispatch();
 
@@ -78,6 +79,7 @@ export const TextContainer: React.FC<Props> = ({
           elementIndex: targetElementIndex,
           textValue: value,
           currentPageNo: currentPageNo,
+          reduxState,
         })
       );
     } catch (err) {

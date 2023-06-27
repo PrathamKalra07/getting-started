@@ -6,6 +6,7 @@ export default function OtpModal({
   originalOtpValue,
   setIsOtpVerificationDone,
   setIsResendOtp,
+  setOriginalOtpValue,
 }) {
   const [errorMsg, setErrorMsg] = useState("");
   var [timer, setTimer] = useState(60);
@@ -13,10 +14,12 @@ export default function OtpModal({
   const OTPInput = () => {
     const inputs = document.querySelectorAll("#otp > *[id]");
     for (let i = 0; i < inputs.length; i++) {
-      inputs[i].addEventListener("keydown", function (event) {
+      inputs[i].addEventListener("keydown", (event) => {
         if (event.key === "Backspace") {
           inputs[i].value = "";
           if (i !== 0) inputs[i - 1].focus();
+        } else if (event.key === "Enter") {
+          event.preventDefault();
         } else {
           if (i === inputs.length - 1 && inputs[i].value !== "") {
             return true;
@@ -65,8 +68,22 @@ export default function OtpModal({
     },
     {
       id: "fourth",
-    }
+    },
   ];
+
+  const handleConfirmOtp = () => {
+    // originalOtpValue
+    if (otp.join("") !== originalOtpValue || otp.join("").length === 0) {
+      setErrorMsg("wrong otp please re enter");
+      for (let i = 0; i < 4; i++) {
+        otp[i] = "";
+      }
+    } else if (otp.join("") === originalOtpValue) {
+      setIsOtpVerificationDone(true);
+      localStorage.setItem("isOtpVerifyOffline", "true");
+    }
+  };
+
   return (
     <div className="otp-model-container">
       {/* https://mir-s3-cdn-cf.behance.net/project_modules/fs/628a4e68110473.5b511c318e34c.png */}
@@ -130,20 +147,7 @@ export default function OtpModal({
             <button
               className="btn custom-btn3 px-4 validate"
               style={{ cursor: "pointer" }}
-              onClick={() => {
-                // console.log("currnet otp", otp);
-                // console.log("originalOtpValue", originalOtpValue);
-
-                // originalOtpValue
-                if (otp.join("") != originalOtpValue) {
-                  setErrorMsg("wrong otp please re enter");
-                  for (let i = 0; i < 4; i++) {
-                    otp[i] = "";
-                  }
-                } else {
-                  setIsOtpVerificationDone(true);
-                }
-              }}
+              onClick={() => handleConfirmOtp()}
             >
               Confirm
             </button>{" "}
@@ -160,8 +164,10 @@ export default function OtpModal({
                 style={{ color: "rgb(0, 92, 185)", cursor: "pointer" }}
                 className="text-light"
                 onClick={() => {
-                  setIsResendOtp(Math.random());
+                  localStorage.clear();
+                  setOriginalOtpValue("");
                   setTimer(60);
+                  setIsResendOtp(Math.random());
                 }}
               >
                 Resend OTP

@@ -1,5 +1,7 @@
 import React from "react";
 import { Icon } from "semantic-ui-react";
+import { useDispatch, useSelector } from "react-redux";
+import { setActiveElement } from "../redux/slices/elementsNavigationHelperReducer";
 
 interface Props {
   x: number;
@@ -9,6 +11,7 @@ interface Props {
   value: string;
   textElementIndex: number;
   handleTextChange: Function;
+  coordinateId: number;
 }
 
 export const TextPad = ({
@@ -19,7 +22,14 @@ export const TextPad = ({
   value: textInputValue,
   textElementIndex,
   handleTextChange,
+  coordinateId,
 }: Props) => {
+  const dispatch = useDispatch();
+
+  const elementsNavigationHelperState = useSelector(
+    (state: any) => state.elementsNavigationHelper
+  );
+
   return (
     <>
       <div
@@ -40,45 +50,26 @@ export const TextPad = ({
 
         <input
           maxLength={width / 7}
-          placeholder="Enter Data Here..."
+          placeholder="Click To Enter Text Here..."
           style={{ height: height, width: width }}
-          onChange={(e) => handleTextChange(e, textElementIndex)}
+          onClick={() => {
+            dispatch(setActiveElement({ coordinateId, y }));
+          }}
+          onChange={(e) => {
+            handleTextChange(e, textElementIndex);
+          }}
           value={textInputValue}
-          className="form-control"
+          className={`
+            ${
+              elementsNavigationHelperState.activeElementCoordinateId ===
+              coordinateId
+                ? "active-data-container-input-text"
+                : textInputValue
+                ? "filled-data-container-input-text"
+                : "empty-data-container-input-text"
+            }
+          `}
         />
-        {/* {signatureData.height > 0 && signatureData.width > 0 ? (
-          <span
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-              flexDirection: "column",
-            }}
-          >
-            <img
-              src={signatureData.encodedImgData}
-              // style={{ maxHeight: 200, maxWidth: 200 }}
-              alt={"imgg"}
-              style={{ maxHeight: height - 5 }}
-            />
-          </span>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-              flexDirection: "column",
-            }}
-          >
-            <div>Sign</div>
-            <div>
-              <Icon name="signup" size="small" />
-            </div>
-          </div>
-        )} */}
       </div>
     </>
   );

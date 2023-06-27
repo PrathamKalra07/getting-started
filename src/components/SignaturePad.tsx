@@ -1,5 +1,9 @@
 import React from "react";
 import { Icon } from "semantic-ui-react";
+import { useDispatch, useSelector } from "react-redux";
+
+//
+import { setActiveElement } from "../redux/slices/elementsNavigationHelperReducer";
 
 interface Props {
   x: number;
@@ -9,6 +13,7 @@ interface Props {
   addDrawing: any;
   signatureEncodedImgData: string;
   // signatureData: any;
+  coordinateId: number;
 }
 
 export const SignaturePad = ({
@@ -18,8 +23,15 @@ export const SignaturePad = ({
   height,
   addDrawing,
   signatureEncodedImgData,
+  coordinateId,
 }: // signatureData,
 Props) => {
+  const dispatch = useDispatch();
+
+  const elementsNavigationHelperState = useSelector(
+    (state: any) => state.elementsNavigationHelper
+  );
+
   return (
     <>
       <div
@@ -32,6 +44,7 @@ Props) => {
         }}
         onClick={() => {
           addDrawing();
+          dispatch(setActiveElement({ coordinateId, y }));
         }}
       >
         {/* signatureData */}
@@ -45,6 +58,12 @@ Props) => {
               width: "100%",
               flexDirection: "column",
             }}
+            className={`${
+              elementsNavigationHelperState.activeElementCoordinateId ==
+              coordinateId
+                ? "active-data-container-signature"
+                : "filled-data-container-signature"
+            }`}
           >
             <img
               src={signatureEncodedImgData}
@@ -62,11 +81,24 @@ Props) => {
               height: "100%",
               // flexDirection: "column",
             }}
+            className={
+              elementsNavigationHelperState.activeElementCoordinateId ==
+              coordinateId
+                ? "active-data-container-signature"
+                : "empty-data-container-signature"
+            }
           >
-            <div>Sign</div>
-            <div>
+            <div>Signature</div>
+            {/* <div>
               <Icon name="signup" size="small" />
-            </div>
+            </div> */}
+
+            <h3
+              style={{ position: "absolute", right: "4px", top: 0 }}
+              className="text-light"
+            >
+              *
+            </h3>
           </div>
         )}
       </div>

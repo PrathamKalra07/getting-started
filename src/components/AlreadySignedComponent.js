@@ -1,6 +1,6 @@
 import PuffLoader from "react-spinners/PuffLoader";
 
-export default function AlreadySignedComponent({}) {
+export default function AlreadySignedComponent({ userErrorMsg }) {
   return (
     <>
       {/* error msg model */}
@@ -27,12 +27,39 @@ export default function AlreadySignedComponent({}) {
               flexDirection: "column",
             }}
           >
-            <img
+            <svg
+              viewBox="0 0 24.00 24.00"
+              className="mb-5"
+              height={150}
+              width={150}
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              stroke="#354259"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                {" "}
+                <path
+                  d="M12 16.99V17M12 7V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                  stroke="#354259"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>{" "}
+              </g>
+            </svg>
+
+            {/* <img
               src={require("../assets/img/stopimg.png")}
               alt="img"
               style={{ height: "50%" }}
-            />
-            <h3>You Had Already Done Your Work, Thank You</h3>
+            /> */}
+            <h4 className="text-center">{userErrorMsg}</h4>
           </div>
         </div>
       </div>

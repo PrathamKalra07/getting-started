@@ -2,6 +2,8 @@
   margin-top: 100px !important;
 }
 
+/*  */
+
 .signature-indicator {
   background-color: var(--color4);
   color: white;
@@ -16,12 +18,35 @@
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
     rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+
+  transition: all 0.7s;
 }
 
-.signature-indicator:hover,
-.signature-indicator:focus {
-  transform: translateY(-0.05em);
+/* Extra Small Devices, Phones and tables same */
+@media only screen and (max-width: 480px) {
+  .signature-indicator {
+    top: 10px;
+    left: -5px !important;
+  }
 }
+
+/* Small Devices, Tablets */
+@media only screen and (max-width: 768px) {
+  .signature-indicator {
+    top: 10px;
+    left: -10px;
+  }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width: 992px) {
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (max-width: 1200px) {
+}
+
+/*  */
 
 /*  */
 
@@ -54,4 +79,13 @@
   /* z-index: 100; */
 }
 
+/*  */
+
+/*  */
+
+@media only screen and (max-width: 480px) {
+  .inner-container {
+    width: 95vw;
+  }
+}
 /*  */

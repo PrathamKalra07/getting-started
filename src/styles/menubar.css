@@ -1,11 +1,32 @@
 .menubar-container {
   background-color: var(--color4) !important;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 3;
+  z-index: 4;
   border-radius: 0px !important;
+  display: flex;
+  justify-content: space-between;
+}
+
+.menubar-inner-container {
+  margin-left: 10px !important;
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width: 620px) {
+  .menubar-inner-container {
+    flex-direction: column;
+    margin-left: 0px !important;
+  }
+  .custom-progressbar-container {
+    margin-top: 6px !important;
+  }
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width: 480px) {
 }
 
 .submit-btn {
@@ -18,11 +39,16 @@
   border-radius: 2px;
 }
 .submit-btn:hover {
-  color: rgba(255, 255, 255, 0.733) !important;
+  color: rgba(255, 255, 255, 0.852) !important;
   font-weight: 700 !important;
   margin-right: 15px !important;
   background-color: #cdc2aeab !important;
   margin-top: 5px !important;
   margin-bottom: 5px !important;
-  border-radius: 2px;
 }
+
+/*  */
+.custom-progressbar-container {
+  margin-left: 10px !important;
+}
+/*  */

@@ -1,12 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PaginationContainer } from "../containers/PaginationContainer";
 
+import { SignatureContainer } from "../containers/SignatureContainer";
+import { TextContainer } from "../containers/TextContainer";
+import { DateContainer } from "../containers/DateContainer";
+import { CheckboxContainer } from "../containers/CheckboxContainer";
+
 interface Props {
   page: any;
   dimensions?: Dimensions;
   updateDimensions: ({ width, height }: Dimensions) => void;
   allPages: any;
   goToPage: (pageNo: number) => void;
+  isFetchingCordinatesData: any;
+  setDrawingModalOpen: any;
 }
 
 export const Page = ({
@@ -15,6 +22,8 @@ export const Page = ({
   updateDimensions,
   allPages,
   goToPage,
+  isFetchingCordinatesData,
+  setDrawingModalOpen,
 }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [width, setWidth] = useState((dimensions && dimensions.width) || 0);
@@ -53,16 +62,38 @@ export const Page = ({
   // console.log("height => ", height);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative" }} className="pdf-viewer-container">
       <canvas
         ref={canvasRef}
         width={width}
         height={height}
         // width={595}
         // height={840}
-        style={{ borderRadius: "5px", boxShadow: "0 2px 5px gray" }}
-        // className="shadow"
+        style={{
+          borderRadius: "5px",
+          boxShadow: "0 2px 5px gray",
+        }}
       />
+
+      {/*  */}
+      <SignatureContainer
+        page={page}
+        addDrawing={() => setDrawingModalOpen(true)}
+        isFetchingCordinatesData={isFetchingCordinatesData}
+      />
+      <TextContainer
+        page={page}
+        isFetchingCordinatesData={isFetchingCordinatesData}
+      />
+      <DateContainer
+        page={page}
+        isFetchingCordinatesData={isFetchingCordinatesData}
+      />
+      <CheckboxContainer
+        page={page}
+        isFetchingCordinatesData={isFetchingCordinatesData}
+      />
+      {/*  */}
 
       {/* pagination start */}
 
@@ -73,6 +104,10 @@ export const Page = ({
       />
 
       {/* pagination end */}
+
+      {/*  */}
+
+      {/*  */}
     </div>
   );
 };

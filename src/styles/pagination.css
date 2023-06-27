@@ -20,15 +20,29 @@
   background-color: var(--color4);
 }
 
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1200px) {
   .pagination-inner-container {
     width: 20% !important;
+    max-width: 220px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .pagination-inner-container {
+    width: 25% !important;
+    max-width: 220px;
   }
 }
 @media screen and (max-width: 600px) {
   .pagination-inner-container {
     width: 30% !important;
-    min-width: 100px;
+    min-width: 180px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .pagination-inner-container {
+    width: 50% !important;
+    min-width: 200px;
   }
 }
 

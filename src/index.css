@@ -23,6 +23,7 @@ body {
   margin: 0;
   scroll-behavior: smooth;
   /* background-color: var(--color1) !important; */
+  scrollbar-width: thin;
 }
 
 /* .roundpattern {
@@ -101,4 +102,20 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/*  */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  scroll-behavior: smooth;
+}
+/*  */
+
+.text-justify {
+  text-align: justify !important;
 }

@@ -1,5 +1,7 @@
 import React, { useState, createRef, useEffect, memo, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Axios from "axios";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 import { useDropzone } from "react-dropzone";
 import {
@@ -23,7 +25,10 @@ import { createTextSignature } from "../../utils/textSignature";
 import { Color } from "../../entities";
 
 //
-import { setSignaturePathWithEncoddedImg } from "../../redux/slices/signatureReducer";
+import {
+  setAllPreviousSignatures,
+  setSignaturePathWithEncoddedImg,
+} from "../../redux/slices/signatureReducer";
 
 interface Props {
   open: boolean;
@@ -46,13 +51,18 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [activeSignatureIndex, setActiveSignatureIndex] = useState(0);
+  const [removedSignatureId, setRemovedSignatureId] = useState<number>(-1);
+  const [isSignatureAdding, setIsSignatureAdding] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const inputRef = useRef<any>("");
 
   //
+  const reduxState = useSelector((state: any) => state);
   const allPreviousSignatures = useSelector(
     (state: any) => state.signatureList.allPreviousSignatures
   );
+  const externalUsersData = useSelector((state: any) => state.externalUser);
 
   const dispatch = useDispatch();
 
@@ -86,31 +96,132 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
     }
   };
 
-  const handleDone = () => {
-    const encodedImgData = allPreviousSignatures[activeSignatureIndex];
+  const handleDone = async () => {
+    const encodedImgData = allPreviousSignatures[activeSignatureIndex].data;
+
     dispatch(
       setSignaturePathWithEncoddedImg({
         path: "",
         encodedImgData: encodedImgData,
+        reduxState,
+        textValue: "",
+        isSignature: true,
       })
     );
+
     setOpenModal("");
     closeModal();
   };
 
-  const handleTypeSignatureComponentDone = () => {
-    if (signatureInputText) {
+  const handleTypeSignatureComponentDone = async () => {
+    if (signatureInputText.length >= 4 && signatureInputText.length <= 20) {
       const encodedImgData = allSignatureData[0];
-      dispatch(
-        setSignaturePathWithEncoddedImg({
-          path: "",
-          encodedImgData: encodedImgData,
-        })
-      );
+
+      await handleAddSignature(encodedImgData);
+      setErrorMsg("");
       setOpenModal("");
       closeModal();
     } else {
       inputRef.current.focus();
+      setErrorMsg("Please Enter Minimum 4 And Max 20 Character");
+    }
+  };
+
+  //
+  const fetchAllSignatures = async () => {
+    try {
+      //
+      var reqOptions = {
+        url: `${process.env.REACT_APP_API_URL}/api/common/externalUser/signature/fetchAll`,
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify({
+          userId: externalUsersData.userId,
+        }),
+      };
+      var {
+        data: { data: signatureData },
+      } = await Axios.request(reqOptions);
+      dispatch(
+        setAllPreviousSignatures({ allPreviousSignatures: signatureData })
+      );
+
+      //
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDeleteSignature = async (signatureId: number) => {
+    try {
+      var reqOptions = {
+        url: `${process.env.REACT_APP_API_URL}/api/common/externalUser/signature/removeSignature`,
+        method: "DELETE",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify({
+          signatureId: signatureId,
+        }),
+      };
+
+      await Axios.request(reqOptions);
+
+      await fetchAllSignatures();
+
+      console.log(allPreviousSignatures);
+
+      if (allPreviousSignatures.length == 1) {
+        dispatch(
+          setSignaturePathWithEncoddedImg({
+            path: "",
+            encodedImgData: "",
+            reduxState,
+            textValue: "",
+            isSignature: true,
+          })
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleAddSignature = async (signatureDataBase64: string) => {
+    try {
+      setIsSignatureAdding(true);
+      var reqOptions = {
+        url: `${process.env.REACT_APP_API_URL}/api/common/externalUser/signature/add`,
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify({
+          userId: externalUsersData.userId,
+          type: "signature",
+          data: signatureDataBase64,
+        }),
+      };
+      await Axios.request(reqOptions);
+      dispatch(
+        setSignaturePathWithEncoddedImg({
+          path: "",
+          encodedImgData: signatureDataBase64,
+          reduxState,
+          textValue: "",
+          isSignature: true,
+        })
+      );
+
+      await fetchAllSignatures();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsSignatureAdding(false);
     }
   };
 
@@ -118,7 +229,11 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
     switch (openModal) {
       case "draw":
         return (
-          <DrawSignature setOpenModal={setOpenModal} closeModal={closeModal} />
+          <DrawSignature
+            setOpenModal={setOpenModal}
+            closeModal={closeModal}
+            handleAddSignature={handleAddSignature}
+          />
         );
       case "generate":
         return (
@@ -126,6 +241,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
             setOpenModal={setOpenModal}
             closeModal={closeModal}
             allSignatureData={allSignatureData}
+            handleAddSignature={handleAddSignature}
           />
         );
       case "upload":
@@ -133,6 +249,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
           <UploadSignature
             setOpenModal={setOpenModal}
             closeModal={closeModal}
+            handleAddSignature={handleAddSignature}
           />
         );
 
@@ -162,10 +279,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
           <ModalBody className="">
             <div className=" mt-2">
               Select the signature you would like to use or create a new one
-              <Row
-                className="my-3"
-                style={{ maxHeight: "400px", overflowY: "auto" }}
-              >
+              <Row className="my-3 fonts-list-container">
                 <Col
                   md="6"
                   className="my-2 d-flex align-items-center justify-content-center "
@@ -194,40 +308,65 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
                   </Card>
                 </Col>
 
-                {allPreviousSignatures.map((item: string, index: number) => {
-                  return (
-                    <Col
-                      md="6"
-                      className="my-2 d-flex align-items-center justify-content-center"
-                      key={index}
-                    >
-                      <Card
-                        style={{
-                          maxWidth: "100%",
-                          backgroundColor: "#f6f8fb",
-                          border: "2px solid transparent",
-                        }}
-                        className={` h-100 custom-cards shadow-none p-4 ${
-                          activeSignatureIndex === index ? "active-card" : ""
-                        }`}
-                        onClick={() => {
-                          setActiveSignatureIndex(index);
-                        }}
+                {allPreviousSignatures.map(
+                  (item: SignatureObject, index: number) => {
+                    return (
+                      <Col
+                        md="6"
+                        className="my-2 d-flex align-items-center justify-content-center"
+                        key={index}
                       >
-                        <img
-                          src={item}
-                          alt="Fetching Data"
+                        <Card
                           style={{
-                            maxHeight: "100%",
                             maxWidth: "100%",
-                            overflowClipMargin: "content-box",
-                            overflow: "clip",
+                            backgroundColor: "#f6f8fb",
+                            border: "2px solid transparent",
                           }}
-                        />
-                      </Card>
-                    </Col>
-                  );
-                })}
+                          className={` h-100 custom-cards position-relative shadow-none p-4 ${
+                            removedSignatureId == item.id ? "destroy-card" : ""
+                          } ${
+                            activeSignatureIndex === index ? "active-card" : ""
+                          }`}
+                          onClick={() => {
+                            setActiveSignatureIndex(index);
+                          }}
+                        >
+                          {removedSignatureId == item.id ? (
+                            <div className="">
+                              <PropagateLoader color="#546470" />
+                            </div>
+                          ) : (
+                            <>
+                              <img
+                                src={item.data}
+                                alt="Fetching Data"
+                                style={{
+                                  maxHeight: "100%",
+                                  maxWidth: "100%",
+                                  overflowClipMargin: "content-box",
+                                  overflow: "clip",
+                                }}
+                              />
+
+                              <div
+                                className="position-absolute delete-btn-container"
+                                onClick={() => {
+                                  setRemovedSignatureId(item.id);
+
+                                  handleDeleteSignature(item.id);
+                                }}
+                              >
+                                <div className="icon icon-fill">
+                                  <i className="fa-solid fa-trash"></i>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </Card>
+                      </Col>
+                    );
+                  }
+                )}
               </Row>
             </div>
           </ModalBody>
@@ -236,6 +375,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
               Cancel
             </button>
             <span className="px-2"> </span>
+
             <button onClick={handleDone} className="btn custom-btn1">
               Done
             </button>
@@ -284,12 +424,13 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
                     clearTimeout(keyEventTimeoutStamp);
                     keyEventTimeoutStamp = setTimeout(() => {
                       createSignatures();
-                    }, 1000);
+                    }, 1200);
                   }}
                   onKeyDown={() => {
                     clearTimeout(keyEventTimeoutStamp);
                   }}
                 />
+                <h6 className="text-danger my-1">{errorMsg}</h6>
 
                 <div
                   style={{
@@ -458,6 +599,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
               <button
                 onClick={handleTypeSignatureComponentDone}
                 className="btn custom-btn1"
+                disabled={isLoading}
               >
                 Done
               </button>
@@ -466,18 +608,43 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
         </>
       )}
       <RenderComponent />
+      {isSignatureAdding ? (
+        <div
+          style={{
+            position: "fixed",
+            zIndex: 1100,
+            backgroundColor: "rgba(200,200,200,0.4)",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          id="lplp"
+        >
+          <BounceLoader />
+        </div>
+      ) : null}
     </>
   );
 };
 
 const DrawSignature = memo(
-  ({ setOpenModal, closeModal }: { setOpenModal: any; closeModal: any }) => {
+  ({
+    setOpenModal,
+    closeModal,
+    handleAddSignature,
+  }: {
+    setOpenModal: any;
+    closeModal: any;
+    handleAddSignature: any;
+  }) => {
     const [isOpen, setIsOpen] = useState(true);
 
     //
     const svgRef = createRef<any>();
-    //
-    const dispatch = useDispatch();
 
     //
     const undoSign = () => {
@@ -488,17 +655,14 @@ const DrawSignature = memo(
     };
 
     const handleDone = async () => {
-      const encodedImgData = svgRef.current.toDataURL();
+      if (!svgRef.current.isEmpty()) {
+        const encodedImgData = svgRef.current.toDataURL();
 
-      dispatch(
-        setSignaturePathWithEncoddedImg({
-          path: "",
-          encodedImgData: encodedImgData,
-        })
-      );
+        await handleAddSignature(encodedImgData);
 
-      closeCurrentModal();
-      closeModal();
+        closeCurrentModal();
+        closeModal();
+      }
     };
 
     const closeCurrentModal = () => {
@@ -569,25 +733,21 @@ const GenerateSignature = memo(
     setOpenModal,
     closeModal,
     allSignatureData,
+    handleAddSignature,
   }: {
     setOpenModal: any;
     closeModal: any;
     allSignatureData: Array<string>;
+    handleAddSignature: any;
   }) => {
     const [isOpen, setIsOpen] = useState(true);
     const [activeSignatureIndex, setActiveSignatureIndex] = useState<number>(0);
 
-    //
-    const dispatch = useDispatch();
-
     const handleDone = async () => {
       const encodedImgData = allSignatureData[activeSignatureIndex];
-      dispatch(
-        setSignaturePathWithEncoddedImg({
-          path: "",
-          encodedImgData: encodedImgData,
-        })
-      );
+
+      await handleAddSignature(encodedImgData);
+
       closeCurrentModal();
       closeModal();
     };
@@ -611,7 +771,7 @@ const GenerateSignature = memo(
         {/* #f6f8fb */}
         <ModalHeader>Change Style</ModalHeader>
         <ModalBody>
-          <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+          <div className="fonts-list-container">
             <Row>
               {allSignatureData.map((item, index) => {
                 return (
@@ -629,7 +789,9 @@ const GenerateSignature = memo(
                             ? `2px solid #348fd7`
                             : "2px solid transparent",
                       }}
-                      className=" h-100 custom-cards shadow-none p-4"
+                      className={` h-100 custom-cards shadow-none p-4 ${
+                        activeSignatureIndex === index ? "active-card" : ""
+                      }`}
                       onClick={() => {
                         setActiveSignatureIndex(index);
                       }}
@@ -672,10 +834,17 @@ const GenerateSignature = memo(
 );
 
 const UploadSignature = memo(
-  ({ setOpenModal, closeModal }: { setOpenModal: any; closeModal: any }) => {
+  ({
+    setOpenModal,
+    closeModal,
+    handleAddSignature,
+  }: {
+    setOpenModal: any;
+    closeModal: any;
+    handleAddSignature: any;
+  }) => {
     const [isOpen, setIsOpen] = useState(true);
     //
-    const dispatch = useDispatch();
 
     //
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -689,14 +858,10 @@ const UploadSignature = memo(
       if (file) {
         var reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = function () {
+        reader.onload = async () => {
           const encodedImgData = reader.result;
-          dispatch(
-            setSignaturePathWithEncoddedImg({
-              path: "",
-              encodedImgData: encodedImgData,
-            })
-          );
+
+          await handleAddSignature(encodedImgData);
           closeCurrentModal();
           closeModal();
         };
@@ -741,6 +906,7 @@ const UploadSignature = memo(
               <p className="mb-3">
                 Drag 'n' drop some files here, or click to select files
               </p>
+              <h5 className="text-dark">* Upload Only Png File</h5>
             </div>
           </section>
         </ModalBody>

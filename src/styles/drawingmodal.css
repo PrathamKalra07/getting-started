@@ -68,3 +68,82 @@
 .go-back-button {
   margin-right: auto !important;
 }
+
+/*  */
+.delete-btn-container {
+  top: 5px;
+  right: 5px;
+}
+.icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  position: relative;
+  border-radius: 30px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.icon::before,
+.icon::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  transition: all 0.25s ease;
+  border-radius: 30px;
+}
+.icon i {
+  position: relative;
+  /* color: #c82647; */
+  color: #546470;
+  font-size: 15px;
+  transition: all 0.25s ease;
+}
+.icon-fill:hover::before {
+  transition-duration: 1s;
+  box-shadow: inset 0 0 0 60px #c82647;
+}
+.icon-fill:hover i {
+  transition-duration: 0.5s;
+  color: white;
+}
+
+.destroy-card {
+  animation-name: destroycard;
+  animation: destroycard 2s ease 0s infinite;
+}
+
+@keyframes destroycard {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  75% {
+    opacity: 0.25;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+  }
+}
+
+/*  */
+
+/*  */
+
+@media only screen and (min-width: 576px) {
+  .fonts-list-container {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+}
+/*  */
