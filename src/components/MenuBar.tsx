@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Menu, Dropdown, Icon } from "semantic-ui-react";
+// import { Menu, Dropdown, Icon } from "semantic-ui-react";
 import ProgressBar from "@ramonak/react-progress-bar";
-import { Navbar, NavbarBrand } from "reactstrap";
+// import { Navbar, NavbarBrand } from "reactstrap";
 import { useSelector } from "react-redux";
 
 import {
@@ -12,6 +12,12 @@ import {
   FormGroup,
   Label,
   Input,
+} from "reactstrap";
+import {
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from "reactstrap";
 
 interface Props {
@@ -37,25 +43,29 @@ export const MenuBar: React.FC<Props> = ({
   savePdf,
   rejectSign,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isRejectMenuOpen, setIsRejectMenuOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropDown = () => setDropdownOpen((prevState) => !prevState);
 
   const trackerData = useSelector((state: any) => state.allFinalDataReducer);
 
   const handleRejection = () => {
     if (commentText) {
       rejectSign(commentText);
-      setIsOpen(false);
+      setIsRejectMenuOpen(false);
     }
   };
 
   const closeCurrentModal = () => {
-    setIsOpen(false);
+    setIsRejectMenuOpen(false);
   };
 
   return (
     <>
-      <div className="menubar-container p-2 ">
+      <div className="menubar-container p-2 px-3 ">
         <div
           className="d-flex menubar-inner-container"
           style={{
@@ -89,26 +99,54 @@ export const MenuBar: React.FC<Props> = ({
           </div>
         </div>
 
-        <div className="d-flex">
+        <div className="d-flex justify-content-center align-items-center header-main-container">
           {isPdfLoaded && (
             <>
-              <button
-                className="submit-btn btn"
-                onClick={() => setIsOpen(true)}
-              >
-                Reject
+              <button className="submit-btn btn" onClick={savePdf}>
+                FINISH
               </button>
 
-              <button className="submit-btn btn" onClick={savePdf}>
-                Submit
-              </button>
+              <Dropdown
+                isOpen={dropdownOpen}
+                toggle={toggleDropDown}
+                direction={"down"}
+              >
+                <DropdownToggle
+                  caret
+                  style={{ backgroundColor: "#cdc2ae" }}
+                  color="black"
+                  className="fw-bold"
+                >
+                  MORE ACTIONS
+                </DropdownToggle>
+                <DropdownMenu>
+                  {/* <DropdownItem header>Header</DropdownItem> */}
+                  <DropdownItem onClick={() => setIsRejectMenuOpen(true)}>
+                    Reject
+                  </DropdownItem>
+                  <DropdownItem text>Print And Sign</DropdownItem>
+                  <DropdownItem text>Asign To Someone Else</DropdownItem>
+                  {/* <DropdownItem disabled>Action (disabled)</DropdownItem> */}
+                  <DropdownItem divider />
+                  <DropdownItem>View PDF</DropdownItem>
+                  <DropdownItem>View History</DropdownItem>
+                  <DropdownItem>Help & Support</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+
+              {/* <button
+                className="submit-btn btn"
+                onClick={() => setIsRejectMenuOpen(true)}
+              >
+                Reject
+              </button> */}
             </>
           )}
         </div>
       </div>
 
       <Modal
-        isOpen={isOpen}
+        isOpen={isRejectMenuOpen}
         onClosed={closeCurrentModal}
         centered
         className="modal-container"
@@ -120,14 +158,14 @@ export const MenuBar: React.FC<Props> = ({
         <ModalBody>
           <div>
             <FormGroup>
-              <Label for="exampleText" className="text-secondary ">
-                You're about to reject to sign Note that all the changes you've
-                made to this document will be lost. We advise you to carefully
-                review this again.
+              <Label for="exampleText" className="text-dark">
+                You're about to reject to sign,
+                <br /> Note that all the changes you've made to this document
+                will be lost. We advise you to carefully review this again.
               </Label>
 
-              <h6 className="fw-bold my-2" style={{ fontSize: "1rem" }}>
-                please provide your reason for declining here:
+              <h6 className="fw-bold my-3" style={{ fontSize: "1rem" }}>
+                Please provide your reason for declining here:
               </h6>
               <Input
                 type="textarea"
@@ -148,7 +186,9 @@ export const MenuBar: React.FC<Props> = ({
           <span className="px-2"> </span>
           <button
             onClick={handleRejection}
-            className="btn custom-btn1"
+            className={`btn custom-btn1 ${
+              !commentText ? "text-dark bg-secondary" : null
+            }`}
             disabled={!commentText}
           >
             Done

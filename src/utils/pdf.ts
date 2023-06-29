@@ -36,31 +36,31 @@ export async function Save(
     "thankyou-container"
   ) as HTMLElement;
   thankYouContainer.innerHTML = `<div
+  style="
+    position: fixed;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+  "
+>
+  <div
     style="
-      position: fixed;
-      z-index: 5;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #F4EDE4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+      flex-direction: column
     "
   >
-    <div
-      style="
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        width: 100vw;
-        flex-direction: column
-      "
-    >
-      <img src="https://d34u8crftukxnk.cloudfront.net/slackpress/prod/sites/6/sales-Image2%402x.gif" style="width:70%" />
+    <img src="/loading.gif" class="loading-logo-gif" />
 
-      <span class="mb-3"><b>Saving Your Document </b></span>
-    </div>
-  </div>`;
+    <span class="mb-3"><b>Saving Your Document </b></span>
+  </div>
+</div>`;
 
   const { signatureList, textList, basicInfoData, dateList, checkboxList } =
     tempState;

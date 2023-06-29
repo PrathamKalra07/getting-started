@@ -29,6 +29,8 @@ import {
   setAllPreviousSignatures,
   setSignaturePathWithEncoddedImg,
 } from "../../redux/slices/signatureReducer";
+import { trimImageData } from "../../utils/module/TrimImageData";
+import trimCanvas from "../../utils/module/trimCanvasModule";
 
 interface Props {
   open: boolean;
@@ -172,8 +174,6 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
       await Axios.request(reqOptions);
 
       await fetchAllSignatures();
-
-      console.log(allPreviousSignatures);
 
       if (allPreviousSignatures.length == 1) {
         dispatch(
@@ -656,9 +656,15 @@ const DrawSignature = memo(
 
     const handleDone = async () => {
       if (!svgRef.current.isEmpty()) {
-        const encodedImgData = svgRef.current.toDataURL();
+        // const encodedImgData = svgRef.current.toDataURL();
 
-        await handleAddSignature(encodedImgData);
+        const trimedCanvasElement = trimCanvas(
+          svgRef.current.signaturePad.canvas
+        );
+
+        // here is work
+        // await handleAddSignature(encodedImgData);
+        await handleAddSignature(trimedCanvasElement.toDataURL());
 
         closeCurrentModal();
         closeModal();
@@ -699,10 +705,10 @@ const DrawSignature = memo(
           <div className="drawing-modal-grey-container">
             <SignaturePad
               options={{
-                minWidth: 1,
+                minWidth: 100,
                 // maxWidth: 10,
                 penColor: "black",
-                dotSize: 0.5,
+                dotSize: 0.8,
               }}
               ref={svgRef}
             />

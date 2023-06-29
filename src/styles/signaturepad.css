@@ -44,6 +44,9 @@
   border-radius: 5px;
   color: black;
 }
+.active-data-container-signature:hover > h3 {
+  color: red !important;
+}
 /* signature css end */
 
 /* input text css start */

@@ -52,3 +52,23 @@
   margin-left: 10px !important;
 }
 /*  */
+
+/*  */
+.header-main-container {
+  flex-direction: row;
+}
+
+.header-main-container
+  > .dropdown
+  > .dropdown-menu
+  > button.dropdown-item:active {
+  background-color: #354259;
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width: 480px) {
+  .header-main-container {
+    flex-direction: column;
+  }
+}
+/*  */

@@ -1,20 +1,13 @@
-import PuffLoader from "react-spinners/PuffLoader";
+import { useEffect, useRef, useState } from "react";
+// import PuffLoader from "react-spinners/PuffLoader";
+import LoadingGif from "../assets/img/loading.gif";
 
 export default function Loading({}) {
   return (
     <>
-      <div
-        className="bg-light d-flex justify-content-center align-items-center flex-column"
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 5,
-        }}
-      >
-        <PuffLoader color="#354259" size={100} />
+      <div className="d-flex justify-content-center align-items-center flex-column loading-container">
+        <img src={LoadingGif} className="loading-logo-gif" alt="loading" />
+
         <h4 className="mt-5">Data Fetching</h4>
       </div>
     </>
