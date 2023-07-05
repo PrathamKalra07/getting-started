@@ -48,7 +48,9 @@ interface Props {
 
 export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
   const [allSignatureData, setAllSignatureData] = useState([]);
-  const [signatureInputText, setSignatureInputText] = useState("");
+  const [signatureInputText, setSignatureInputText] = useState(
+    localStorage.getItem("signatoryName") ?? ""
+  );
   const [openModal, setOpenModal] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
@@ -71,6 +73,8 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
   var keyEventTimeoutStamp: any;
 
   useEffect(() => {
+    createSignatures();
+    createSignatures();
     createSignatures();
 
     return () => {};

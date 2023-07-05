@@ -3,6 +3,7 @@ import { getAsset } from "./prepareAssets";
 import { normalize } from "./helpers";
 import { Buffer } from "buffer";
 import axios from "axios";
+import { fetchIpInfo } from "./fetchIpInfo";
 
 export async function Save(
   pdfFile: File,
@@ -125,11 +126,15 @@ export async function Save(
 
   try {
     //
+
+    const locationData: any = await fetchIpInfo();
+
     const bodyContent = {
       uuid: basicInfoData.uuid,
       uuid_signatory: basicInfoData.uuidSignatory,
       uuid_template_instance: basicInfoData.uuidTemplateInstance,
       allElementsData: pageWiseAllData,
+      location: locationData,
     };
 
     // console.log(bodyContent);
@@ -139,8 +144,6 @@ export async function Save(
       method: "POST",
       data: bodyContent,
     });
-
-    console.log(data);
 
     const thankYouContainer: HTMLElement = document.getElementById(
       "thankyou-container"

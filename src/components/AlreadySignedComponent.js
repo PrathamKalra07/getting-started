@@ -1,6 +1,10 @@
 import PuffLoader from "react-spinners/PuffLoader";
+import { Button } from "reactstrap";
 
-export default function AlreadySignedComponent({ userErrorMsg }) {
+export default function AlreadySignedComponent({
+  userErrorMsg,
+  setIsAuditHistoryShown,
+}) {
   return (
     <>
       {/* error msg model */}
@@ -60,6 +64,20 @@ export default function AlreadySignedComponent({ userErrorMsg }) {
               style={{ height: "50%" }}
             /> */}
             <h4 className="text-center">{userErrorMsg}</h4>
+
+            <div
+              className="position-absolute "
+              style={{ right: "20px", top: "20px" }}
+            >
+              <Button
+                style={{ backgroundColor: "#354259" }}
+                onClick={() => {
+                  setIsAuditHistoryShown(true);
+                }}
+              >
+                Show Audit Log
+              </Button>
+            </div>
           </div>
         </div>
       </div>

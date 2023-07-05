@@ -1,4 +1,3 @@
-import Axios from "axios";
 import { createSlice, current } from "@reduxjs/toolkit";
 
 export const externalUserSlice = createSlice({

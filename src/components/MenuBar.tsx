@@ -29,6 +29,7 @@ interface Props {
   savingPdfStatus: boolean;
   savePdf: () => void;
   rejectSign: (commentText: string) => void;
+  setIsAuditHistoryShown: any;
 }
 
 const whiteText = { color: "white" };
@@ -42,6 +43,7 @@ export const MenuBar: React.FC<Props> = ({
   savingPdfStatus,
   savePdf,
   rejectSign,
+  setIsAuditHistoryShown,
 }) => {
   const [isRejectMenuOpen, setIsRejectMenuOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -129,7 +131,13 @@ export const MenuBar: React.FC<Props> = ({
                   {/* <DropdownItem disabled>Action (disabled)</DropdownItem> */}
                   <DropdownItem divider />
                   <DropdownItem>View PDF</DropdownItem>
-                  <DropdownItem>View History</DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      setIsAuditHistoryShown(true);
+                    }}
+                  >
+                    View History
+                  </DropdownItem>
                   <DropdownItem>Help & Support</DropdownItem>
                 </DropdownMenu>
               </Dropdown>

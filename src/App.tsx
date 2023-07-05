@@ -39,6 +39,8 @@ import {
   setActiveElement,
   setCurrentPage,
 } from "./redux/slices/elementsNavigationHelperReducer";
+import { fetchIpInfo } from "./utils/fetchIpInfo";
+import { AuditTrailModal } from "./modals/components/AuditTrailModal";
 
 const App: React.FC = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
@@ -52,6 +54,7 @@ const App: React.FC = () => {
   const [isResendOtp, setIsResendOtp] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userErrorMsg, setUserErrorMsg] = useState("");
+  const [isAuditHistoryShown, setIsAuditHistoryShown] = useState(false);
 
   //
   const currentReduxState = useSelector((state) => state);
@@ -228,9 +231,12 @@ const App: React.FC = () => {
         "Content-Type": "application/json",
       };
 
+      const locationData = await fetchIpInfo();
+
       let bodyContent = JSON.stringify({
         uuid_signatory: signatoryUUID,
         rejectionReason: commentText,
+        location: locationData,
       });
 
       let reqOptions = {
@@ -240,7 +246,7 @@ const App: React.FC = () => {
         data: bodyContent,
       };
 
-      let response = await Axios.request(reqOptions);
+      await Axios.request(reqOptions);
 
       localStorage.clear();
 
@@ -550,9 +556,9 @@ const App: React.FC = () => {
     try {
       // {{baseUrl}}/api/fetchCordinatesData
 
-      console.log("=============");
-      console.log("i am from app.tsx in sendotp function body on line no 554");
-      console.log("=============");
+      // console.log("=============");
+      // console.log("i am from app.tsx in sendotp function body on line no 554");
+      // console.log("=============");
 
       const isOtpSent = localStorage.getItem("isOtpSent") ? true : false;
       const signatodyUUIDStorage = localStorage.getItem("signatoryUUID")
@@ -564,20 +570,20 @@ const App: React.FC = () => {
         : false;
 
       if (isOtpVerifyOffline && signatodyUUIDStorage === signatoryUniqUUID) {
-        console.log("=============");
-        console.log(
-          "i am from app.tsx in if condition function body on line no 569"
-        );
-        console.log("=============");
+        // console.log("=============");
+        // console.log(
+        //   "i am from app.tsx in if condition function body on line no 569"
+        // );
+        // console.log("=============");
         setIsOtpVerificationDone(true);
       }
 
       if (isOtpSent && signatodyUUIDStorage === signatoryUniqUUID) {
-        console.log("=============");
-        console.log(
-          "i am from app.tsx in if condition function body on line no 578"
-        );
-        console.log("=============");
+        // console.log("=============");
+        // console.log(
+        //   "i am from app.tsx in if condition function body on line no 578"
+        // );
+        // console.log("=============");
         const otpValue = localStorage.getItem("otpValue") || "";
         setOriginalOtpValue(otpValue);
       } else if (
@@ -585,11 +591,11 @@ const App: React.FC = () => {
         isResendOtp != false ||
         signatodyUUIDStorage !== signatoryUniqUUID
       ) {
-        console.log("=============");
-        console.log(
-          "i am from app.tsx in if condition function body on line no 590"
-        );
-        console.log("=============");
+        // console.log("=============");
+        // console.log(
+        //   "i am from app.tsx in if condition function body on line no 590"
+        // );
+        // console.log("=============");
         let headersList = {
           Accept: "*/*",
           "Content-Type": "application/json",
@@ -608,18 +614,21 @@ const App: React.FC = () => {
         localStorage.setItem("isOtpSent", "true");
         localStorage.setItem("otpValue", response.data.data.otpValue);
         localStorage.setItem("signatoryUUID", signatoryUniqUUID);
+        localStorage.setItem("signatoryName", response.data.data.signatoryName);
         setOriginalOtpValue(response.data.data.otpValue);
         // console.log(response.data.data.otpValue);
       }
+
+      await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
     } catch (err: any) {
       // console.log(err);
       // console.log(err.response);
 
-      console.log("=============");
-      console.log(
-        "i am from app.tsx in catch block in sentotp body on line no 620"
-      );
-      console.log("=============");
+      // console.log("=============");
+      // console.log(
+      //   "i am from app.tsx in catch block in sentotp body on line no 620"
+      // );
+      // console.log("=============");
 
       if (err.response.data.msg) {
         if (
@@ -649,11 +658,42 @@ const App: React.FC = () => {
 
         localStorage.clear();
       }
-      console.log("=============");
-      console.log("i am from app.tsx above finally block on line no 654");
-      console.log("=============");
+      // console.log("=============");
+      // console.log("i am from app.tsx above finally block on line no 654");
+      // console.log("=============");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const trackDocumentViewed = async (
+    uuidTemplateInstance: any,
+    signatoryUniqUUID: any
+  ) => {
+    try {
+      //
+      //
+      //
+      const locationData: any = await fetchIpInfo();
+
+      const headersList = {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      };
+      const bodyContent = JSON.stringify({
+        tiUUID: uuidTemplateInstance,
+        signatoryUUID: signatoryUniqUUID,
+        location: locationData,
+      });
+      const reqOptions = {
+        url: `${process.env.REACT_APP_API_URL}/api/audit/trackDocumentViewed`,
+        method: "POST",
+        headers: headersList,
+        data: bodyContent,
+      };
+      await Axios.request(reqOptions);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -700,11 +740,11 @@ const App: React.FC = () => {
           uuidTemplateInstance &&
           uuidSignatory
         ) {
-          console.log("--------");
-          console.log(
-            "i am from app.tsx in if condition above sentotp on line no 696"
-          );
-          console.log("--------");
+          // console.log("--------");
+          // console.log(
+          //   "i am from app.tsx in if condition above sentotp on line no 696"
+          // );
+          // console.log("--------");
 
           await sendOtp(
             uuidSignatory as string,
@@ -734,7 +774,10 @@ const App: React.FC = () => {
       {isLoading ? <Loading /> : null}
 
       {isAlreadySign ? (
-        <AlreadySignedComponent userErrorMsg={userErrorMsg} />
+        <AlreadySignedComponent
+          userErrorMsg={userErrorMsg}
+          setIsAuditHistoryShown={setIsAuditHistoryShown}
+        />
       ) : (
         <>
           {!isOtpVerificationDone ? (
@@ -757,6 +800,7 @@ const App: React.FC = () => {
                 savingPdfStatus={isSaving}
                 uploadNewPdf={handlePdfClick}
                 isPdfLoaded={!!file}
+                setIsAuditHistoryShown={setIsAuditHistoryShown}
               />
               <div className="pdf-viewer-div">
                 {!file || isFetchingCordinatesData ? (
@@ -840,6 +884,10 @@ const App: React.FC = () => {
             </>
           )}
         </>
+      )}
+
+      {isAuditHistoryShown && (
+        <AuditTrailModal setIsAuditHistoryShown={setIsAuditHistoryShown} />
       )}
     </Container>
   );
