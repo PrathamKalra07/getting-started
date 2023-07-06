@@ -26,7 +26,7 @@ var textSignature = function (options) {
           "load",
           function () {
             // wait abit slonger and call again -  if first time
-            console.log("fonts loaded");
+            // console.log("fonts loaded");
 
             self.generateImage(options);
             if (!self.isInitiated) {
@@ -44,7 +44,7 @@ var textSignature = function (options) {
 
       //
       setTimeout(() => {
-        console.log("font timeout called");
+        // console.log("font timeout called");
         self.generateImage(options);
         if (!self.isInitiated) {
           setTimeout(function () {

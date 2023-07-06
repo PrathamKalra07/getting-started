@@ -591,6 +591,7 @@ const App: React.FC = () => {
         isResendOtp != false ||
         signatodyUUIDStorage !== signatoryUniqUUID
       ) {
+        localStorage.clear();
         // console.log("=============");
         // console.log(
         //   "i am from app.tsx in if condition function body on line no 590"
@@ -764,84 +765,85 @@ const App: React.FC = () => {
   }, [isResendOtp]);
 
   return (
-    <Container style={{ margin: 30 }}>
-      {/* thank you */}
+    <>
+      <Container style={{ margin: 30 }}>
+        {/* thank you */}
 
-      <div id="thankyou-container"></div>
+        <div id="thankyou-container"></div>
 
-      {/*  */}
+        {/*  */}
 
-      {isLoading ? <Loading /> : null}
+        {isLoading ? <Loading /> : null}
 
-      {isAlreadySign ? (
-        <AlreadySignedComponent
-          userErrorMsg={userErrorMsg}
-          setIsAuditHistoryShown={setIsAuditHistoryShown}
-        />
-      ) : (
-        <>
-          {!isOtpVerificationDone ? (
-            <OtpModal
-              otp={otp}
-              originalOtpValue={originalOtpValue}
-              setIsOtpVerificationDone={setIsOtpVerificationDone}
-              setIsResendOtp={setIsResendOtp}
-              setOriginalOtpValue={setOriginalOtpValue}
-            />
-          ) : (
-            <>
-              {hiddenInputs}
-              <MenuBar
-                rejectSign={handleSignRejection}
-                savePdf={handleSavePdf}
-                addText={addText}
-                addImage={handleImageClick}
-                addDrawing={() => setDrawingModalOpen(true)}
-                savingPdfStatus={isSaving}
-                uploadNewPdf={handlePdfClick}
-                isPdfLoaded={!!file}
-                setIsAuditHistoryShown={setIsAuditHistoryShown}
+        {isAlreadySign ? (
+          <AlreadySignedComponent
+            userErrorMsg={userErrorMsg}
+            setIsAuditHistoryShown={setIsAuditHistoryShown}
+          />
+        ) : (
+          <>
+            {!isOtpVerificationDone ? (
+              <OtpModal
+                otp={otp}
+                originalOtpValue={originalOtpValue}
+                setIsOtpVerificationDone={setIsOtpVerificationDone}
+                setIsResendOtp={setIsResendOtp}
+                setOriginalOtpValue={setOriginalOtpValue}
               />
-              <div className="pdf-viewer-div">
-                {!file || isFetchingCordinatesData ? (
-                  <Loading />
-                ) : (
-                  <div className=" d-flex justify-content-center align-items-center overflow-x-scroll">
-                    <div className="inner-container">
-                      {currentPage && (
-                        <div className="border mb-5 position-relative">
-                          {" "}
-                          <div>
-                            <Page
-                              dimensions={dimensions}
-                              updateDimensions={setDimensions}
-                              page={currentPage}
-                              allPages={pages}
-                              goToPage={goToPage}
-                              isFetchingCordinatesData={
-                                isFetchingCordinatesData
-                              }
-                              setDrawingModalOpen={setDrawingModalOpen}
-                            />
+            ) : (
+              <>
+                {hiddenInputs}
+                <MenuBar
+                  rejectSign={handleSignRejection}
+                  savePdf={handleSavePdf}
+                  addText={addText}
+                  addImage={handleImageClick}
+                  addDrawing={() => setDrawingModalOpen(true)}
+                  savingPdfStatus={isSaving}
+                  uploadNewPdf={handlePdfClick}
+                  isPdfLoaded={!!file}
+                  setIsAuditHistoryShown={setIsAuditHistoryShown}
+                />
+                <div className="pdf-viewer-div">
+                  {!file || isFetchingCordinatesData ? (
+                    <Loading />
+                  ) : (
+                    <div className=" d-flex justify-content-center align-items-center overflow-x-scroll">
+                      <div className="inner-container">
+                        {currentPage && (
+                          <div className="border mb-5 position-relative">
+                            {" "}
+                            <div>
+                              <Page
+                                dimensions={dimensions}
+                                updateDimensions={setDimensions}
+                                page={currentPage}
+                                allPages={pages}
+                                goToPage={goToPage}
+                                isFetchingCordinatesData={
+                                  isFetchingCordinatesData
+                                }
+                                setDrawingModalOpen={setDrawingModalOpen}
+                              />
 
-                            <div
-                              className="signature-indicator"
-                              onClick={handleStartAndScrollElement}
-                            >
-                              {elementsNavigationData.activeElementCoordinateId ==
-                              0 ? (
-                                `Start`
-                              ) : (
-                                <span>
-                                  <i className="fa-solid fa-circle-arrow-right"></i>{" "}
-                                  Next
-                                </span>
-                              )}
-                            </div>
+                              <div
+                                className="signature-indicator"
+                                onClick={handleStartAndScrollElement}
+                              >
+                                {elementsNavigationData.activeElementCoordinateId ==
+                                0 ? (
+                                  `Start`
+                                ) : (
+                                  <span>
+                                    <i className="fa-solid fa-circle-arrow-right"></i>{" "}
+                                    Next
+                                  </span>
+                                )}
+                              </div>
 
-                            {/*  */}
+                              {/*  */}
 
-                            {/* <SignatureContainer
+                              {/* <SignatureContainer
                               page={currentPage}
                               addDrawing={() => setDrawingModalOpen(true)}
                               isFetchingCordinatesData={
@@ -866,30 +868,48 @@ const App: React.FC = () => {
                                 isFetchingCordinatesData
                               }
                             /> */}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
 
-              {drawingModalOpen ? (
-                <DrawingModal
-                  open={drawingModalOpen}
-                  dismiss={() => setDrawingModalOpen(false)}
-                  confirm={addDrawing}
-                />
-              ) : null}
-            </>
-          )}
-        </>
-      )}
+                {drawingModalOpen ? (
+                  <DrawingModal
+                    open={drawingModalOpen}
+                    dismiss={() => setDrawingModalOpen(false)}
+                    confirm={addDrawing}
+                  />
+                ) : null}
+              </>
+            )}
+          </>
+        )}
 
-      {isAuditHistoryShown && (
-        <AuditTrailModal setIsAuditHistoryShown={setIsAuditHistoryShown} />
-      )}
-    </Container>
+        {isAuditHistoryShown && (
+          <AuditTrailModal setIsAuditHistoryShown={setIsAuditHistoryShown} />
+        )}
+      </Container>
+
+      <footer
+        className=" text-light d-flex justify-content-end"
+        style={{ backgroundColor: "#354259" }}
+      >
+        {/* Copyright */}
+        <div
+          className="text-center p-3 fw-bold"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            window.open("https://www.eruditeworks.com/", "_blank");
+          }}
+        >
+          Powered By EW Sign
+        </div>
+        {/* Copyright */}
+      </footer>
+    </>
   );
 };
 

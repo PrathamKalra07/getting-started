@@ -129,7 +129,7 @@ export const PaginationContainer: React.FC<Props> = ({
       <div className="pagination-inner-container shadow">
         <div
           className="px-1"
-          style={{ cursor: leftArrowShown ? "pointer" : "default" }}
+          style={{ cursor: leftArrowShown ? "pointer" : "no-drop" }}
           onClick={() => {
             if (leftArrowShown) {
               navigateController("back");
@@ -155,7 +155,7 @@ export const PaginationContainer: React.FC<Props> = ({
 
         <div
           className="px-1"
-          style={{ cursor: rightArrowShown ? "pointer" : "default" }}
+          style={{ cursor: rightArrowShown ? "pointer" : "no-drop" }}
           onClick={() => {
             if (rightArrowShown) {
               navigateController("next");

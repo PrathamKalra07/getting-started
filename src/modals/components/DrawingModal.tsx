@@ -98,6 +98,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
         }, 300);
       }, 500);
     } catch (err) {
+      createSignatures();
       console.log(err);
     }
   };
@@ -226,6 +227,28 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
       console.log(err);
     } finally {
       setIsSignatureAdding(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    try {
+      if (allPreviousSignatures.length == 0) {
+        dispatch(
+          setSignaturePathWithEncoddedImg({
+            path: "",
+            encodedImgData: "",
+            reduxState,
+            textValue: "",
+            isSignature: true,
+          })
+        );
+      }
+
+      setTimeout(() => {
+        closeModal();
+      }, 500);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -392,7 +415,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
             onClosed={closeModal}
             centered
             className="modal-container "
-            toggle={closeModal}
+            // toggle={closeModal}
             fade={false}
             size={"xl"}
             fullscreen={"sm"}
@@ -596,7 +619,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
               </div>
             </ModalBody>
             <ModalFooter>
-              <button className="btn " onClick={closeModal}>
+              <button className="btn " onClick={handleCancel}>
                 Cancel
               </button>
               <span className="px-2"> </span>
@@ -738,110 +761,108 @@ const DrawSignature = memo(
   }
 );
 
-const GenerateSignature = memo(
-  ({
-    setOpenModal,
-    closeModal,
-    allSignatureData,
-    handleAddSignature,
-  }: {
-    setOpenModal: any;
-    closeModal: any;
-    allSignatureData: Array<string>;
-    handleAddSignature: any;
-  }) => {
-    const [isOpen, setIsOpen] = useState(true);
-    const [activeSignatureIndex, setActiveSignatureIndex] = useState<number>(0);
+const GenerateSignature = ({
+  setOpenModal,
+  closeModal,
+  allSignatureData,
+  handleAddSignature,
+}: {
+  setOpenModal: any;
+  closeModal: any;
+  allSignatureData: Array<string>;
+  handleAddSignature: any;
+}) => {
+  const [isOpen, setIsOpen] = useState(true);
+  const [activeSignatureIndex, setActiveSignatureIndex] = useState<number>(0);
 
-    const handleDone = async () => {
-      const encodedImgData = allSignatureData[activeSignatureIndex];
+  const handleDone = async () => {
+    const encodedImgData = allSignatureData[activeSignatureIndex];
 
-      await handleAddSignature(encodedImgData);
+    await handleAddSignature(encodedImgData);
 
-      closeCurrentModal();
-      closeModal();
-    };
+    closeCurrentModal();
+    closeModal();
+  };
 
-    const closeCurrentModal = () => {
-      setOpenModal("");
-      setIsOpen(false);
-    };
+  const closeCurrentModal = () => {
+    setOpenModal("");
+    setIsOpen(false);
+  };
 
-    return (
-      <Modal
-        isOpen={isOpen}
-        onClosed={closeCurrentModal}
-        centered
-        className="modal-container"
-        toggle={closeCurrentModal}
-        fade={false}
-        size={"xl"}
-        fullscreen={"sm"}
-      >
-        {/* #f6f8fb */}
-        <ModalHeader>Change Style</ModalHeader>
-        <ModalBody>
-          <div className="fonts-list-container">
-            <Row>
-              {allSignatureData.map((item, index) => {
-                return (
-                  <Col
-                    md="6"
-                    className="my-2 d-flex align-items-center justify-content-center"
-                    key={index}
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClosed={closeCurrentModal}
+      centered
+      className="modal-container"
+      toggle={closeCurrentModal}
+      fade={false}
+      size={"xl"}
+      fullscreen={"sm"}
+    >
+      {/* #f6f8fb */}
+      <ModalHeader>Change Style</ModalHeader>
+      <ModalBody>
+        <div className="fonts-list-container">
+          <Row>
+            {allSignatureData.map((item, index) => {
+              return (
+                <Col
+                  md="6"
+                  className="my-2 d-flex align-items-center justify-content-center"
+                  key={index}
+                >
+                  <Card
+                    style={{
+                      maxWidth: "100%",
+                      backgroundColor: "#f6f8fb",
+                      border:
+                        activeSignatureIndex === index
+                          ? `2px solid #348fd7`
+                          : "2px solid transparent",
+                    }}
+                    className={` h-100 custom-cards shadow-none p-4 ${
+                      activeSignatureIndex === index ? "active-card" : ""
+                    }`}
+                    onClick={() => {
+                      setActiveSignatureIndex(index);
+                    }}
                   >
-                    <Card
+                    <img
+                      src={item}
+                      alt="Fetching Data"
                       style={{
+                        maxHeight: "100%",
                         maxWidth: "100%",
-                        backgroundColor: "#f6f8fb",
-                        border:
-                          activeSignatureIndex === index
-                            ? `2px solid #348fd7`
-                            : "2px solid transparent",
+                        overflowClipMargin: "content-box",
+                        overflow: "clip",
                       }}
-                      className={` h-100 custom-cards shadow-none p-4 ${
-                        activeSignatureIndex === index ? "active-card" : ""
-                      }`}
-                      onClick={() => {
-                        setActiveSignatureIndex(index);
-                      }}
-                    >
-                      <img
-                        src={item}
-                        alt="Fetching Data"
-                        style={{
-                          maxHeight: "100%",
-                          maxWidth: "100%",
-                          overflowClipMargin: "content-box",
-                          overflow: "clip",
-                        }}
-                      />
-                    </Card>
-                  </Col>
-                );
-              })}
-            </Row>
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <button
-            className="btn go-back-button custom-btn2"
-            onClick={() => closeCurrentModal()}
-          >
-            Go Back
-          </button>
-          <button className="btn " onClick={closeCurrentModal}>
-            Cancel
-          </button>
-          <span className="px-2"> </span>
-          <button onClick={handleDone} className="btn custom-btn1">
-            Done
-          </button>
-        </ModalFooter>
-      </Modal>
-    );
-  }
-);
+                    />
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
+        </div>
+      </ModalBody>
+      <ModalFooter>
+        <button
+          className="btn go-back-button custom-btn2"
+          onClick={() => closeCurrentModal()}
+        >
+          Go Back
+        </button>
+        <button className="btn " onClick={closeCurrentModal}>
+          Cancel
+        </button>
+        <span className="px-2"> </span>
+        <button onClick={handleDone} className="btn custom-btn1">
+          Done
+        </button>
+      </ModalFooter>
+    </Modal>
+  );
+};
 
 const UploadSignature = memo(
   ({

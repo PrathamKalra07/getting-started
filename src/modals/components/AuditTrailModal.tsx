@@ -195,7 +195,8 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
                   <div class="col-xs-12">
                           
                               <table
-                                  class="table table-borderless">
+                                  class="table table-bordered">
+                                  <!--table-borderless -->
                                   <thead >
                                       <tr>
                                           <th >No</th>
@@ -291,7 +292,18 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
 
                   {/*  */}
                   <div>
-                    <UncontrolledDropdown group>
+                    <Button
+                      style={{
+                        backgroundColor: "#354259",
+                        borderColor: "#354259",
+                        color: "#fff",
+                        fontWeight: "bold",
+                      }}
+                      onClick={() => handlePrint()}
+                    >
+                      Print Logs
+                    </Button>
+                    {/* <UncontrolledDropdown group>
                       <Button
                         style={{
                           backgroundColor: "#354259",
@@ -316,7 +328,7 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
                           Print Logs
                         </DropdownItem>
                       </DropdownMenu>
-                    </UncontrolledDropdown>
+                    </UncontrolledDropdown> */}
                   </div>
                 </div>
 
