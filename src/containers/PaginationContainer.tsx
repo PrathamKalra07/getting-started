@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useControls } from "react-zoom-pan-pinch";
+import {
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownMenu,
+} from "reactstrap";
 
 //
 import { TextPad } from "../components/TextPad";
@@ -18,15 +25,15 @@ export const PaginationContainer: React.FC<Props> = ({
   // allCordinatesData,
   goToPage,
 }) => {
-  const dispatch = useDispatch();
-
   const totalPages = allPages.length;
+
+  const { zoomIn, zoomOut } = useControls();
 
   //
   const [currentPageNo, setCurrentPageNo] = useState<any>(1);
   const [leftArrowShown, setLeftArrowShown] = useState(currentPageNo > 1);
   const [rightArrowShown, setRightArrowShown] = useState(
-    currentPageNo != totalPages
+    currentPageNo !== totalPages
   );
 
   useEffect(() => {
@@ -165,6 +172,27 @@ export const PaginationContainer: React.FC<Props> = ({
           <i
             className="fa-solid fa-chevron-right"
             style={{ color: rightArrowShown ? "white" : "gray" }}
+          ></i>
+        </div>
+
+        {/*  */}
+
+        <div className="justify-content-around align-items-center gap-3 zoom-level-indicator-container">
+          <i
+            className="fa-solid fa-magnifying-glass-plus text-light "
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              zoomIn();
+            }}
+          ></i>
+
+          <span className="text-light ">Zoom</span>
+          <i
+            className="fa-solid fa-magnifying-glass-minus text-light "
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              zoomOut();
+            }}
           ></i>
         </div>
       </div>

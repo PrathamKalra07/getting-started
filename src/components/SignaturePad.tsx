@@ -44,7 +44,7 @@ Props) => {
         }}
         onClick={() => {
           addDrawing();
-          dispatch(setActiveElement({ coordinateId, y }));
+          dispatch(setActiveElement({ coordinateId, y, x }));
         }}
       >
         {/* signatureData */}

@@ -15,6 +15,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Tooltip,
 } from "reactstrap";
 
 import BounceLoader from "react-spinners/BounceLoader";
@@ -45,6 +46,9 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
 
   const basicInfoData = useSelector((state: any) => state.basicInfoData);
 
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const toggle = () => setTooltipOpen(!tooltipOpen);
+
   useEffect(() => {
     fetchAuditTrailData();
 
@@ -71,7 +75,7 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
 
       let { data } = await Axios.request(reqOptions);
 
-      setAuditTrailData(data.data.auditData);
+      setAuditTrailData(data.data.auditData.reverse());
       setTemplateData(data.data.templateData);
     } catch (err) {
       console.log(err);
@@ -88,7 +92,7 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
     closeModal();
   };
 
-  const handlePrint = async () => {
+  const handlePrint = async (e: any) => {
     try {
       var mywindow: any = window.open("", "PRINT", "height=1000,width=1000");
 
@@ -114,6 +118,7 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
         </td>
         <td data-priority="3" colspan="1" data-columns="ide7e3ffe8ca1d48-col-3">
             ${item.ip_address}
+            <div className="fw-bold">(${item.location})</div>
         </td>
         <td data-priority="4" colspan="1" data-columns="ide7e3ffe8ca1d48-col-4">
             ${item.recipient}
@@ -237,10 +242,13 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
       </html>`;
       mywindow.document.write(htmlString);
 
-      mywindow.document.close(); // necessary for IE >= 10
       mywindow.focus(); // necessary for IE >= 10*/
-      mywindow.print();
-      mywindow.close();
+
+      setTimeout(() => {
+        mywindow.document.close(); // necessary for IE >= 10
+        mywindow.print();
+        mywindow.close();
+      }, 500);
 
       return true;
     } catch (err) {
@@ -299,7 +307,7 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
                         color: "#fff",
                         fontWeight: "bold",
                       }}
-                      onClick={() => handlePrint()}
+                      onClick={(e) => handlePrint(e)}
                     >
                       Print Logs
                     </Button>
@@ -337,7 +345,20 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
                   <thead style={{ backgroundColor: "#354259", color: "white" }}>
                     <tr>
                       <th>No</th>
-                      <th>Created On ({momentTz.tz.guess()})</th>
+                      <th>
+                        Created On{" "}
+                        <i
+                          className="fa-solid fa-circle-info"
+                          id="timezon-help-tooltip"
+                        ></i>
+                        <Tooltip
+                          isOpen={tooltipOpen}
+                          target="timezon-help-tooltip"
+                          toggle={toggle}
+                        >
+                          Time Zone {momentTz.tz.guess()}
+                        </Tooltip>
+                      </th>
                       <th>Status</th>
                       <th>IP Address</th>
                       <th style={{ minWidth: "150px" }}>Recipient</th>
@@ -360,7 +381,10 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
                             </div>
                           </th>
                           <td>{item.action}</td>
-                          <td>{item.ip_address}</td>
+                          <td>
+                            {item.ip_address}
+                            <div className="fw-bold">({item.location})</div>
+                          </td>
                           <td>{item.recipient}</td>
                           <td>{item.message}</td>
                         </tr>

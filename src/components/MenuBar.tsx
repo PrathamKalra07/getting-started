@@ -53,6 +53,7 @@ export const MenuBar: React.FC<Props> = ({
   const toggleDropDown = () => setDropdownOpen((prevState) => !prevState);
 
   const trackerData = useSelector((state: any) => state.allFinalDataReducer);
+  const basicInfoData = useSelector((state: any) => state.basicInfoData);
 
   const handleRejection = () => {
     if (commentText) {
@@ -63,6 +64,20 @@ export const MenuBar: React.FC<Props> = ({
 
   const closeCurrentModal = () => {
     setIsRejectMenuOpen(false);
+  };
+
+  const handleViewPdf = async () => {
+    try {
+      console.log(basicInfoData);
+      const { uuid } = basicInfoData;
+
+      window.open(
+        `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`,
+        "_blank"
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -101,11 +116,11 @@ export const MenuBar: React.FC<Props> = ({
           </div>
         </div>
 
-        <div className="d-flex justify-content-center align-items-center header-main-container">
+        <div className="d-flex justify-content-center align-items-center header-main-container gap-sm-2 ">
           {isPdfLoaded && (
             <>
               <button className="submit-btn btn" onClick={savePdf}>
-                FINISH
+                Finish
               </button>
 
               <Dropdown
@@ -119,18 +134,30 @@ export const MenuBar: React.FC<Props> = ({
                   color="black"
                   className="fw-bold"
                 >
-                  MORE ACTIONS
+                  Options
                 </DropdownToggle>
-                <DropdownMenu>
+                <DropdownMenu style={{ minWidth: 150 }}>
                   {/* <DropdownItem header>Header</DropdownItem> */}
                   <DropdownItem onClick={() => setIsRejectMenuOpen(true)}>
                     Reject
                   </DropdownItem>
-                  <DropdownItem text>Print And Sign</DropdownItem>
-                  <DropdownItem text>Asign To Someone Else</DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      handleViewPdf();
+                    }}
+                  >
+                    Print
+                  </DropdownItem>
+                  {/* <DropdownItem text>Asign To Someone Else</DropdownItem> */}
                   {/* <DropdownItem disabled>Action (disabled)</DropdownItem> */}
                   <DropdownItem divider />
-                  <DropdownItem>View PDF</DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      handleViewPdf();
+                    }}
+                  >
+                    View PDF
+                  </DropdownItem>
                   <DropdownItem
                     onClick={() => {
                       setIsAuditHistoryShown(true);
@@ -138,7 +165,13 @@ export const MenuBar: React.FC<Props> = ({
                   >
                     View History
                   </DropdownItem>
-                  <DropdownItem>Help & Support</DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      window.open("https://www.eruditeworks.com/", "_blank");
+                    }}
+                  >
+                    Help & Support
+                  </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
 

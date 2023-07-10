@@ -52,8 +52,10 @@ export const TextPad = ({
           maxLength={width / 7}
           placeholder="Click To Enter Text Here..."
           style={{ height: height, width: width }}
-          onClick={() => {
-            dispatch(setActiveElement({ coordinateId, y }));
+          onClick={(e: any) => {
+            dispatch(setActiveElement({ coordinateId, y, x }));
+
+            e.target.focus();
           }}
           onChange={(e) => {
             handleTextChange(e, textElementIndex);

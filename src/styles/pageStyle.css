@@ -1,0 +1,33 @@
+.canvas-preview-page-transform-component-class {
+  /* background-color: red;
+  padding: 20px; */
+}
+
+@media screen and (max-width: 1200px) {
+  /* .canvas-preview-page-transform-component-class {
+    background-color: red;
+    padding: 200px;
+  } */
+}
+
+@media screen and (max-width: 992px) {
+  /* .canvas-preview-page-transform-component-class {
+    background-color: red;
+    padding: 20px;
+  } */
+}
+@media screen and (max-width: 600px) {
+  .canvas-preview-page-transform-component-class {
+    /*
+    padding: 200px; */
+    /* width: 2000px; */
+    padding-right: 200px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .canvas-preview-page-transform-component-class {
+    /* background-color: red;
+    padding: 20px; */
+    padding-right: 380px;
+  }
+}

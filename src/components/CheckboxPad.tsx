@@ -53,7 +53,7 @@ export const CheckboxPad = ({
           onChange={(e) => handleTextChange(e, textElementIndex)}
           type="checkbox"
           onClick={() => {
-            dispatch(setActiveElement({ coordinateId, y }));
+            dispatch(setActiveElement({ coordinateId, y, x }));
           }}
           checked={textInputValue}
           className={`form-check-input

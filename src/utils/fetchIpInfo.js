@@ -28,8 +28,6 @@ const fetchIpInfo = async () => {
     };
   } catch (err) {
     console.log(err);
-
-    alert("Please Disable Your Ad Block Extention For Furthur Process");
   }
 };
 export { fetchIpInfo };

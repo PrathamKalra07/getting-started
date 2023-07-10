@@ -6,13 +6,15 @@ export const elementsNavigationHelperSlice = createSlice({
     activePage: 0,
     activeElementCoordinateId: 0,
     y: 0,
+    x: 0,
   },
   reducers: {
     setActiveElement: (state, action) => {
-      const { coordinateId, y } = action.payload;
+      const { coordinateId, y, x } = action.payload;
 
       state.activeElementCoordinateId = coordinateId;
       state.y = y;
+      state.x = x;
     },
     setCurrentPage: (state, action) => {
       const { pageIndex } = action.payload;

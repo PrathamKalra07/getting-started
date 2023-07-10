@@ -65,7 +65,7 @@ export const DatePad = ({
           }`}
           onClick={(e: any) => {
             e.currentTarget.showPicker();
-            dispatch(setActiveElement({ coordinateId, y }));
+            dispatch(setActiveElement({ coordinateId, y, x }));
           }}
         />
       </div>

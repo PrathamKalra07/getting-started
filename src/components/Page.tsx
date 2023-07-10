@@ -6,6 +6,8 @@ import { TextContainer } from "../containers/TextContainer";
 import { DateContainer } from "../containers/DateContainer";
 import { CheckboxContainer } from "../containers/CheckboxContainer";
 
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+
 interface Props {
   page: any;
   dimensions?: Dimensions;
@@ -14,6 +16,8 @@ interface Props {
   goToPage: (pageNo: number) => void;
   isFetchingCordinatesData: any;
   setDrawingModalOpen: any;
+  handleStartAndScrollElement: any;
+  signatureIndicatorRef: any;
 }
 
 export const Page = ({
@@ -24,10 +28,14 @@ export const Page = ({
   goToPage,
   isFetchingCordinatesData,
   setDrawingModalOpen,
+  handleStartAndScrollElement,
+  signatureIndicatorRef,
 }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [width, setWidth] = useState((dimensions && dimensions.width) || 0);
   const [height, setHeight] = useState((dimensions && dimensions.height) || 0);
+  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const [isStartShown, setIsStartShown] = useState(true);
 
   useEffect(() => {
     const renderPage = async (p: Promise<any>) => {
@@ -63,51 +71,82 @@ export const Page = ({
 
   return (
     <div style={{ position: "relative" }} className="pdf-viewer-container">
-      <canvas
-        ref={canvasRef}
-        width={width}
-        height={height}
-        // width={595}
-        // height={840}
-        style={{
-          borderRadius: "5px",
-          boxShadow: "0 2px 5px gray",
-        }}
-      />
+      <TransformWrapper
+        maxScale={3}
+        initialScale={1}
+        disabled={deviceWidth <= 600}
+        centerZoomedOut
+        disablePadding
+        wheel={{ disabled: true }}
+        doubleClick={{ disabled: true }}
+        // // pinch={{ disabled: true }}
+        // // panning={{ disabled: true }}
+      >
+        <TransformComponent>
+          <div>
+            <canvas
+              ref={canvasRef}
+              width={width}
+              height={height}
+              // width={595}
+              // height={840}
+              style={{
+                borderRadius: "5px",
+                boxShadow: "0 2px 5px gray",
+              }}
+            />
 
-      {/*  */}
-      <SignatureContainer
-        page={page}
-        addDrawing={() => setDrawingModalOpen(true)}
-        isFetchingCordinatesData={isFetchingCordinatesData}
-      />
-      <TextContainer
-        page={page}
-        isFetchingCordinatesData={isFetchingCordinatesData}
-      />
-      <DateContainer
-        page={page}
-        isFetchingCordinatesData={isFetchingCordinatesData}
-      />
-      <CheckboxContainer
-        page={page}
-        isFetchingCordinatesData={isFetchingCordinatesData}
-      />
-      {/*  */}
+            {/*  */}
+            <SignatureContainer
+              page={page}
+              addDrawing={() => setDrawingModalOpen(true)}
+              isFetchingCordinatesData={isFetchingCordinatesData}
+            />
+            <TextContainer
+              page={page}
+              isFetchingCordinatesData={isFetchingCordinatesData}
+            />
+            <DateContainer
+              page={page}
+              isFetchingCordinatesData={isFetchingCordinatesData}
+            />
+            <CheckboxContainer
+              page={page}
+              isFetchingCordinatesData={isFetchingCordinatesData}
+            />
 
-      {/* pagination start */}
+            <div
+              ref={signatureIndicatorRef}
+              className="signature-indicator"
+              onClick={(e) => {
+                if (isStartShown) {
+                  setIsStartShown(false);
+                }
+                handleStartAndScrollElement(e);
+              }}
+            >
+              {isStartShown ? (
+                `Start`
+              ) : (
+                <span>
+                  <i className="fa-solid fa-circle-arrow-down"></i> Next
+                </span>
+              )}
+            </div>
+          </div>
+        </TransformComponent>
 
-      <PaginationContainer
-        page={page}
-        allPages={allPages}
-        goToPage={goToPage}
-      />
+        <React.Fragment>
+          {/* pagination start */}
+          <PaginationContainer
+            page={page}
+            allPages={allPages}
+            goToPage={goToPage}
+          />
 
-      {/* pagination end */}
-
-      {/*  */}
-
-      {/*  */}
+          {/* pagination end */}
+        </React.Fragment>
+      </TransformWrapper>
     </div>
   );
 };

@@ -1,9 +1,10 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect, useRef } from "react";
 import Axios from "axios";
 import "semantic-ui-css/semantic.min.css";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createTextSignature } from "./utils/textSignature";
+import { useControls } from "react-zoom-pan-pinch";
 
 import "./App.css";
 
@@ -55,6 +56,9 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userErrorMsg, setUserErrorMsg] = useState("");
   const [isAuditHistoryShown, setIsAuditHistoryShown] = useState(false);
+
+  //
+  const signatureIndicatorRef = useRef<any>(null);
 
   //
   const currentReduxState = useSelector((state) => state);
@@ -283,7 +287,7 @@ const App: React.FC = () => {
         <h4 class="text-center"><b>Oops! you have rejected signature</b></h4>
         
         <h6 class="text-center text-secondary mt-4 text-justify" >
-          We regret to see that you had rejected for signature. If this happends by mistake then please notify admin.
+          We regret to see that you had rejected for signature. If this happens by mistake then please notify admin.
         </h6>
   
         <!-- <h6 class="text-center mt-4">For More Information About EwSign  <a target="_blank" href="https://www.eruditeworks.com/ewsign/">Click Here</a> </h6>-->
@@ -302,8 +306,13 @@ const App: React.FC = () => {
   const handleSavePdf = () => {
     const tempState = currentReduxState as any;
 
-    const isSignatureDone =
-      tempState.signatureList.encodedImgData.length > 0 ? true : false;
+    const isSignatureDone = tempState.coordinatesList.allCoordinateData.find(
+      (item: any) => item.fieldType === "Signature"
+    )
+      ? tempState.signatureList.encodedImgData.length > 0
+        ? true
+        : false
+      : true;
     const textData = tempState.textList.allTextData;
     const dateData = tempState.dateList.allDateData;
 
@@ -365,34 +374,48 @@ const App: React.FC = () => {
 
       const currentElementData = allCoordinateDataWithCordinates[indexNo];
 
-      goToPage(currentElementData.pageNo + 1);
-
-      window.scroll({
-        top: currentElementData.y,
-        behavior: "smooth",
-      });
+      if (window.innerWidth > 550) {
+        window.scroll({
+          top: currentElementData.y,
+          behavior: "smooth",
+        });
+      } else {
+        window.scroll({
+          top: currentElementData.y - 50,
+          behavior: "smooth",
+        });
+      }
 
       dispatch(
         setActiveElement({
           coordinateId: currentElementData.coordinateId,
           y: currentElementData.y,
+          x: currentElementData.x,
         })
       );
+
+      goToPage(currentElementData.pageNo + 1);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    const { y } = elementsNavigationData;
+    const { y, x } = elementsNavigationData;
 
-    const signatureIndicator = document.getElementsByClassName(
-      "signature-indicator"
-    )[0] as any;
+    if (signatureIndicatorRef.current && y > 0 && x > -1) {
+      const currentPageElements = allCoordinateDataWithCordinates.find(
+        (item: any) => item.pageNo == pageIndex
+      );
 
-    if (signatureIndicator && y > 0) {
-      // signatureIndicator.style.top = `${y - 5}px`;
-      signatureIndicator.style.top = `${y}px`;
+      if (currentPageElements) {
+        signatureIndicatorRef.current.style.top = `${y - 35}px`;
+        signatureIndicatorRef.current.style.left = `${x}px`;
+
+        // scroll inner div
+        document.getElementsByClassName("pdf-viewer-container")[0].scrollLeft =
+          x - 20;
+      }
     }
 
     return () => {};
@@ -415,16 +438,33 @@ const App: React.FC = () => {
       if (currentPageElements[0]) {
         const currentElementData = currentPageElements[0];
 
+        if (window.innerWidth > 550) {
+          window.scroll({
+            top: currentElementData.y,
+            behavior: "smooth",
+          });
+        } else {
+          window.scroll({
+            top: currentElementData.y - 50,
+            behavior: "smooth",
+          });
+        }
+
         dispatch(
           setActiveElement({
             coordinateId: currentElementData.coordinateId,
+            x: currentElementData.x,
             y: currentElementData.y,
           })
         );
-        // window.scroll({
-        //   top: currentElementData.y,
-        //   behavior: "smooth",
-        // });
+      } else {
+        signatureIndicatorRef.current.style.top = "10px";
+        signatureIndicatorRef.current.style.left = "0px";
+
+        window.scroll({
+          top: 0,
+          behavior: "smooth",
+        });
       }
     }
 
@@ -434,6 +474,8 @@ const App: React.FC = () => {
 
     return () => {};
   }, [currentPage]);
+
+  // here x value change container direction !!!!!!!!!!
 
   const fetchingCordinates = async (
     uuid_template_instance: string,
@@ -824,9 +866,13 @@ const App: React.FC = () => {
                                   isFetchingCordinatesData
                                 }
                                 setDrawingModalOpen={setDrawingModalOpen}
+                                handleStartAndScrollElement={
+                                  handleStartAndScrollElement
+                                }
+                                signatureIndicatorRef={signatureIndicatorRef}
                               />
 
-                              <div
+                              {/* <div
                                 className="signature-indicator"
                                 onClick={handleStartAndScrollElement}
                               >
@@ -835,11 +881,11 @@ const App: React.FC = () => {
                                   `Start`
                                 ) : (
                                   <span>
-                                    <i className="fa-solid fa-circle-arrow-right"></i>{" "}
+                                    <i className="fa-solid fa-circle-arrow-down"></i>{" "}
                                     Next
                                   </span>
                                 )}
-                              </div>
+                              </div> */}
 
                               {/*  */}
 

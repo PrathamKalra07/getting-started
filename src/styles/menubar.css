@@ -32,7 +32,7 @@
 .submit-btn {
   /* color: white !important; */
   font-weight: 700 !important;
-  margin-right: 15px !important;
+  /* margin-right: 15px !important; */
   background-color: var(--color3) !important;
   margin-top: 5px !important;
   margin-bottom: 5px !important;
@@ -41,7 +41,6 @@
 .submit-btn:hover {
   color: rgba(255, 255, 255, 0.852) !important;
   font-weight: 700 !important;
-  margin-right: 15px !important;
   background-color: #cdc2aeab !important;
   margin-top: 5px !important;
   margin-bottom: 5px !important;
@@ -56,6 +55,7 @@
 /*  */
 .header-main-container {
   flex-direction: row;
+  gap: 10px;
 }
 
 .header-main-container
@@ -69,6 +69,7 @@
 @media only screen and (max-width: 480px) {
   .header-main-container {
     flex-direction: column;
+    gap: 0px;
   }
 }
 /*  */
