@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-// import { Menu, Dropdown, Icon } from "semantic-ui-react";
+import React, { useEffect, useState, useRef } from "react";
+
 import ProgressBar from "@ramonak/react-progress-bar";
-// import { Navbar, NavbarBrand } from "reactstrap";
+
 import { useSelector } from "react-redux";
+import { Document, Page, pdfjs } from "react-pdf/dist/esm/entry.webpack";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 import {
   Modal,
@@ -19,6 +21,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import axios from "axios";
 
 interface Props {
   uploadNewPdf: () => void;
@@ -32,8 +35,6 @@ interface Props {
   setIsAuditHistoryShown: any;
 }
 
-const whiteText = { color: "white" };
-
 export const MenuBar: React.FC<Props> = ({
   uploadNewPdf,
   addDrawing,
@@ -46,7 +47,9 @@ export const MenuBar: React.FC<Props> = ({
   setIsAuditHistoryShown,
 }) => {
   const [isRejectMenuOpen, setIsRejectMenuOpen] = useState(false);
+  const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [pdfLiveUrl, setPdfLiveUrl] = useState("");
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -54,6 +57,15 @@ export const MenuBar: React.FC<Props> = ({
 
   const trackerData = useSelector((state: any) => state.allFinalDataReducer);
   const basicInfoData = useSelector((state: any) => state.basicInfoData);
+
+  useEffect(() => {
+    if (basicInfoData) {
+      const { uuid } = basicInfoData;
+      setPdfLiveUrl(`${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`);
+    }
+
+    return () => {};
+  }, [basicInfoData]);
 
   const handleRejection = () => {
     if (commentText) {
@@ -68,13 +80,50 @@ export const MenuBar: React.FC<Props> = ({
 
   const handleViewPdf = async () => {
     try {
-      console.log(basicInfoData);
-      const { uuid } = basicInfoData;
+      setIsPdfViewerOpen(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-      window.open(
-        `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`,
-        "_blank"
-      );
+  const handlePrintPdf = async () => {
+    try {
+      window.open(pdfLiveUrl, "_blank", "");
+
+      // const innerText = `<iframe id="pdfviewer" src="${pdfLiveUrl}" type="application/pdf"  width="100%" height="500px"></iframe>`;
+      // const iframeElement = document.createElement("iframe");
+      // iframeElement.id = "pdfviewer";
+      // iframeElement.src = pdfLiveUrl;
+      // iframeElement.setAttribute("type", "application/pdf");
+      // iframeElement.style.height = "100%";
+      // iframeElement.style.width = "100%";
+      // // iframeElement.style.display = "none";
+      // iframeElement.onload = () => {
+      //   // window.frames.pdfviewer?.print()
+      //   const element: any = document.getElementById("pdfviewer");
+      //   element.contentWindow.print();
+      //   console.log(element);
+      //   // window.frames.pdfFrame.print();
+      // };
+      // document.body.appendChild(iframeElement);
+      // setTimeout(() => {
+      //   mywindow.focus(); // necessary for IE >= 10*/
+      //   mywindow.document.close(); // necessary for IE >= 10
+      //   mywindow.print();
+      //   mywindow.close();
+      // }, 2000);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleDownloadPdf = () => {
+    try {
+      const a = document.createElement("a");
+      a.href = `${pdfLiveUrl}&isDownload=true`;
+      a.download = "document.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch (err) {
       console.log(err);
     }
@@ -143,10 +192,13 @@ export const MenuBar: React.FC<Props> = ({
                   </DropdownItem>
                   <DropdownItem
                     onClick={() => {
-                      handleViewPdf();
+                      handlePrintPdf();
                     }}
                   >
                     Print
+                  </DropdownItem>
+                  <DropdownItem onClick={() => handleDownloadPdf()}>
+                    Download
                   </DropdownItem>
                   {/* <DropdownItem text>Asign To Someone Else</DropdownItem> */}
                   {/* <DropdownItem disabled>Action (disabled)</DropdownItem> */}
@@ -185,6 +237,17 @@ export const MenuBar: React.FC<Props> = ({
           )}
         </div>
       </div>
+
+      {/*  */}
+      <PdfViewer
+        isPdfViewerOpen={isPdfViewerOpen}
+        setIsPdfViewerOpen={setIsPdfViewerOpen}
+        pdfLiveUrl={pdfLiveUrl}
+        handleDownloadPdf={handleDownloadPdf}
+      />
+      {/*  */}
+
+      {/*  */}
 
       <Modal
         isOpen={isRejectMenuOpen}
@@ -240,35 +303,131 @@ export const MenuBar: React.FC<Props> = ({
   );
 };
 
-// <Menu pointing className="menubar-container p-2">
-//   <Menu.Item header style={whiteText}>
-//     Ew Sign Pad
-//   </Menu.Item>
+const PdfViewer = ({
+  isPdfViewerOpen,
+  setIsPdfViewerOpen,
+  pdfLiveUrl,
+  handleDownloadPdf,
+}: {
+  isPdfViewerOpen: any;
+  setIsPdfViewerOpen: any;
+  pdfLiveUrl: any;
+  handleDownloadPdf: any;
+}) => {
+  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+  //
+  const [numPages, setNumPages] = useState(0);
+  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const zoomContainerRef = useRef<any>(null);
 
-//   <Menu.Item>
-//     Helllo
-//     {/* <Line percent={10} strokeWidth={4} strokeColor="#D3D3D3" style={{}} /> */}
-//   </Menu.Item>
+  const zoomControl = (operation: string) => {
+    switch (operation) {
+      case "in":
+        zoomContainerRef.current.zoomIn(0.1);
+        break;
+      case "out":
+        zoomContainerRef.current.zoomOut();
+        break;
 
-//   <Menu.Menu position="right">
-//     {isPdfLoaded && (
-//       <>
-//         <Menu.Item
-//           data-testid="save-menu-item"
-//           name={"Reject"}
-//           // disabled={savingPdfStatus}
-//           onClick={rejectSign}
-//           className="submit-btn"
-//         />
+      default:
+        break;
+    }
+  };
 
-//         <Menu.Item
-//           data-testid="save-menu-item"
-//           name={"Submit"}
-//           // disabled={savingPdfStatus}
-//           onClick={savePdf}
-//           className="submit-btn"
-//         />
-//       </>
-//     )}
-//   </Menu.Menu>
-// </Menu>
+  return (
+    <Modal
+      isOpen={isPdfViewerOpen}
+      onClosed={() => setIsPdfViewerOpen(false)}
+      centered
+      className="modal-container"
+      toggle={() => setIsPdfViewerOpen(false)}
+      fade={false}
+      // size={"xl"}
+      fullscreen
+    >
+      {/* <ModalHeader>Total Pages :- {numPages === 0 ? "" : numPages}</ModalHeader> */}
+      <ModalBody className="">
+        <div
+          className="pdfviewer-header d-flex justify-content-center gap-3 py-2 text-light mb-2"
+          style={{
+            fontSize: "1rem",
+            backgroundColor: "#354259",
+            position: "sticky",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1,
+          }}
+        >
+          {deviceWidth >= 600 && (
+            <>
+              <span>
+                <i
+                  className="fa-solid fa-magnifying-glass-plus cursor-pointer"
+                  onClick={() => zoomControl("in")}
+                ></i>
+              </span>
+              <span>
+                <i
+                  className="fa-solid fa-magnifying-glass-minus cursor-pointer"
+                  onClick={() => zoomControl("out")}
+                ></i>
+              </span>
+            </>
+          )}
+          <span>
+            <i
+              className="fa-solid fa-download cursor-pointer"
+              onClick={() => handleDownloadPdf()}
+            ></i>
+          </span>
+          <span>
+            <i className="fa-solid fa-print"></i>
+          </span>
+        </div>
+        <div className="d-flex justify-content-center print-pdf-main-container">
+          <TransformWrapper
+            maxScale={3}
+            initialScale={1}
+            disablePadding
+            wheel={{ disabled: true }}
+            disabled={deviceWidth <= 600}
+            ref={zoomContainerRef}
+          >
+            <TransformComponent>
+              <Document
+                file={pdfLiveUrl}
+                onLoadSuccess={({ numPages }) => {
+                  setNumPages(numPages);
+                }}
+                renderMode="canvas"
+              >
+                {[...Array(numPages)].map((_, index) => {
+                  return (
+                    <div key={index} className="m-0 p-0 mb-5 my-3">
+                      <Page
+                        pageNumber={index + 1}
+                        className="border animated-pdf-page"
+                      />
+                      <div style={{ textAlign: "right" }} className="fw-bold">
+                        {index + 1} of {numPages}
+                      </div>
+                    </div>
+                  );
+                })}
+              </Document>
+            </TransformComponent>
+          </TransformWrapper>
+        </div>
+      </ModalBody>
+      <ModalFooter>
+        <button
+          className="btn custom-btn1"
+          onClick={() => setIsPdfViewerOpen(false)}
+        >
+          Close
+        </button>
+      </ModalFooter>
+    </Modal>
+  );
+};

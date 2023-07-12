@@ -73,3 +73,19 @@
   }
 }
 /*  */
+
+.animated-pdf-page {
+  user-select: none;
+  transition: all 0.5s;
+}
+
+/*  */
+.print-pdf-main-container {
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
+/*  */
+.cursor-pointer {
+  cursor: pointer;
+}

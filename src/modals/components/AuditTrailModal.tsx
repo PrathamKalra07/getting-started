@@ -94,6 +94,7 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
 
   const handlePrint = async (e: any) => {
     try {
+      setIsLoading(true);
       var mywindow: any = window.open("", "PRINT", "height=1000,width=1000");
 
       var allTableDataInHTML: string = "";
@@ -242,13 +243,13 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
       </html>`;
       mywindow.document.write(htmlString);
 
-      mywindow.focus(); // necessary for IE >= 10*/
-
       setTimeout(() => {
+        mywindow.focus(); // necessary for IE >= 10*/
         mywindow.document.close(); // necessary for IE >= 10
         mywindow.print();
         mywindow.close();
-      }, 500);
+        setIsLoading(false);
+      }, 1500);
 
       return true;
     } catch (err) {
