@@ -342,6 +342,13 @@ const App: React.FC = () => {
       }
     }
 
+    // here changed
+    if (tempState.coordinatesList.length === 0) {
+      alert("oops there is no fields are seems");
+
+      return;
+    }
+
     if (!isSignatureDone) {
       alert("Please Fill Signature");
     } else if (!isTextDataDone) {
@@ -754,7 +761,7 @@ const App: React.FC = () => {
           uuidTemplateInstance as string,
           uuidSignatory as string
         );
-        await uploadPdf(uuid);
+        await uploadPdf(uuid, uuidTemplateInstance);
       };
       fetchingAsync();
     }

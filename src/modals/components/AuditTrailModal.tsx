@@ -75,8 +75,10 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
 
       let { data } = await Axios.request(reqOptions);
 
-      setAuditTrailData(data.data.auditData.reverse());
-      setTemplateData(data.data.templateData);
+      const { auditData, templateData } = data.data;
+
+      setAuditTrailData(auditData);
+      setTemplateData(templateData);
     } catch (err) {
       console.log(err);
     } finally {
@@ -110,7 +112,7 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
                     ${moment(item.created_at).format("MM/DD/YYYY")}
                 </span>
                 <span class="fw-lighter ">
-                    ${moment(item.created_at).format("HH:MM:SS a")}
+                    ${moment(item.created_at).format("hh:mm:ss a")}
                 </span>
              </div>
         </td>
@@ -182,13 +184,13 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
               <div class="d-flex flex-row  gap-sm-5 mb-4">
                   <div>
                       <h6 class="fw-bold ">Last change on</h6><span>${moment(
-                        auditTrailData[auditTrailData.length - 1].created_at
-                      ).format("MM/DD/YYYY | HH:MM:SS a")}</span>
+                        templateData.lastChangedOn
+                      ).format("MM/DD/YYYY | hh:mm:ss a")}</span>
                   </div>
                   <div>
                       <h6 class="fw-bold">Sent on</h6><span>${moment(
                         templateData.sentOn
-                      ).format("MM/DD/YYYY | HH:MM:SS a")}</span>
+                      ).format("MM/DD/YYYY | hh:mm:ss a")}</span>
                   </div>
                   <div>
                       <h6 class="fw-bold">Time Zone</h6><span>
@@ -284,16 +286,16 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
                     <div>
                       <h6 className="fw-bold ">Last change on</h6>
                       <span>
-                        {moment(
-                          auditTrailData[auditTrailData.length - 1].created_at
-                        ).format("MM/DD/YYYY | HH:MM:SS a")}
+                        {moment(templateData.lastChangedOn).format(
+                          "MM/DD/YYYY | hh:mm:ss a"
+                        )}
                       </span>
                     </div>
                     <div>
                       <h6 className="fw-bold">Sent on</h6>
                       <span>
                         {moment(templateData.sentOn).format(
-                          "MM/DD/YYYY | HH:MM:SS a"
+                          "MM/DD/YYYY | hh:mm:ss a"
                         )}
                       </span>
                     </div>
@@ -377,7 +379,7 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
                                 {moment(item.created_at).format("MM/DD/YYYY")}
                               </span>
                               <span className="fw-lighter ">
-                                {moment(item.created_at).format("HH:MM:SS a")}
+                                {moment(item.created_at).format("hh:mm:ss a")}
                               </span>
                             </div>
                           </th>

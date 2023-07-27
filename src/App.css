@@ -5,7 +5,8 @@
 /*  */
 
 .signature-indicator {
-  background-color: var(--color4);
+  /* background-color: var(--color4); */
+  background-color: #1d5d9b;
   color: white;
   width: 100px;
   position: absolute;

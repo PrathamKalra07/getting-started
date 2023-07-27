@@ -87,12 +87,12 @@ export const useUploader = ({
     }
   };
 
-  const upload = async (uuid?: any) => {
+  const upload = async (uuid?: any, uuidTemplateInstance?: any) => {
     if (!isUploading) {
       return;
     }
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`,
+      `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}&tiUUID=${uuidTemplateInstance}`,
       {
         method: "GET",
         headers: {

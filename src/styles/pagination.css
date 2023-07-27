@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: space-around;
   /* width: 15%; */
-  width: 30%;
+  width: 28%;
   border-radius: 10px;
   background-color: var(--color4);
 }
@@ -34,7 +34,7 @@
 
 @media screen and (max-width: 992px) {
   .pagination-inner-container {
-    width: 45% !important;
+    width: 35% !important;
     /* max-width: 220px; */
   }
 }

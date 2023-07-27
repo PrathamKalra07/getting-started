@@ -21,7 +21,6 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
-import axios from "axios";
 
 interface Props {
   uploadNewPdf: () => void;
@@ -48,6 +47,12 @@ export const MenuBar: React.FC<Props> = ({
 }) => {
   const [isRejectMenuOpen, setIsRejectMenuOpen] = useState(false);
   const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
+
+  //
+  const [isFinishAlertShown, setIsFinishAlertShown] = useState(false);
+  const [isAgreeCheckBoxChecked, setIsAgreeCheckBoxChecked] = useState(false);
+
+  //
   const [commentText, setCommentText] = useState("");
   const [pdfLiveUrl, setPdfLiveUrl] = useState("");
 
@@ -76,6 +81,7 @@ export const MenuBar: React.FC<Props> = ({
 
   const closeCurrentModal = () => {
     setIsRejectMenuOpen(false);
+    setIsFinishAlertShown(false);
   };
 
   const handleViewPdf = async () => {
@@ -168,7 +174,11 @@ export const MenuBar: React.FC<Props> = ({
         <div className="d-flex justify-content-center align-items-center header-main-container gap-sm-2 ">
           {isPdfLoaded && (
             <>
-              <button className="submit-btn btn" onClick={savePdf}>
+              <button
+                className="submit-btn btn"
+                // onClick={savePdf}
+                onClick={() => setIsFinishAlertShown(true)}
+              >
                 Finish
               </button>
 
@@ -247,8 +257,68 @@ export const MenuBar: React.FC<Props> = ({
       />
       {/*  */}
 
+      {/* check to agree modal */}
+      <Modal
+        isOpen={isFinishAlertShown}
+        onClosed={closeCurrentModal}
+        centered
+        className="modal-container"
+        toggle={closeCurrentModal}
+        fade={false}
+        size={"lg"}
+      >
+        <ModalHeader>Are You Agree ?</ModalHeader>
+        <ModalBody>
+          <div>
+            <div className="form-group mb-0">
+              <div className="d-flex gap-2">
+                <input
+                  type="checkbox"
+                  className="inline d-flex align-self-start mt-1"
+                  id="terms"
+                  defaultValue="false"
+                  onChange={(e) => {
+                    setIsAgreeCheckBoxChecked(e.target.checked);
+                  }}
+                />
+                <label
+                  className="x-small font-weight-normal mx-2"
+                  htmlFor="terms"
+                >
+                  By clicking this checkbox and the Sign Document button, I
+                  agree that this mark will be the electronic representation of
+                  my signature for the electronic document. I also understand
+                  that recipients of electronic documents I sign will be able to
+                  see my signing details, including but not restricted to my
+                  Email ID/Phone Number and IP address.
+                </label>
+              </div>
+            </div>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <button className="btn " onClick={closeCurrentModal}>
+            Cancel
+          </button>
+          <span className="px-2"> </span>
+          <button
+            onClick={() => {
+              savePdf();
+              closeCurrentModal();
+            }}
+            className={`btn custom-btn1 ${
+              !isAgreeCheckBoxChecked ? "text-dark bg-secondary" : null
+            }`}
+            disabled={!isAgreeCheckBoxChecked}
+          >
+            Done
+          </button>
+        </ModalFooter>
+      </Modal>
       {/*  */}
 
+      {/*  */}
+      {/* reject to sign */}
       <Modal
         isOpen={isRejectMenuOpen}
         onClosed={closeCurrentModal}
