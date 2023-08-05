@@ -2,6 +2,7 @@ import React, { createRef, useEffect, useState } from 'react';
 import { DragActions } from '../entities';
 import { getMovePosition } from '../utils/helpers';
 import { Drawing as DrawingComponent } from '../components/Drawing';
+import { DrawingAttachment } from '../types';
 
 interface Props {
   pageWidth: number;

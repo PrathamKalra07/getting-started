@@ -66,3 +66,17 @@ interface SignatureObject {
   id: number;
   data: string;
 }
+
+export interface coord {
+
+}
+
+export interface Signatory {
+  signatoryUUID: string;
+  signatoryName: string;
+  coordData: coord[];
+}
+
+export interface selectOption {
+  label: string; value: number;
+}

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Text as Component } from '../components/Text';
 import { getMovePosition } from '../utils/helpers';
 import { DragActions, TextMode } from '../entities';
+import { TextAttachment } from '../types';
 
 interface Props {
   pageWidth: number;

@@ -3,6 +3,7 @@ import { AttachmentTypes } from '../entities';
 import { Image } from '../containers/Image';
 import { Drawing } from '../containers/Drawing';
 import { Text } from '../containers/Text';
+import { Attachment, Dimensions, DrawingAttachment, ImageAttachment, TextAttachment } from '../types';
 
 interface Props {
   attachments: Attachment[];

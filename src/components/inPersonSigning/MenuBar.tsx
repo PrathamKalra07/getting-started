@@ -10,9 +10,6 @@ import {
   ModalBody,
   ModalHeader,
   ModalFooter,
-  FormGroup,
-  Label,
-  Input,
 } from "reactstrap";
 import {
   Dropdown,
@@ -22,46 +19,40 @@ import {
 } from "reactstrap";
 
 interface Props {
-  uploadNewPdf: () => void;
-  addText: () => void;
-  addImage: () => void;
-  addDrawing: () => void;
   isPdfLoaded: boolean;
-  savingPdfStatus: boolean;
   savePdf: () => void;
   rejectSign: (commentText: string) => void;
   setIsAuditHistoryShown: any;
 }
 
 export const MenuBar: React.FC<Props> = ({
-  uploadNewPdf,
-  addDrawing,
-  addText,
-  addImage,
   isPdfLoaded,
-  savingPdfStatus,
   savePdf,
-  rejectSign,
   setIsAuditHistoryShown,
 }) => {
-  const [isRejectMenuOpen, setIsRejectMenuOpen] = useState(false);
   const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
-
-  //
   const [isFinishAlertShown, setIsFinishAlertShown] = useState(false);
   const [isAgreeCheckBoxChecked, setIsAgreeCheckBoxChecked] = useState(false);
-
-  //
-  const [commentText, setCommentText] = useState("");
   const [pdfLiveUrl, setPdfLiveUrl] = useState("");
-
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropDown = () => setDropdownOpen((prevState) => !prevState);
+  const activeSignatory = useSelector(
+    (state: any) => state.inPersonActiveSignatory.activeSignatory
+  );
+  const inPersonCoordinatesList = useSelector((state: any) => state.inPersonCoordinatesList);
+  // const trackerData = useSelector((state: any) => state.inPersonCoordinatesList.signatoryList.find(signatory => signatory.signatoryUUID === activeSignatory.value));
+  const basicInfoData = useSelector((state: any) => state.inPersonBasicInfoData);
 
-  const trackerData = useSelector((state: any) => state.allFinalDataReducer);
-  const basicInfoData = useSelector((state: any) => state.basicInfoData);
-
+  let totalNoOfFields = 0;
+  let completedNoOfFields = 0;
+  if(inPersonCoordinatesList.signatoryList.length>0) {
+    const trackerData = inPersonCoordinatesList.signatoryList.find(signatory => signatory.signatoryUUID === activeSignatory.value);
+     totalNoOfFields = trackerData.totalNoOfFields;
+     completedNoOfFields = trackerData.completedNoOfFields;
+  }
+  // console.log(inPersonCoordinatesList);
+  
   useEffect(() => {
     if (basicInfoData) {
       const { uuid } = basicInfoData;
@@ -71,15 +62,8 @@ export const MenuBar: React.FC<Props> = ({
     return () => {};
   }, [basicInfoData]);
 
-  const handleRejection = () => {
-    if (commentText) {
-      rejectSign(commentText);
-      setIsRejectMenuOpen(false);
-    }
-  };
 
   const closeCurrentModal = () => {
-    setIsRejectMenuOpen(false);
     setIsFinishAlertShown(false);
   };
 
@@ -94,29 +78,6 @@ export const MenuBar: React.FC<Props> = ({
   const handlePrintPdf = async () => {
     try {
       window.open(pdfLiveUrl, "_blank", "");
-
-      // const innerText = `<iframe id="pdfviewer" src="${pdfLiveUrl}" type="application/pdf"  width="100%" height="500px"></iframe>`;
-      // const iframeElement = document.createElement("iframe");
-      // iframeElement.id = "pdfviewer";
-      // iframeElement.src = pdfLiveUrl;
-      // iframeElement.setAttribute("type", "application/pdf");
-      // iframeElement.style.height = "100%";
-      // iframeElement.style.width = "100%";
-      // // iframeElement.style.display = "none";
-      // iframeElement.onload = () => {
-      //   // window.frames.pdfviewer?.print()
-      //   const element: any = document.getElementById("pdfviewer");
-      //   element.contentWindow.print();
-      //   console.log(element);
-      //   // window.frames.pdfFrame.print();
-      // };
-      // document.body.appendChild(iframeElement);
-      // setTimeout(() => {
-      //   mywindow.focus(); // necessary for IE >= 10*/
-      //   mywindow.document.close(); // necessary for IE >= 10
-      //   mywindow.print();
-      //   mywindow.close();
-      // }, 2000);
     } catch (err) {
       console.log(err);
     }
@@ -134,8 +95,6 @@ export const MenuBar: React.FC<Props> = ({
     }
   };
 
-  const options = [{"label": "signer1", "value": 1}, {"label": "signer1", "value": 2}];
-  const selectedSigner = {"label": "signer1", "value": 1};
   return (
     <>
       <div className="menubar-container p-2 px-3 ">
@@ -153,8 +112,8 @@ export const MenuBar: React.FC<Props> = ({
             {/*  */}
 
             <ProgressBar
-              completed={trackerData.completedNoOfFields}
-              maxCompleted={trackerData.totalNoOfFields}
+              completed={completedNoOfFields}
+              maxCompleted={totalNoOfFields}
               isLabelVisible={false}
               height="5px"
               bgColor="#ece5c7"
@@ -164,7 +123,7 @@ export const MenuBar: React.FC<Props> = ({
               className="text-center mb-1"
               style={{ color: "rgba(255,255,255,0.7)" }}
             >
-              {trackerData.completedNoOfFields} of {trackerData.totalNoOfFields}{" "}
+              {completedNoOfFields} of {totalNoOfFields}{" "}
               required fields completed
             </div>
 
@@ -178,7 +137,6 @@ export const MenuBar: React.FC<Props> = ({
             <>
               <button
                 className="submit-btn btn"
-                // onClick={savePdf}
                 onClick={() => setIsFinishAlertShown(true)}
               >
                 Finish
@@ -198,10 +156,6 @@ export const MenuBar: React.FC<Props> = ({
                   Options
                 </DropdownToggle>
                 <DropdownMenu style={{ minWidth: 150 }}>
-                  {/* <DropdownItem header>Header</DropdownItem> */}
-                  <DropdownItem onClick={() => setIsRejectMenuOpen(true)}>
-                    Reject
-                  </DropdownItem>
                   <DropdownItem
                     onClick={() => {
                       handlePrintPdf();
@@ -212,8 +166,6 @@ export const MenuBar: React.FC<Props> = ({
                   <DropdownItem onClick={() => handleDownloadPdf()}>
                     Download
                   </DropdownItem>
-                  {/* <DropdownItem text>Asign To Someone Else</DropdownItem> */}
-                  {/* <DropdownItem disabled>Action (disabled)</DropdownItem> */}
                   <DropdownItem divider />
                   <DropdownItem
                     onClick={() => {
@@ -238,13 +190,6 @@ export const MenuBar: React.FC<Props> = ({
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-
-              {/* <button
-                className="submit-btn btn"
-                onClick={() => setIsRejectMenuOpen(true)}
-              >
-                Reject
-              </button> */}
             </>
           )}
         </div>
@@ -317,60 +262,6 @@ export const MenuBar: React.FC<Props> = ({
           </button>
         </ModalFooter>
       </Modal>
-      {/*  */}
-
-      {/*  */}
-      {/* reject to sign */}
-      <Modal
-        isOpen={isRejectMenuOpen}
-        onClosed={closeCurrentModal}
-        centered
-        className="modal-container"
-        toggle={closeCurrentModal}
-        fade={false}
-        size={"lg"}
-      >
-        <ModalHeader>Reject To Sign</ModalHeader>
-        <ModalBody>
-          <div>
-            <FormGroup>
-              <Label for="exampleText" className="text-dark">
-                You're about to reject to sign,
-                <br /> Note that all the changes you've made to this document
-                will be lost. We advise you to carefully review this again.
-              </Label>
-
-              <h6 className="fw-bold my-3" style={{ fontSize: "1rem" }}>
-                Please provide your reason for declining here:
-              </h6>
-              <Input
-                type="textarea"
-                name="text"
-                id="exampleText"
-                style={{ minHeight: 150 }}
-                placeholder="Reason For Reject"
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-              />
-            </FormGroup>
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <button className="btn " onClick={closeCurrentModal}>
-            Cancel
-          </button>
-          <span className="px-2"> </span>
-          <button
-            onClick={handleRejection}
-            className={`btn custom-btn1 ${
-              !commentText ? "text-dark bg-secondary" : null
-            }`}
-            disabled={!commentText}
-          >
-            Done
-          </button>
-        </ModalFooter>
-      </Modal>
     </>
   );
 };
@@ -387,7 +278,6 @@ const PdfViewer = ({
   handleDownloadPdf: any;
 }) => {
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-  //
   const [numPages, setNumPages] = useState(0);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const zoomContainerRef = useRef<any>(null);
@@ -414,10 +304,8 @@ const PdfViewer = ({
       className="modal-container"
       toggle={() => setIsPdfViewerOpen(false)}
       fade={false}
-      // size={"xl"}
       fullscreen
     >
-      {/* <ModalHeader>Total Pages :- {numPages === 0 ? "" : numPages}</ModalHeader> */}
       <ModalBody className="">
         <div
           className="pdfviewer-header d-flex justify-content-center gap-3 py-2 text-light mb-2"

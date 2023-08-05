@@ -4,6 +4,7 @@ import { normalize } from "./helpers";
 import { Buffer } from "buffer";
 import axios from "axios";
 import { fetchIpInfo } from "./fetchIpInfo";
+import { Attachments } from "../types";
 
 export async function Save(
   pdfFile: File,

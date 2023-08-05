@@ -5,33 +5,25 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 
 import { useDropzone } from "react-dropzone";
 import {
-  // Modal,
-  // Button,
   Menu,
-  Dropdown,
-  Label,
   Icon,
 } from "semantic-ui-react";
 
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
-import { Row, Col, Card, CardBody, CardSubtitle, Button } from "reactstrap";
+import { Row, Col, Card, CardBody } from "reactstrap";
 import SignaturePad from "react-signature-pad-wrapper";
 import BounceLoader from "react-spinners/BounceLoader";
 
 //
-import { createTextSignature } from "../../utils/textSignature";
-
-//
-import { Color } from "../../entities";
+import { createTextSignature } from "../../../utils/textSignature";
 
 //
 import {
   setAllPreviousSignatures,
-  setSignaturePathWithEncoddedImg,
-} from "../../redux/slices/signatureReducer";
-import { trimImageData } from "../../utils/module/TrimImageData";
-import trimCanvas from "../../utils/module/trimCanvasModule";
-import { DrawingAttachment, SignatureObject } from "../../types";
+} from "../../../redux/slices/signatureReducer";
+import trimCanvas from "../../../utils/module/trimCanvasModule";
+import { DrawingAttachment, SignatureObject } from "../../../types";
+import { updateSignatorySignatureValue } from "../../../redux/slices/inPersonSigning/coordinatesReducer";
 
 interface Props {
   open: boolean;
@@ -68,6 +60,14 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
     (state: any) => state.signatureList.allPreviousSignatures
   );
   const externalUsersData = useSelector((state: any) => state.externalUser);
+
+  const activeSignatory = useSelector(
+    (state: any) => state.inPersonActiveSignatory.activeSignatory
+  );
+
+  const allSignatureList = useSelector(
+    (state: any) => state.inPersonSignatureList.allSignatureData
+  );
 
   const dispatch = useDispatch();
 
@@ -106,14 +106,11 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
 
   const handleDone = async () => {
     const encodedImgData = allPreviousSignatures[activeSignatureIndex].data;
-
+    
     dispatch(
-      setSignaturePathWithEncoddedImg({
-        path: "",
-        encodedImgData: encodedImgData,
-        reduxState,
-        textValue: "",
-        isSignature: true,
+      updateSignatorySignatureValue({
+        signatoryUUID: activeSignatory.value,
+        newValue: encodedImgData
       })
     );
 
@@ -181,14 +178,12 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
 
       await fetchAllSignatures();
 
-      if (allPreviousSignatures.length == 1) {
+      if (allPreviousSignatures.length === 1) {
+
         dispatch(
-          setSignaturePathWithEncoddedImg({
-            path: "",
-            encodedImgData: "",
-            reduxState,
-            textValue: "",
-            isSignature: true,
+          updateSignatorySignatureValue({
+            signatoryUUID: activeSignatory.value,
+            newValue: ""
           })
         );
       }
@@ -214,14 +209,12 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
       };
       await Axios.request(reqOptions);
       dispatch(
-        setSignaturePathWithEncoddedImg({
-          path: "",
-          encodedImgData: signatureDataBase64,
-          reduxState,
-          textValue: "",
-          isSignature: true,
+        updateSignatorySignatureValue({
+          signatoryUUID: activeSignatory.value,
+          newValue: signatureDataBase64
         })
       );
+
 
       await fetchAllSignatures();
     } catch (err) {
@@ -235,12 +228,9 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
     try {
       if (allPreviousSignatures.length == 0) {
         dispatch(
-          setSignaturePathWithEncoddedImg({
-            path: "",
-            encodedImgData: "",
-            reduxState,
-            textValue: "",
-            isSignature: true,
+          updateSignatorySignatureValue({
+            signatoryUUID: activeSignatory.value,
+            newValue: ""
           })
         );
       }
@@ -548,7 +538,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
                             <img
                               alt="Sample"
                               className="w-100"
-                              src={require("../../assets/illustrations/undraw_learning_sketching_nd4f.png")}
+                              src={require("../../../assets/illustrations/undraw_learning_sketching_nd4f.png")}
                             />
                           </Col>
                           <Col
@@ -592,7 +582,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
                             <img
                               alt="Sample"
                               className="w-100"
-                              src={require("../../assets/illustrations/undraw_Updated_resume_re_7r9j.png")}
+                              src={require("../../../assets/illustrations/undraw_Updated_resume_re_7r9j.png")}
                             />
                           </Col>
                           <Col
@@ -930,7 +920,7 @@ const UploadSignature = memo(
 
               <img
                 style={{ maxWidth: "300px" }}
-                src={require("../../assets/illustrations/undraw_Going_up_re_86kg.png")}
+                src={require("../../../assets/illustrations/undraw_Going_up_re_86kg.png")}
                 className="my-2 w-100"
                 alt="img"
               />

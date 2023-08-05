@@ -3,6 +3,7 @@ import { readAsPDF, readAsDataURL, readAsImage } from "../utils/asyncReader";
 import { ggID } from "../utils/helpers";
 import { Pdf } from "./usePdf";
 import { AttachmentTypes } from "../entities";
+import { Attachment, ImageAttachment } from "../types";
 
 type ActionEvent<T> = React.TouchEvent<T> | React.MouseEvent<T>;
 

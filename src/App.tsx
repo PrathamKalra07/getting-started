@@ -42,6 +42,7 @@ import {
 } from "./redux/slices/elementsNavigationHelperReducer";
 import { fetchIpInfo } from "./utils/fetchIpInfo";
 import { AuditTrailModal } from "./modals/components/AuditTrailModal";
+import { TextAttachment } from "./types";
 
 const App: React.FC = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);

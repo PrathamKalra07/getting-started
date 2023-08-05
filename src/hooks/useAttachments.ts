@@ -1,4 +1,5 @@
 import { useReducer, useCallback } from "react";
+import { Attachment, Attachments } from "../types";
 
 enum ActionType {
   RESET = "RESET",
