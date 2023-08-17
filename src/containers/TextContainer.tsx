@@ -22,6 +22,10 @@ export const TextContainer: React.FC<Props> = ({
     (state: any) => state.coordinatesList.allCoordinateData
   );
 
+  const recordData = useSelector(
+    (state: any) => state.coordinatesList.recordData
+  );
+
   const allTextElementDataSelector = useSelector(
     (state: any) => state.textList.allTextData[currentPageNo]
   );
@@ -48,13 +52,14 @@ export const TextContainer: React.FC<Props> = ({
       //
       allCordinatesData.map((item: any, i: number) => {
         if (item.fieldType == "Text") {
+
           if (!textDataPagesWise[item.pageNo]) {
             textDataPagesWise[item.pageNo] = [];
           }
 
           textDataPagesWise[item.pageNo] = [
             ...textDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, value: "", index: i },
+            { ...item, id: item.eleId, index: i },
           ];
         }
       });

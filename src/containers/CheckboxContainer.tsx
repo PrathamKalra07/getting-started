@@ -47,14 +47,14 @@ export const CheckboxContainer: React.FC<Props> = ({
     if (allCordinatesData) {
       //
       allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType == "Checkbox") {
+        if (item.fieldType === "Checkbox") {
           if (!checkboxDataPagesWise[item.pageNo]) {
             checkboxDataPagesWise[item.pageNo] = [];
           }
 
           checkboxDataPagesWise[item.pageNo] = [
             ...checkboxDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, value: false, index: i },
+            { ...item, id: item.eleId, index: i },
           ];
         }
       });

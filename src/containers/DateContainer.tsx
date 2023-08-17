@@ -53,7 +53,7 @@ export const DateContainer: React.FC<Props> = ({
 
           dateDataPagesWise[item.pageNo] = [
             ...dateDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, value: "", index: i },
+            { ...item, id: item.eleId, index: i },
           ];
         }
       });
