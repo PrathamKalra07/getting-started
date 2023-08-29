@@ -1,5 +1,6 @@
 import React, { RefObject } from "react";
 import { TextMode } from "../entities";
+import { DragEventListener } from "../types";
 
 interface Props {
   inputRef: RefObject<HTMLInputElement>;

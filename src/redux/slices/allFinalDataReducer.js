@@ -15,9 +15,13 @@ export const allFinalDataSlice = createSlice({
     setTotalNoOfFields: (state, action) => {
       const { allCoordinateData } = action.payload;
       state.totalNoOfFields = allCoordinateData.filter(
-        (item) => item.fieldType != "Checkbox"
+        (item) => item.fieldType !== "Checkbox"
       ).length;
     },
+    setCompletedNoOfFields: (state, action) => {
+      const { completedNoOfFields } = action.payload;
+      state.completedNoOfFields = completedNoOfFields
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(changeTextData.type, (state, action) => {
@@ -48,6 +52,6 @@ export const allFinalDataSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setTotalNoOfFields } = allFinalDataSlice.actions;
+export const { setTotalNoOfFields, setCompletedNoOfFields } = allFinalDataSlice.actions;
 
 export default allFinalDataSlice.reducer;

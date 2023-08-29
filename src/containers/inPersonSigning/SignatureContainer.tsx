@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 //
-import { SignaturePad } from "../components/SignaturePad";
-
-//
-
-import { setSignatureData } from "../redux/slices/signatureReducer";
+import { SignaturePad } from "../../components/inPersonSigning/SignaturePad";
+import { fetchCoordsPageAndTypeWise } from "../../utils/InPersonSigning/fetchCoordPageWise";
+import { setSignatureData } from "../../redux/slices/inPersonSigning/signatureReducer";
 
 interface Props {
   page: any;
@@ -22,18 +20,21 @@ export const SignatureContainer: React.FC<Props> = ({
   isFetchingCordinatesData,
   // allCordinatesData,
 }) => {
-  const [currentPageNo, setCurrentPageNo] = useState(0);
 
+  const [currentPageNo, setCurrentPageNo] = useState(0);
+  const activeSignatory = useSelector(
+    (state: any) => state.inPersonActiveSignatory.activeSignatory
+  );
   const allCordinatesData = useSelector(
-    (state: any) => state.coordinatesList.allCoordinateData
+    (state: any) => state.inPersonCoordinatesList.allCoordinateData
   );
 
   const signatureEncodedImgData = useSelector(
-    (state: any) => state.signatureList.encodedImgData
+    (state: any) => state.inPersonCoordinatesList.signatoryList.filter(signatory => signatory.signatoryUUID === activeSignatory.value)[0].value
   );
 
   const allCoordinatesElementDataSelector = useSelector(
-    (state: any) => state.signatureList.allSignatureData[currentPageNo]
+    (state: any) => state.inPersonSignatureList.allSignatureData[currentPageNo]
   );
 
   //
@@ -52,27 +53,13 @@ export const SignatureContainer: React.FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    var signatureDataPagesWise: any = {};
-
-    if (allCordinatesData) {
-      //
-      allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType === "Signature") {
-          if (!signatureDataPagesWise[item.pageNo]) {
-            signatureDataPagesWise[item.pageNo] = [];
-          }
-
-          signatureDataPagesWise[item.pageNo] = [
-            ...signatureDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, value: "", index: i },
-          ];
-        }
-      });
-
-      dispatch(setSignatureData({ allSignatureData: signatureDataPagesWise }));
-    }
+    console.log('@@@ SIGNATURE CONTAINER called....');
+    const {coordsPagesWise} = fetchCoordsPageAndTypeWise(allCordinatesData, activeSignatory.value, 'Signature');
+    
+    dispatch(setSignatureData({ allSignatureData: coordsPagesWise }));
     return () => {};
-  }, [isFetchingCordinatesData]);
+  }, [activeSignatory]);
+  
 
   return (
     <>

@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
 //
-import { DatePad } from "../components/DatePad";
-import { changeDateData, setDateData } from "../redux/slices/dateReducer";
+import { DatePad } from "../../components/inPersonSigning/DatePad";
+import { changeDateData, setDateData } from "../../redux/slices/inPersonSigning/dateReducer";
+import { fetchCoordsPageAndTypeWise } from "../../utils/InPersonSigning/fetchCoordPageWise";
+import { updateCoordinateData } from "../../redux/slices/inPersonSigning/coordinatesReducer";
 
 interface Props {
   page: any;
@@ -19,11 +21,13 @@ export const DateContainer: React.FC<Props> = ({
 
   const reduxState = useSelector((state: any) => state);
   const allCordinatesData = useSelector(
-    (state: any) => state.coordinatesList.allCoordinateData
+    (state: any) => state.inPersonCoordinatesList.allCoordinateData
   );
-
+  const activeSignatory = useSelector(
+    (state: any) => state.inPersonActiveSignatory.activeSignatory
+  );
   const allDateElementDataSelector = useSelector(
-    (state: any) => state.dateList.allDateData[currentPageNo]
+    (state: any) => state.inPersonDateList.allDateData[currentPageNo]
   );
 
   const dispatch = useDispatch();
@@ -41,29 +45,13 @@ export const DateContainer: React.FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    var dateDataPagesWise: any = {};
-
-    if (allCordinatesData) {
-      //
-      allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType == "Date") {
-          if (!dateDataPagesWise[item.pageNo]) {
-            dateDataPagesWise[item.pageNo] = [];
-          }
-
-          dateDataPagesWise[item.pageNo] = [
-            ...dateDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, index: i },
-          ];
-        }
-      });
-
-      dispatch(setDateData({ allDateData: dateDataPagesWise }));
-    }
+    console.log('@@@ DATE CONTAINER called....');
+    const {coordsPagesWise} = fetchCoordsPageAndTypeWise(allCordinatesData, activeSignatory.value, 'Date');
+    
+    dispatch(setDateData({ allDateData: coordsPagesWise }));
     return () => {};
-  }, [isFetchingCordinatesData]);
-
-  //
+  }, [activeSignatory]);
+  
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
       const value = e.target.value;
@@ -72,12 +60,22 @@ export const DateContainer: React.FC<Props> = ({
         ? moment(value, "YYYY-MM-DD").format("MM-DD-YYYY")
         : "";
 
+      console.log('@@@ DATE CONTAINER targetElementIndex....'+targetElementIndex);
+      console.log('@@@ DATE CONTAINER formatValue....'+formatValue);
+      
       dispatch(
         changeDateData({
           elementIndex: targetElementIndex,
           textValue: formatValue,
           currentPageNo: currentPageNo,
           reduxState,
+        })
+      );
+      dispatch(
+        updateCoordinateData({
+          signatoryUUID: activeSignatory.value,
+          eleId: targetElementIndex,
+          newValue: formatValue
         })
       );
     } catch (err) {
@@ -94,7 +92,7 @@ export const DateContainer: React.FC<Props> = ({
                 key={i}
                 {...item}
                 handleTextChange={handleTextChange}
-                textElementIndex={item.index}
+                textElementIndex={item.eleId}
               />
             );
           })

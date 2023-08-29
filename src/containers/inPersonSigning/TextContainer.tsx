@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 //
-import { TextPad } from "../components/TextPad";
-import { changeTextData, setTextData } from "../redux/slices/textReducer";
+import { TextPad } from "../../components/inPersonSigning/TextPad";
+import { changeTextData, setTextData } from "../../redux/slices/inPersonSigning/textReducer";
+import { fetchCoordsPageAndTypeWise } from "../../utils/InPersonSigning/fetchCoordPageWise";
+import { updateCoordinateData } from "../../redux/slices/inPersonSigning/coordinatesReducer";
 
 interface Props {
   page: any;
@@ -17,17 +19,15 @@ export const TextContainer: React.FC<Props> = ({
   // allCordinatesData,
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
-
-  const allCordinatesData = useSelector(
-    (state: any) => state.coordinatesList.allCoordinateData
+  const activeSignatory = useSelector(
+    (state: any) => state.inPersonActiveSignatory.activeSignatory
   );
-
-  const recordData = useSelector(
-    (state: any) => state.coordinatesList.recordData
+  const allCordinatesData = useSelector(
+    (state: any) => state.inPersonCoordinatesList.allCoordinateData
   );
 
   const allTextElementDataSelector = useSelector(
-    (state: any) => state.textList.allTextData[currentPageNo]
+    (state: any) => state.inPersonTextList.allTextData[currentPageNo]
   );
   const reduxState = useSelector((state: any) => state);
 
@@ -46,33 +46,11 @@ export const TextContainer: React.FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    var textDataPagesWise: any = {};
-
-    if (allCordinatesData) {
-      //
-      allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType == "Text") {
-
-          if (!textDataPagesWise[item.pageNo]) {
-            textDataPagesWise[item.pageNo] = [];
-          }
-
-          textDataPagesWise[item.pageNo] = [
-            ...textDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, index: i },
-          ];
-        }
-      });
-
-      dispatch(setTextData({ allTextData: textDataPagesWise }));
-
-      // localStorage.setItem(
-      //   "textDataPagesWise",
-      //   JSON.stringify(textDataPagesWise)
-      // );
-    }
+    console.log('@@@ TEXT CONTAINER called....');
+    const {coordsPagesWise} = fetchCoordsPageAndTypeWise(allCordinatesData, activeSignatory.value, 'Text');
+    dispatch(setTextData({ allTextData: coordsPagesWise }));
     return () => {};
-  }, [isFetchingCordinatesData]);
+  }, [activeSignatory]);
 
   //
   const handleTextChange = (e: any, targetElementIndex: number) => {
@@ -81,10 +59,18 @@ export const TextContainer: React.FC<Props> = ({
 
       dispatch(
         changeTextData({
+          
           elementIndex: targetElementIndex,
           textValue: value,
           currentPageNo: currentPageNo,
           reduxState,
+        })
+      );
+      dispatch(
+        updateCoordinateData({
+          signatoryUUID: activeSignatory.value,
+          eleId: targetElementIndex,
+          newValue: value
         })
       );
     } catch (err) {
@@ -101,24 +87,11 @@ export const TextContainer: React.FC<Props> = ({
                 key={i}
                 {...item}
                 handleTextChange={handleTextChange}
-                textElementIndex={item.index}
+                textElementIndex={item.eleId}
               />
             );
           })
         : null}
-      {/* {allCordinatesData.map((item: any, i: number) => {
-        if (item.pageNo == currentPageNo && item.fieldType == "Text") {
-          return (
-            <TextPad
-              key={i}
-              {...item}
-              handleTextChange={handleTextChange}
-              textElementIndex={i}
-            />
-          );
-        }
-        return null;
-      })} */}
     </>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { DragActions } from '../entities';
 import { getMovePosition } from '../utils/helpers';
 import { Image as ImageComponent } from '../components/Image';
+import { ImageAttachment } from '../types';
 
 const IMAGE_MAX_SIZE = 300;
 

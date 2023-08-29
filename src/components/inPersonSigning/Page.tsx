@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { PaginationContainer } from "../containers/PaginationContainer";
+import { PaginationContainer } from "../../containers/PaginationContainer";
 
-import { SignatureContainer } from "../containers/SignatureContainer";
-import { TextContainer } from "../containers/TextContainer";
-import { DateContainer } from "../containers/DateContainer";
-import { CheckboxContainer } from "../containers/CheckboxContainer";
+import { SignatureContainer } from "../../containers/inPersonSigning/SignatureContainer";
+import { TextContainer } from "../../containers/inPersonSigning/TextContainer";
+import { DateContainer } from "../../containers/inPersonSigning/DateContainer";
+import { CheckboxContainer } from "../../containers/inPersonSigning/CheckboxContainer";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Dimensions } from "../types";
+import { Dimensions } from "../../types";
+import { useSelector } from "react-redux";
 
 interface Props {
   page: any;
@@ -37,6 +38,15 @@ export const Page = ({
   const [height, setHeight] = useState((dimensions && dimensions.height) || 0);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [isStartShown, setIsStartShown] = useState(true);
+  const activeSignatory = useSelector(
+    (state: any) => state.inPersonActiveSignatory.activeSignatory
+  );
+
+  useEffect(() => {
+    setIsStartShown(true);
+    signatureIndicatorRef.current.style.top = `10px`;
+    signatureIndicatorRef.current.style.left = `0px`;
+  }, [activeSignatory])
 
   useEffect(() => {
     const renderPage = async (p: Promise<any>) => {
@@ -69,7 +79,7 @@ export const Page = ({
 
   // console.log("width => ", width);
   // console.log("height => ", height);
-
+  console.log('IN PERSON Signing Page....');
   return (
     <div style={{ position: "relative" }} className="pdf-viewer-container">
       <TransformWrapper

@@ -5,7 +5,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createTextSignature } from "./utils/textSignature";
 import { useControls } from "react-zoom-pan-pinch";
-
+import moment from "moment";
 import "./App.css";
 
 import { Container, Grid, Button, Segment } from "semantic-ui-react";
@@ -28,6 +28,8 @@ import AlreadySignedComponent from "./components/AlreadySignedComponent";
 //
 import { setInfo } from "./redux/slices/basicInfoReducer";
 import { setCoordinateData } from "./redux/slices/coordinatesReducer";
+import { setRecordData } from "./redux/slices/coordinatesReducer";
+
 import { setUserData } from "./redux/slices/externalUserReducer";
 import { setAllPreviousSignatures } from "./redux/slices/signatureReducer";
 import OtpModal from "./modals/components/OtpModal";
@@ -35,13 +37,14 @@ import Loading from "./components/Loading";
 import { CheckboxContainer } from "./containers/CheckboxContainer";
 
 //
-import { setTotalNoOfFields } from "./redux/slices/allFinalDataReducer";
+import { setTotalNoOfFields, setCompletedNoOfFields } from "./redux/slices/allFinalDataReducer";
 import {
   setActiveElement,
   setCurrentPage,
 } from "./redux/slices/elementsNavigationHelperReducer";
 import { fetchIpInfo } from "./utils/fetchIpInfo";
 import { AuditTrailModal } from "./modals/components/AuditTrailModal";
+import { TextAttachment } from "./types";
 
 const App: React.FC = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
@@ -483,14 +486,12 @@ const App: React.FC = () => {
   }, [currentPage]);
 
   // here x value change container direction !!!!!!!!!!
-
   const fetchingCordinates = async (
     uuid_template_instance: string,
     uuidS: string
   ) => {
     try {
       // {{baseUrl}}/api/fetchCordinatesData
-
       let headersList = {
         Accept: "*/*",
         "Content-Type": "application/json",
@@ -511,10 +512,37 @@ const App: React.FC = () => {
       let response = await Axios.request(reqOptions);
 
       const responseData = response.data.data;
+      console.log('@@@ DATA: '+ JSON.stringify(responseData));
 
+      let coord = responseData.coord;
+      console.log('@@@ CCORDS: '+ JSON.stringify(coord));
+      const recordData = responseData.recordData;
+
+      let completedFieldCount = 0;
+      if(recordData) {
+        coord = coord.map(item => {
+          if(item.value !== "") {
+            completedFieldCount += 1;
+          }
+          if (item.isUpdateFromSalesforce && item.mappingField && item.mappingField !== '') {
+            if (recordData.hasOwnProperty(item.mappingField) && recordData[item.mappingField] != null) {
+              
+              item.value = item.fieldType === "Date" ? 
+              moment(recordData[item.mappingField], "YYYY-MM-DD").format("MM-DD-YYYY") : recordData[item.mappingField];
+            } else {
+              item.value = item.fieldType === "Checkbox" ? false : "";
+            }
+          } else if (item.fieldType === "Date") {
+            item.value = moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY");
+          }
+          return item;
+        });
+  
+        console.log(coord);
+      }
       const sortedCoordinateData: any = [
         ...(new Set(
-          responseData
+          coord
             .map((item: any) => item.pageNo)
             .sort((a: number, b: number) => a - b)
         ) as any),
@@ -523,7 +551,7 @@ const App: React.FC = () => {
       const finalData: Array<Object> = [];
 
       sortedCoordinateData.map((currentPageNo: number) => {
-        const data = responseData.filter(
+        const data = coord.filter(
           (item: any) => item.pageNo == currentPageNo
         );
 
@@ -533,9 +561,12 @@ const App: React.FC = () => {
         finalData.push(...t);
       });
 
+      console.log(finalData);
+      console.log(completedFieldCount);
       dispatch(setCoordinateData({ allCoordinateData: finalData }));
+      dispatch(setRecordData({ recordData: recordData }));
       dispatch(setTotalNoOfFields({ allCoordinateData: finalData }));
-
+      dispatch(setCompletedNoOfFields({completedNoOfFields: completedFieldCount}));
       setIsFetchingCordinatesData(false);
     } catch (err: any) {
       // console.log(err);

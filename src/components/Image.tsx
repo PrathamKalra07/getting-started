@@ -2,6 +2,7 @@ import React, { RefObject } from 'react';
 import { Dimmer } from 'semantic-ui-react';
 import { Div } from '../ui/components/Div';
 import { ConfirmContent } from './ConfirmContent';
+import { DragEventListener } from '../types';
 
 const ADJUSTERS_DIMENSIONS = 20;
 
