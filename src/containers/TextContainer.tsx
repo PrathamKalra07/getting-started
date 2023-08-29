@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 //
-import { TextPad } from "../components/TextPad";
+import { TextPad } from "../components/Elements/TextPad";
 import { changeTextData, setTextData } from "../redux/slices/textReducer";
 
 interface Props {
@@ -52,7 +52,6 @@ export const TextContainer: React.FC<Props> = ({
       //
       allCordinatesData.map((item: any, i: number) => {
         if (item.fieldType == "Text") {
-
           if (!textDataPagesWise[item.pageNo]) {
             textDataPagesWise[item.pageNo] = [];
           }

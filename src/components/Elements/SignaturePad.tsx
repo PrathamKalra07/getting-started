@@ -3,7 +3,7 @@ import { Icon } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 
 //
-import { setActiveElement } from "../redux/slices/elementsNavigationHelperReducer";
+import { setActiveElement } from "../../redux/slices/elementsNavigationHelperReducer";
 
 interface Props {
   x: number;

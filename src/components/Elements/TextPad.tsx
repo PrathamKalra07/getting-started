@@ -1,23 +1,20 @@
 import React from "react";
 import { Icon } from "semantic-ui-react";
-import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-
-//
-import { setActiveElement } from "../redux/slices/elementsNavigationHelperReducer";
+import { setActiveElement } from "../../redux/slices/elementsNavigationHelperReducer";
 
 interface Props {
   x: number;
   y: number;
   width: number;
   height: number;
-  value: any;
+  value: string;
   textElementIndex: number;
   handleTextChange: Function;
   coordinateId: number;
 }
 
-export const CheckboxPad = ({
+export const TextPad = ({
   x,
   y,
   width,
@@ -47,25 +44,33 @@ export const CheckboxPad = ({
           bottom: 0,
           borderRadius: 5,
         }}
+        // onClick={addDrawing}
       >
+        {/* signatureData */}
+
         <input
-          // style={{ height: height, width: width }}
-          onChange={(e) => handleTextChange(e, textElementIndex)}
-          type="checkbox"
-          onClick={() => {
+          maxLength={width / 7}
+          placeholder="Click To Enter Text Here..."
+          style={{ height: height, width: width }}
+          onClick={(e: any) => {
             dispatch(setActiveElement({ coordinateId, y, x }));
+
+            e.target.focus();
           }}
-          checked={textInputValue}
-          className={`form-check-input
-          ${
-            elementsNavigationHelperState.activeElementCoordinateId ===
-            coordinateId
-              ? "active-data-container-input-checkbox"
-              : textInputValue
-              ? "filled-data-container-input-checkbox"
-              : "empty-data-container-input-checkbox"
-          }
-        `}
+          onChange={(e) => {
+            handleTextChange(e, textElementIndex);
+          }}
+          value={textInputValue}
+          className={`
+            ${
+              elementsNavigationHelperState.activeElementCoordinateId ===
+              coordinateId
+                ? "active-data-container-input-text"
+                : textInputValue
+                ? "filled-data-container-input-text"
+                : "empty-data-container-input-text"
+            }
+          `}
         />
       </div>
     </>

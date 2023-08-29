@@ -6,7 +6,7 @@ import {
   changeCheckboxData,
   setCheckBoxData,
 } from "../redux/slices/checkboxReducer";
-import { CheckboxPad } from "../components/CheckboxPad";
+import { CheckboxPad } from "../components/Elements/CheckboxPad";
 
 interface Props {
   page: any;
