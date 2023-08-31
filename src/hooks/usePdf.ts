@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { Save } from "../utils/pdf";
-import { Dimensions } from "../types";
+import { Save } from "utils/pdf";
+import { Dimensions } from "types";
 
 export interface Pdf {
   name: string;

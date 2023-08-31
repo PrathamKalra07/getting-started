@@ -1,6 +1,6 @@
 import React, { useState, createRef, useEffect, memo, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Axios from "axios";
+import { AxiosResponse } from "axios";
 import PropagateLoader from "react-spinners/PropagateLoader";
 
 import { useDropzone } from "react-dropzone";
@@ -17,15 +17,22 @@ import SignaturePad from "react-signature-pad-wrapper";
 import BounceLoader from "react-spinners/BounceLoader";
 
 //
-import { createTextSignature } from "../../utils/textSignature";
+import { createTextSignature } from "utils/textSignature";
 
 //
 import {
   setAllPreviousSignatures,
   setSignaturePathWithEncoddedImg,
-} from "../../redux/slices/signatureReducer";
-import trimCanvas from "../../utils/module/trimCanvasModule";
-import { SignatureObject } from "../../types";
+} from "redux/slices/signatureReducer";
+import trimCanvas from "utils/module/trimCanvasModule";
+import { SignatureObject } from "types";
+
+//
+import { deleteRequest, postRequest } from "helpers/axios";
+import { API_ROUTES } from "helpers/constants/apis";
+
+//
+import { RootState } from "redux/store";
 
 interface Props {
   open: boolean;
@@ -48,11 +55,13 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
   const inputRef = useRef<any>("");
 
   //
-  const reduxState = useSelector((state: any) => state);
+  const reduxState = useSelector((state: RootState) => state);
   const allPreviousSignatures = useSelector(
     (state: any) => state.signatureList.allPreviousSignatures
   );
-  const externalUsersData = useSelector((state: any) => state.externalUser);
+  const externalUsersData = useSelector(
+    (state: RootState) => state.externalUser
+  );
 
   const dispatch = useDispatch();
 
@@ -124,24 +133,19 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
   const fetchAllSignatures = async () => {
     try {
       //
-      var reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/common/externalUser/signature/fetchAll`,
-        method: "POST",
-        headers: {
-          Accept: "*/*",
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({
-          userId: externalUsersData.userId,
-        }),
-      };
-      var {
+      const {
         data: { data: signatureData },
-      } = await Axios.request(reqOptions);
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.COMMON_EXTERNALUSER_SIGNATURE_FETCHALL,
+        false,
+        {
+          userId: externalUsersData.userId,
+        }
+      );
+
       dispatch(
         setAllPreviousSignatures({ allPreviousSignatures: signatureData })
       );
-
       //
     } catch (err) {
       console.log(err);
@@ -150,19 +154,15 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
 
   const handleDeleteSignature = async (signatureId: number) => {
     try {
-      var reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/common/externalUser/signature/removeSignature`,
-        method: "DELETE",
-        headers: {
-          Accept: "*/*",
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({
+      const {
+        data: { data: responseData },
+      }: AxiosResponse = await deleteRequest(
+        API_ROUTES.COMMON_EXTERNALUSER_SIGNATURE_REMOVESIGNATURE,
+        false,
+        {
           signatureId: signatureId,
-        }),
-      };
-
-      await Axios.request(reqOptions);
+        }
+      );
 
       await fetchAllSignatures();
 
@@ -184,20 +184,19 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
   const handleAddSignature = async (signatureDataBase64: string) => {
     try {
       setIsSignatureAdding(true);
-      var reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/common/externalUser/signature/add`,
-        method: "POST",
-        headers: {
-          Accept: "*/*",
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({
+
+      const {
+        data: { data: responseData },
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.COMMON_EXTERNALUSER_SIGNATURE_ADD,
+        false,
+        {
           userId: externalUsersData.userId,
           type: "signature",
           data: signatureDataBase64,
-        }),
-      };
-      await Axios.request(reqOptions);
+        }
+      );
+
       dispatch(
         setSignaturePathWithEncoddedImg({
           path: "",
@@ -533,7 +532,7 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
                             <img
                               alt="Sample"
                               className="w-100"
-                              src={require("../../assets/illustrations/undraw_learning_sketching_nd4f.png")}
+                              src={require("assets/illustrations/undraw_learning_sketching_nd4f.png")}
                             />
                           </Col>
                           <Col
@@ -577,7 +576,7 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
                             <img
                               alt="Sample"
                               className="w-100"
-                              src={require("../../assets/illustrations/undraw_Updated_resume_re_7r9j.png")}
+                              src={require("assets/illustrations/undraw_Updated_resume_re_7r9j.png")}
                             />
                           </Col>
                           <Col
@@ -915,7 +914,7 @@ const UploadSignature = memo(
 
               <img
                 style={{ maxWidth: "300px" }}
-                src={require("../../assets/illustrations/undraw_Going_up_re_86kg.png")}
+                src={require("assets/illustrations/undraw_Going_up_re_86kg.png")}
                 className="my-2 w-100"
                 alt="img"
               />

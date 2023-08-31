@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 //
-import { SignaturePad } from "../../components/inPersonSigning/SignaturePad";
-import { fetchCoordsPageAndTypeWise } from "../../utils/InPersonSigning/fetchCoordPageWise";
-import { setSignatureData } from "../../redux/slices/inPersonSigning/signatureReducer";
+import { SignaturePad } from "components/inPersonSigning/SignaturePad";
+import { fetchCoordsPageAndTypeWise } from "utils/InPersonSigning/fetchCoordPageWise";
+import { setSignatureData } from "redux/slices/inPersonSigning/signatureReducer";
+
+//
+import { RootState } from "redux/store";
 
 interface Props {
   page: any;
@@ -20,21 +23,25 @@ export const SignatureContainer: React.FC<Props> = ({
   isFetchingCordinatesData,
   // allCordinatesData,
 }) => {
-
   const [currentPageNo, setCurrentPageNo] = useState(0);
   const activeSignatory = useSelector(
-    (state: any) => state.inPersonActiveSignatory.activeSignatory
+    (state: RootState) => state.inPerson.inPersonActiveSignatory.activeSignatory
   );
   const allCordinatesData = useSelector(
-    (state: any) => state.inPersonCoordinatesList.allCoordinateData
+    (state: RootState) =>
+      state.inPerson.inPersonCoordinatesList.allCoordinateData
   );
 
   const signatureEncodedImgData = useSelector(
-    (state: any) => state.inPersonCoordinatesList.signatoryList.filter(signatory => signatory.signatoryUUID === activeSignatory.value)[0].value
+    (state: RootState | any) =>
+      state.inPerson.inPersonCoordinatesList.signatoryList.filter(
+        (signatory: any) => signatory.signatoryUUID === activeSignatory.value
+      )[0]?.value as any
   );
 
   const allCoordinatesElementDataSelector = useSelector(
-    (state: any) => state.inPersonSignatureList.allSignatureData[currentPageNo]
+    (state: RootState) =>
+      state.inPerson.inPersonSignatureList.allSignatureData[currentPageNo]
   );
 
   //
@@ -53,13 +60,16 @@ export const SignatureContainer: React.FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    console.log('@@@ SIGNATURE CONTAINER called....');
-    const {coordsPagesWise} = fetchCoordsPageAndTypeWise(allCordinatesData, activeSignatory.value, 'Signature');
-    
+    console.log("@@@ SIGNATURE CONTAINER called....");
+    const { coordsPagesWise } = fetchCoordsPageAndTypeWise(
+      allCordinatesData,
+      activeSignatory.value,
+      "Signature"
+    );
+
     dispatch(setSignatureData({ allSignatureData: coordsPagesWise }));
     return () => {};
   }, [activeSignatory]);
-  
 
   return (
     <>

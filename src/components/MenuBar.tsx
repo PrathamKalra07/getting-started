@@ -20,6 +20,8 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+//
+import { RootState } from "redux/store";
 
 interface Props {
   isPdfLoaded: boolean;
@@ -51,8 +53,10 @@ export const MenuBar: React.FC<Props> = ({
 
   const toggleDropDown = () => setDropdownOpen((prevState) => !prevState);
 
-  const trackerData = useSelector((state: any) => state.allFinalDataReducer);
-  const basicInfoData = useSelector((state: any) => state.basicInfoData);
+  const trackerData = useSelector(
+    (state: RootState) => state.allFinalDataReducer
+  );
+  const basicInfoData = useSelector((state: RootState) => state.basicInfoData);
 
   useEffect(() => {
     if (basicInfoData) {

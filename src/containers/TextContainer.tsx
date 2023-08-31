@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 //
-import { TextPad } from "../components/Elements/TextPad";
-import { changeTextData, setTextData } from "../redux/slices/textReducer";
+import { TextPad } from "components/Elements/TextPad";
+import { changeTextData, setTextData } from "redux/slices/textReducer";
+//
+import { RootState } from "redux/store";
 
 interface Props {
   page: any;
@@ -19,17 +21,17 @@ export const TextContainer: React.FC<Props> = ({
   const [currentPageNo, setCurrentPageNo] = useState(0);
 
   const allCordinatesData = useSelector(
-    (state: any) => state.coordinatesList.allCoordinateData
+    (state: RootState) => state.coordinatesList.allCoordinateData
   );
 
   const recordData = useSelector(
-    (state: any) => state.coordinatesList.recordData
+    (state: RootState) => state.coordinatesList.recordData
   );
 
   const allTextElementDataSelector = useSelector(
-    (state: any) => state.textList.allTextData[currentPageNo]
+    (state: RootState) => state.textList.allTextData[currentPageNo]
   );
-  const reduxState = useSelector((state: any) => state);
+  const reduxState = useSelector((state: RootState) => state);
 
   const dispatch = useDispatch();
 

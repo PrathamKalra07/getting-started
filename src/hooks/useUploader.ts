@@ -1,7 +1,7 @@
 import React, { useState, createRef } from "react";
-import { readAsPDF, readAsDataURL, readAsImage } from "../utils/asyncReader";
+import { readAsPDF, readAsDataURL, readAsImage } from "utils/asyncReader";
 import { Pdf } from "./usePdf";
-import { Attachment } from "../types";
+import { Attachment } from "types";
 
 type ActionEvent<T> = React.TouchEvent<T> | React.MouseEvent<T>;
 

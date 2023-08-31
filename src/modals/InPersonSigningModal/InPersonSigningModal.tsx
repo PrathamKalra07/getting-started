@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, ReactNode } from "react";
 import "./inPersonSigningModal.css";
-import { Signatory } from "../../types/index";
+import { Signatory } from "types";
 
 interface ModalProps {
   signatories: Signatory[];

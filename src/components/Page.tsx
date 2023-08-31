@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { PaginationContainer } from "../containers/PaginationContainer";
+import { PaginationContainer } from "containers/PaginationContainer";
 
-import { SignatureContainer } from "../containers/SignatureContainer";
-import { TextContainer } from "../containers/TextContainer";
-import { DateContainer } from "../containers/DateContainer";
-import { CheckboxContainer } from "../containers/CheckboxContainer";
+import { SignatureContainer } from "containers/SignatureContainer";
+import { TextContainer } from "containers/TextContainer";
+import { DateContainer } from "containers/DateContainer";
+import { CheckboxContainer } from "containers/CheckboxContainer";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Dimensions } from "../types";
+import { Dimensions } from "types";
 
 interface Props {
   page: any;

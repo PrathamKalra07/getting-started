@@ -1,49 +1,25 @@
 export const API_ROUTES = {
-  LOGIN: "/login",
-  Guest_LOGIN: "/guest-login",
-  SIGN_UP: "/signup",
-  FORGOT_PASSWORD: "/forgot_password",
-  RESET_PASSWORD: "/confirm_forgot_password",
-  CHANGE_PASSWORD: "/change_password",
-  SUBMIT_CODE: "/submit_code",
-  RESEND_CODE: "/resend_code",
-  UPLOAD_AGREEMENT: "/upload",
-  GET_REPO_DATA: "/get_repo_data",
-  GET_KPI_DATA: "/kpi-data",
-  VALIDATE_EXTRACTION: "/update_data",
-  GET_AGREEMENT_LIST: "/fetch_popup_data",
-  GET_AUDIT_LOGS: "/get_audit_log",
-  GET_NEW_AGREEMENT: "/get_templates",
-  CREATE_NEW_AGREEMENT: "/create-new-agreement",
-  MY_TASKS: "my-tasks-list",
-  REVIEW_REJECT_COMMENTS: "/review-reject-comments",
-  GET_VERSION_LIST: "/get-version-list",
-  GET_NEW_USER_AGREEMENT: "/get-id-data",
-  SHARE_AGREEMENT_EMAIL_API: "/send-agreement-mail",
-  Vendor_Reset_Password: "/vendor-reset-password",
-  GET_USER_DATA: "/get-user",
-  GET_ROLE_BASED_USERS: "/role-based-users",
-  CREATE_NEW_USER: "/add-user",
-  UPDATE_USER: "/update-user",
-  DELETE_USER: "/delete-user",
-  AGREEMENT_AUTHORIZATION: "/create-esigned-request",
-  AGREEMENT_TEMPLATE_UPDATE: "/agreement-template-update",
-  KPI_UPDATE: "/add-kpi-data",
-  GET_NOTIFICATIONS: "/get-notifications",
-  READ_NOTIFICATIONS: "/read-notifications",
-  RISK_TASKS: "/get-risk-assessments",
-  UPDATE_NOTIFICATION_COUNT: "/update-notifications-count",
-  MARK_ALL_AS_READ: "/mark-as-read",
-  DELETE_EXTRACTION: "/delete-agreement",
-  SIGNED_URL: "/signed-url",
-  UPLOAD_FILE: "/upload-file",
-  GET_DASHBOARD_DATA: "/dashboard-data",
-  GET_LICENSE_DATA: "/dashboard-data2",
-  //
-  ADD_BYOT: "/byot/upload-new-template",
-  FETCH_ORG_CONFIG: "/fetch-org-config",
-  UPDATE_ORG_CONFIG: "/update-org-config",
-  IMPORT_NEW_AGREEMENT: "/upload-import-agreement",
+  // common routes
+  COMMON_FETCHCORDINATESDATA: "/common/fetchCordinatesData",
+  COMMON_HANDLESIGNREJECTION: "/common/handleSignRejection",
+  COMMON_EXTERNALUSER_DATA_CHECKORADD: "/common/externalUser/data/checkOrAdd",
+  COMMON_EXTERNALUSER_SIGNATURE_FETCHALL:
+    "/common/externalUser/signature/fetchAll",
+  COMMON_EXTERNALUSER_SIGNATURE_REMOVESIGNATURE:
+    "/common/externalUser/signature/removeSignature",
+  COMMON_EXTERNALUSER_SIGNATURE_ADD: "/common/externalUser/signature/add",
+  COMMON_DOCUMENTS_INPERSONSIGNING_FETCHSIGNATORIES:
+    "/common/documents/inPersonSigning/fetchSignatories",
+
+  // auth
+  SENDOTP: "/sendOtp",
+
+  // audit
+  AUDIT_TRACKDOCUMENTVIEWED: "/audit/trackDocumentViewed",
+  AUDIT_FETCHAUDITTRAILS: "/audit/fetchAuditTrails",
+
+  // other
+  GEOLOLCATION: "https://geolocation-db.com/json/",
 };
 
 export const STATUS_CODE = {

@@ -5,8 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   changeCheckboxData,
   setCheckBoxData,
-} from "../redux/slices/checkboxReducer";
-import { CheckboxPad } from "../components/Elements/CheckboxPad";
+} from "redux/slices/checkboxReducer";
+import { CheckboxPad } from "components/Elements/CheckboxPad";
+
+//
+import { RootState } from "redux/store";
 
 interface Props {
   page: any;
@@ -20,11 +23,11 @@ export const CheckboxContainer: React.FC<Props> = ({
   const [currentPageNo, setCurrentPageNo] = useState(0);
 
   const allCordinatesData = useSelector(
-    (state: any) => state.coordinatesList.allCoordinateData
+    (state: RootState) => state.coordinatesList.allCoordinateData
   );
 
   const allCheckboxElementDataSelector = useSelector(
-    (state: any) => state.checkboxList.allCheckboxData[currentPageNo]
+    (state: RootState) => state.checkboxList.allCheckboxData[currentPageNo]
   );
 
   const dispatch = useDispatch();

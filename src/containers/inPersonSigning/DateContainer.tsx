@@ -3,10 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
 //
-import { DatePad } from "../../components/inPersonSigning/DatePad";
-import { changeDateData, setDateData } from "../../redux/slices/inPersonSigning/dateReducer";
-import { fetchCoordsPageAndTypeWise } from "../../utils/InPersonSigning/fetchCoordPageWise";
-import { updateCoordinateData } from "../../redux/slices/inPersonSigning/coordinatesReducer";
+import { DatePad } from "components/inPersonSigning/DatePad";
+import {
+  changeDateData,
+  setDateData,
+} from "redux/slices/inPersonSigning/dateReducer";
+import { fetchCoordsPageAndTypeWise } from "utils/InPersonSigning/fetchCoordPageWise";
+import { updateCoordinateData } from "redux/slices/inPersonSigning/coordinatesReducer";
+
+//
+import { RootState } from "redux/store";
 
 interface Props {
   page: any;
@@ -19,15 +25,17 @@ export const DateContainer: React.FC<Props> = ({
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
 
-  const reduxState = useSelector((state: any) => state);
+  const reduxState = useSelector((state: RootState) => state);
   const allCordinatesData = useSelector(
-    (state: any) => state.inPersonCoordinatesList.allCoordinateData
+    (state: RootState) =>
+      state.inPerson.inPersonCoordinatesList.allCoordinateData
   );
   const activeSignatory = useSelector(
-    (state: any) => state.inPersonActiveSignatory.activeSignatory
+    (state: RootState) => state.inPerson.inPersonActiveSignatory.activeSignatory
   );
   const allDateElementDataSelector = useSelector(
-    (state: any) => state.inPersonDateList.allDateData[currentPageNo]
+    (state: RootState) =>
+      state.inPerson.inPersonDateList.allDateData[currentPageNo]
   );
 
   const dispatch = useDispatch();
@@ -45,13 +53,17 @@ export const DateContainer: React.FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    console.log('@@@ DATE CONTAINER called....');
-    const {coordsPagesWise} = fetchCoordsPageAndTypeWise(allCordinatesData, activeSignatory.value, 'Date');
-    
+    console.log("@@@ DATE CONTAINER called....");
+    const { coordsPagesWise } = fetchCoordsPageAndTypeWise(
+      allCordinatesData,
+      activeSignatory.value,
+      "Date"
+    );
+
     dispatch(setDateData({ allDateData: coordsPagesWise }));
     return () => {};
   }, [activeSignatory]);
-  
+
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
       const value = e.target.value;
@@ -60,9 +72,11 @@ export const DateContainer: React.FC<Props> = ({
         ? moment(value, "YYYY-MM-DD").format("MM-DD-YYYY")
         : "";
 
-      console.log('@@@ DATE CONTAINER targetElementIndex....'+targetElementIndex);
-      console.log('@@@ DATE CONTAINER formatValue....'+formatValue);
-      
+      console.log(
+        "@@@ DATE CONTAINER targetElementIndex...." + targetElementIndex
+      );
+      console.log("@@@ DATE CONTAINER formatValue...." + formatValue);
+
       dispatch(
         changeDateData({
           elementIndex: targetElementIndex,
@@ -75,7 +89,7 @@ export const DateContainer: React.FC<Props> = ({
         updateCoordinateData({
           signatoryUUID: activeSignatory.value,
           eleId: targetElementIndex,
-          newValue: formatValue
+          newValue: formatValue,
         })
       );
     } catch (err) {

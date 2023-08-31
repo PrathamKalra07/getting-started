@@ -1,5 +1,6 @@
 const config = {
-  apiUrl: process.env.REACT_APP_API_URL || window.location.origin,
+  apiUrl: `${process.env.REACT_APP_API_URL || ""}/api`,
+  // apiUrl: process.env.REACT_APP_API_URL || window.location.origin,
 };
 
 //   if (process.env.NODE_ENV === "production") {

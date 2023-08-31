@@ -1,47 +1,53 @@
 import { useState, useLayoutEffect, useEffect, useRef } from "react";
-import Axios from "axios";
+import { AxiosResponse } from "axios";
 import "semantic-ui-css/semantic.min.css";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import "../../App.css";
+import "App.css";
 
 import { Container } from "semantic-ui-react";
 
-import { MenuBar } from "../../components/inPersonSigning/MenuBar";
-import { DrawingModal } from "../../modals/InPersonSigningModal/DrawingModal";
-import { usePdf, Pdf } from "../../hooks/usePdf";
-import { useUploader, UploadTypes } from "../../hooks/useUploader";
-import { Page } from "../../components/inPersonSigning/Page";
+import { MenuBar } from "components/inPersonSigning/MenuBar";
+import { DrawingModal } from "modals/InPersonSigningModal/DrawingModal";
+import { usePdf, Pdf } from "hooks/usePdf";
+import { useUploader, UploadTypes } from "hooks/useUploader";
+import { Page } from "components/inPersonSigning/Page";
 
 //
-import AlreadySignedComponent from "../../components/Common/AlreadySignedComponent";
+import AlreadySignedComponent from "components/Common/AlreadySignedComponent";
 
 //
-import { setFullData } from "../../redux/slices/inPersonSigning/originalSignatoryWithCoordsDataReducer";
-import { setInfo } from "../../redux/slices/inPersonSigning/basicInfoReducer";
-import { setActiveSignatory } from "../../redux/slices/inPersonSigning/activeSignatoryReducer";
+import { setFullData } from "redux/slices/inPersonSigning/originalSignatoryWithCoordsDataReducer";
+import { setInfo } from "redux/slices/inPersonSigning/basicInfoReducer";
+import { setActiveSignatory } from "redux/slices/inPersonSigning/activeSignatoryReducer";
 import {
   setCoordinateData,
   setActiveSignatoriesCoordinateData,
   setSingatoryList,
-} from "../../redux/slices/inPersonSigning/coordinatesReducer";
-import { setUserData } from "../../redux/slices/externalUserReducer";
-import { setAllPreviousSignatures } from "../../redux/slices/inPersonSigning/signatureReducer";
-import Loading from "../../components/Common/Loading";
+} from "redux/slices/inPersonSigning/coordinatesReducer";
+import { setUserData } from "redux/slices/externalUserReducer";
+import { setAllPreviousSignatures } from "redux/slices/inPersonSigning/signatureReducer";
+import Loading from "components/Common/Loading";
 
 //
-// import { setTotalNoOfFields } from "../../redux/slices/inPersonSigning/allFinalDataReducer";
+// import { setTotalNoOfFields } from "redux/slices/inPersonSigning/allFinalDataReducer";
 import {
   setActiveElement,
   setCurrentPage,
-} from "../../redux/slices/inPersonSigning/elementsNavigationHelperReducer";
-import { fetchIpInfo } from "../../utils/fetchIpInfo";
-import { AuditTrailModal } from "../../modals/components/AuditTrailModal";
-import CustomSelect from "../../components/inPersonSigning/CustomSelectComponent";
-// import { fetchCoordsPageWise } from "../../utils/InPersonSigning/fetchCoordPageWise";
-import { transformData } from "../../utils/InPersonSigning/transformCoordData";
-import { savePdfDataToServer } from "../../utils/InPersonSigning/savePdfDataToServer";
+} from "redux/slices/inPersonSigning/elementsNavigationHelperReducer";
+import { fetchIpInfo } from "utils/fetchIpInfo";
+import { AuditTrailModal } from "modals/components/AuditTrailModal";
+import CustomSelect from "components/inPersonSigning/CustomSelectComponent";
+// import { fetchCoordsPageWise } from "utils/InPersonSigning/fetchCoordPageWise";
+import { transformData } from "utils/InPersonSigning/transformCoordData";
+import { savePdfDataToServer } from "utils/InPersonSigning/savePdfDataToServer";
+
+//
+import { API_ROUTES } from "helpers/constants/apis";
+import { getRequest, postRequest } from "helpers/axios";
+//
+import { RootState } from "redux/store";
 
 const InPersonSigningPage = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
@@ -64,22 +70,24 @@ const InPersonSigningPage = () => {
   const currentReduxState = useSelector((state) => state);
 
   const fullData = useSelector(
-    (state: any) => state.inPersonOriginalSignatoryWithCoordsData.data
+    (state: RootState) =>
+      state.inPerson.inPersonOriginalSignatoryWithCoordsData.data
   );
 
   const activeSignatory = useSelector(
-    (state: any) => state.inPersonActiveSignatory.activeSignatory
+    (state: RootState) => state.inPerson.inPersonActiveSignatory.activeSignatory
   );
   const allCoordinateDataWithCordinates = useSelector(
-    (state: any) => state.inPersonCoordinatesList.allCoordinateData
+    (state: RootState) =>
+      state.inPerson.inPersonCoordinatesList.allCoordinateData
   );
 
   const activeSignatoriesCoordinateData = useSelector(
-    (state: any) =>
-      state.inPersonCoordinatesList.activeSignatoriesCoordinateData
+    (state: RootState) =>
+      state.inPerson.inPersonCoordinatesList.activeSignatoriesCoordinateData
   );
   const elementsNavigationData = useSelector(
-    (state: any) => state.inPersonElementsNavigationHelper
+    (state: RootState) => state.inPerson.inPersonElementsNavigationHelper
   );
   const {
     file,
@@ -164,7 +172,7 @@ const InPersonSigningPage = () => {
           ? 0
           : nextIndex;
 
-      const currentElementData = activeSignatoriesCoordinateData[indexNo];
+      const currentElementData: any = activeSignatoriesCoordinateData[indexNo];
 
       if (window.innerWidth > 550) {
         window.scroll({
@@ -231,7 +239,7 @@ const InPersonSigningPage = () => {
       );
 
       if (currentPageElements[0]) {
-        const currentElementData = currentPageElements[0];
+        const currentElementData: any = currentPageElements[0];
 
         if (window.innerWidth > 550) {
           window.scroll({
@@ -302,22 +310,13 @@ const InPersonSigningPage = () => {
     uuid_template_instance: string
   ) => {
     try {
-      let headersList = {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-      };
-
-      let reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/common/documents/inPersonSigning/fetchSignatories/?tiUUID=${uuid_template_instance}`,
-        method: "GET",
-        headers: headersList,
-        data: {},
-      };
-
-      let response = await Axios.request(reqOptions);
-
-      const responseData = response.data.data;
-      console.log("@@@ FULL DATA: " + JSON.stringify(responseData));
+      const {
+        data: { data: responseData },
+      }: AxiosResponse = await getRequest(
+        API_ROUTES.COMMON_DOCUMENTS_INPERSONSIGNING_FETCHSIGNATORIES,
+        false,
+        `?tiUUID=${uuid_template_instance}`
+      );
 
       dispatch(setFullData({ data: responseData }));
 
@@ -397,41 +396,27 @@ const InPersonSigningPage = () => {
 
   const fetchingUsersResources = async (uuidSignatory: string) => {
     try {
-      // {{baseUrl}}/api/fetchCordinatesData
-
-      var reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/common/externalUser/data/checkOrAdd`,
-        method: "POST",
-        headers: {
-          Accept: "*/*",
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({
-          uuidSignatory: uuidSignatory,
-        }),
-      };
-
-      var {
+      const {
         data: { data: usersData },
-      } = await Axios.request(reqOptions);
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.COMMON_EXTERNALUSER_DATA_CHECKORADD,
+        false,
+        {
+          uuidSignatory: uuidSignatory,
+        }
+      );
 
       const userId = usersData.userId;
 
-      var reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/common/externalUser/signature/fetchAll`,
-        method: "POST",
-        headers: {
-          Accept: "*/*",
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({
-          userId: userId,
-        }),
-      };
-
-      var {
+      const {
         data: { data: signatureData },
-      } = await Axios.request(reqOptions);
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.COMMON_EXTERNALUSER_SIGNATURE_FETCHALL,
+        false,
+        {
+          userId: userId,
+        }
+      );
 
       dispatch(setUserData({ userId }));
       dispatch(
@@ -450,22 +435,17 @@ const InPersonSigningPage = () => {
     try {
       const locationData: any = await fetchIpInfo();
 
-      const headersList = {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-      };
-      const bodyContent = JSON.stringify({
-        tiUUID: uuidTemplateInstance,
-        signatoryUUID: signatoryUniqUUID,
-        location: locationData,
-      });
-      const reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/audit/trackDocumentViewed`,
-        method: "POST",
-        headers: headersList,
-        data: bodyContent,
-      };
-      await Axios.request(reqOptions);
+      const {
+        data: { data: responseData },
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.AUDIT_TRACKDOCUMENTVIEWED,
+        false,
+        {
+          tiUUID: uuidTemplateInstance,
+          signatoryUUID: signatoryUniqUUID,
+          location: locationData,
+        }
+      );
     } catch (err) {
       console.log(err);
     }
@@ -555,7 +535,7 @@ const InPersonSigningPage = () => {
                           fetchingUsersResources(e.value as string);
                           const coordData =
                             allCoordinateDataWithCordinates.filter(
-                              (coord) => coord.signatoryUUID === e.value
+                              (coord: any) => coord.signatoryUUID === e.value
                             );
                           dispatch(
                             setActiveSignatoriesCoordinateData({

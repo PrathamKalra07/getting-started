@@ -2,10 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 //
-import { TextPad } from "../../components/inPersonSigning/TextPad";
-import { changeTextData, setTextData } from "../../redux/slices/inPersonSigning/textReducer";
-import { fetchCoordsPageAndTypeWise } from "../../utils/InPersonSigning/fetchCoordPageWise";
-import { updateCoordinateData } from "../../redux/slices/inPersonSigning/coordinatesReducer";
+import { TextPad } from "components/inPersonSigning/TextPad";
+import {
+  changeTextData,
+  setTextData,
+} from "redux/slices/inPersonSigning/textReducer";
+import { fetchCoordsPageAndTypeWise } from "utils/InPersonSigning/fetchCoordPageWise";
+import { updateCoordinateData } from "redux/slices/inPersonSigning/coordinatesReducer";
+
+//
+import { RootState } from "redux/store";
 
 interface Props {
   page: any;
@@ -20,16 +26,18 @@ export const TextContainer: React.FC<Props> = ({
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
   const activeSignatory = useSelector(
-    (state: any) => state.inPersonActiveSignatory.activeSignatory
+    (state: RootState) => state.inPerson.inPersonActiveSignatory.activeSignatory
   );
   const allCordinatesData = useSelector(
-    (state: any) => state.inPersonCoordinatesList.allCoordinateData
+    (state: RootState) =>
+      state.inPerson.inPersonCoordinatesList.allCoordinateData
   );
 
   const allTextElementDataSelector = useSelector(
-    (state: any) => state.inPersonTextList.allTextData[currentPageNo]
+    (state: RootState) =>
+      state.inPerson.inPersonTextList.allTextData[currentPageNo]
   );
-  const reduxState = useSelector((state: any) => state);
+  const reduxState = useSelector((state: RootState) => state);
 
   const dispatch = useDispatch();
 
@@ -46,8 +54,12 @@ export const TextContainer: React.FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    console.log('@@@ TEXT CONTAINER called....');
-    const {coordsPagesWise} = fetchCoordsPageAndTypeWise(allCordinatesData, activeSignatory.value, 'Text');
+    console.log("@@@ TEXT CONTAINER called....");
+    const { coordsPagesWise } = fetchCoordsPageAndTypeWise(
+      allCordinatesData,
+      activeSignatory.value,
+      "Text"
+    );
     dispatch(setTextData({ allTextData: coordsPagesWise }));
     return () => {};
   }, [activeSignatory]);
@@ -59,7 +71,6 @@ export const TextContainer: React.FC<Props> = ({
 
       dispatch(
         changeTextData({
-          
           elementIndex: targetElementIndex,
           textValue: value,
           currentPageNo: currentPageNo,
@@ -70,7 +81,7 @@ export const TextContainer: React.FC<Props> = ({
         updateCoordinateData({
           signatoryUUID: activeSignatory.value,
           eleId: targetElementIndex,
-          newValue: value
+          newValue: value,
         })
       );
     } catch (err) {

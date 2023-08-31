@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 //
-import { SignaturePad } from "../components/Elements/SignaturePad";
+import { SignaturePad } from "components/Elements/SignaturePad";
 
 //
 
-import { setSignatureData } from "../redux/slices/signatureReducer";
+import { setSignatureData } from "redux/slices/signatureReducer";
+//
+import { RootState } from "redux/store";
 
 interface Props {
   page: any;
@@ -25,15 +27,15 @@ export const SignatureContainer: React.FC<Props> = ({
   const [currentPageNo, setCurrentPageNo] = useState(0);
 
   const allCordinatesData = useSelector(
-    (state: any) => state.coordinatesList.allCoordinateData
+    (state: RootState) => state.coordinatesList.allCoordinateData
   );
 
   const signatureEncodedImgData = useSelector(
-    (state: any) => state.signatureList.encodedImgData
+    (state: RootState) => state.signatureList.encodedImgData
   );
 
   const allCoordinatesElementDataSelector = useSelector(
-    (state: any) => state.signatureList.allSignatureData[currentPageNo]
+    (state: RootState) => state.signatureList.allSignatureData[currentPageNo]
   );
 
   //

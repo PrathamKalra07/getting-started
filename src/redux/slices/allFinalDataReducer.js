@@ -20,30 +20,24 @@ export const allFinalDataSlice = createSlice({
     },
     setCompletedNoOfFields: (state, action) => {
       const { completedNoOfFields } = action.payload;
-      state.completedNoOfFields = completedNoOfFields
-    }
+      state.completedNoOfFields = completedNoOfFields;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(changeTextData.type, (state, action) => {
-      const {
-        FetchAllElementsStatus,
-      } = require("../../utils/trackAllElementsDone");
+      const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
       const { totalDoneElements } = FetchAllElementsStatus(action.payload);
 
       state.completedNoOfFields = totalDoneElements;
     });
     builder.addCase(changeDateData.type, (state, action) => {
-      const {
-        FetchAllElementsStatus,
-      } = require("../../utils/trackAllElementsDone");
+      const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
       const { totalDoneElements } = FetchAllElementsStatus(action.payload);
 
       state.completedNoOfFields = totalDoneElements;
     });
     builder.addCase(setSignaturePathWithEncoddedImg.type, (state, action) => {
-      const {
-        FetchAllElementsStatus,
-      } = require("../../utils/trackAllElementsDone");
+      const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
       const { totalDoneElements } = FetchAllElementsStatus(action.payload);
 
       state.completedNoOfFields = totalDoneElements;
@@ -52,6 +46,7 @@ export const allFinalDataSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setTotalNoOfFields, setCompletedNoOfFields } = allFinalDataSlice.actions;
+export const { setTotalNoOfFields, setCompletedNoOfFields } =
+  allFinalDataSlice.actions;
 
 export default allFinalDataSlice.reducer;

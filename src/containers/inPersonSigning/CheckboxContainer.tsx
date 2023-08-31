@@ -5,10 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   changeCheckboxData,
   setCheckBoxData,
-} from "../../redux/slices/inPersonSigning/checkboxReducer";
-import { CheckboxPad } from "../../components/inPersonSigning/CheckboxPad";
-import { fetchCoordsPageAndTypeWise } from "../../utils/InPersonSigning/fetchCoordPageWise";
-import { updateCoordinateData } from "../../redux/slices/inPersonSigning/coordinatesReducer";
+} from "redux/slices/inPersonSigning/checkboxReducer";
+import { CheckboxPad } from "components/inPersonSigning/CheckboxPad";
+import { fetchCoordsPageAndTypeWise } from "utils/InPersonSigning/fetchCoordPageWise";
+import { updateCoordinateData } from "redux/slices/inPersonSigning/coordinatesReducer";
+
+//
+import { RootState } from "redux/store";
 
 interface Props {
   page: any;
@@ -21,14 +24,16 @@ export const CheckboxContainer: React.FC<Props> = ({
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
   const activeSignatory = useSelector(
-    (state: any) => state.inPersonActiveSignatory.activeSignatory
+    (state: RootState) => state.inPerson.inPersonActiveSignatory.activeSignatory
   );
   const allCordinatesData = useSelector(
-    (state: any) => state.inPersonCoordinatesList.allCoordinateData
+    (state: RootState) =>
+      state.inPerson.inPersonCoordinatesList.allCoordinateData
   );
 
   const allCheckboxElementDataSelector = useSelector(
-    (state: any) => state.inPersonCheckboxList.allCheckboxData[currentPageNo]
+    (state: RootState) =>
+      state.inPerson.inPersonCheckboxList.allCheckboxData[currentPageNo]
   );
 
   const dispatch = useDispatch();
@@ -46,13 +51,17 @@ export const CheckboxContainer: React.FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    console.log('@@@ CHECKBOX CONTAINER called....');
-    const {coordsPagesWise} = fetchCoordsPageAndTypeWise(allCordinatesData, activeSignatory.value, 'Checkbox');
-    
+    console.log("@@@ CHECKBOX CONTAINER called....");
+    const { coordsPagesWise } = fetchCoordsPageAndTypeWise(
+      allCordinatesData,
+      activeSignatory.value,
+      "Checkbox"
+    );
+
     dispatch(setCheckBoxData({ allCheckboxData: coordsPagesWise }));
     return () => {};
   }, [activeSignatory]);
-  
+
   //
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
@@ -69,7 +78,7 @@ export const CheckboxContainer: React.FC<Props> = ({
         updateCoordinateData({
           signatoryUUID: activeSignatory.value,
           eleId: targetElementIndex,
-          newValue: value
+          newValue: value,
         })
       );
     } catch (err) {

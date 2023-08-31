@@ -1,14 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { updateValueByEleId } from "../../../utils/InPersonSigning/updateValueByEleId";
-import { fetchAllElementsStatus } from "../../../utils/InPersonSigning/trackAllElementsDone";
-
+import { updateValueByEleId } from "utils/InPersonSigning/updateValueByEleId";
+import { fetchAllElementsStatus } from "utils/InPersonSigning/trackAllElementsDone";
 
 export const coordinatesSlice = createSlice({
   name: "coordinatesSlice",
   initialState: {
     allCoordinateData: [],
     activeSignatoriesCoordinateData: [],
-    signatoryList: []
+    signatoryList: [],
   },
   reducers: {
     setCoordinateData: (state, action) => {
@@ -26,14 +25,13 @@ export const coordinatesSlice = createSlice({
     updateSignatorySignatureValue: (state, action) => {
       const { signatoryUUID, newValue } = action.payload;
 
-      state.signatoryList = state.signatoryList.map(signatory => {
-        
-        if(signatory.signatoryUUID === signatoryUUID) {
-          if(signatory.value === '') {
+      state.signatoryList = state.signatoryList.map((signatory) => {
+        if (signatory.signatoryUUID === signatoryUUID) {
+          if (signatory.value === "") {
             let signatureCount = 0;
-    
+
             for (const item of state.activeSignatoriesCoordinateData) {
-              if (item.fieldType === 'Signature') {
+              if (item.fieldType === "Signature") {
                 signatureCount++;
               }
             }
@@ -44,11 +42,15 @@ export const coordinatesSlice = createSlice({
         return signatory;
       });
     },
-    
+
     updateCoordinateData: (state, action) => {
       const { signatoryUUID, eleId, newValue } = action.payload;
       // console.log('action.payload: '+ JSON.stringify(action.payload));
-      state.allCoordinateData = updateValueByEleId(state.allCoordinateData, eleId, newValue);
+      state.allCoordinateData = updateValueByEleId(
+        state.allCoordinateData,
+        eleId,
+        newValue
+      );
       const updatedSignatoryList = fetchAllElementsStatus(signatoryUUID, state);
       // console.log('updatedSignatoryList: '+ JSON.stringify(updatedSignatoryList));
       state.signatoryList = updatedSignatoryList;
@@ -57,6 +59,13 @@ export const coordinatesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setCoordinateData, setActiveSignatoriesCoordinateData, updateCoordinateData, setSingatoryList, updateSignatorySignatureValue, updateSignatoryFieldsTracker } = coordinatesSlice.actions;
+export const {
+  setCoordinateData,
+  setActiveSignatoriesCoordinateData,
+  updateCoordinateData,
+  setSingatoryList,
+  updateSignatorySignatureValue,
+  updateSignatoryFieldsTracker,
+} = coordinatesSlice.actions;
 
 export default coordinatesSlice.reducer;

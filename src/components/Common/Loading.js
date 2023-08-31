@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 // import PuffLoader from "react-spinners/PuffLoader";
-import LoadingGif from "../../assets/img/loading.gif";
+import LoadingGif from "assets/img/loading.gif";
 
 export default function Loading({}) {
   const [isMsgShown, setIsMsgShown] = useState(false);

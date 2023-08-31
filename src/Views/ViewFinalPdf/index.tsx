@@ -10,8 +10,8 @@ import {
 } from "reactstrap";
 import { useDispatch } from "react-redux";
 //
-import { AuditTrailModal } from "../../modals/components/AuditTrailModal";
-import { setInfo } from "../../redux/slices/basicInfoReducer";
+import { AuditTrailModal } from "modals/components/AuditTrailModal";
+import { setInfo } from "redux/slices/basicInfoReducer";
 
 const ViewFinalPdf = () => {
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;

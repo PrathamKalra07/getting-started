@@ -3,7 +3,8 @@ import { Icon } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 
 //
-import { setActiveElement } from "../../redux/slices/elementsNavigationHelperReducer";
+import { setActiveElement } from "redux/slices/elementsNavigationHelperReducer";
+import { RootState } from "redux/store";
 
 interface Props {
   x: number;
@@ -29,7 +30,7 @@ Props) => {
   const dispatch = useDispatch();
 
   const elementsNavigationHelperState = useSelector(
-    (state: any) => state.elementsNavigationHelper
+    (state: RootState) => state.elementsNavigationHelper
   );
 
   return (

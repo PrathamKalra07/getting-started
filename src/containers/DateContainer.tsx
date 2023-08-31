@@ -3,8 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
 //
-import { DatePad } from "../components/Elements/DatePad";
-import { changeDateData, setDateData } from "../redux/slices/dateReducer";
+import { DatePad } from "components/Elements/DatePad";
+import { changeDateData, setDateData } from "redux/slices/dateReducer";
+
+//
+import { RootState } from "redux/store";
 
 interface Props {
   page: any;
@@ -17,13 +20,13 @@ export const DateContainer: React.FC<Props> = ({
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
 
-  const reduxState = useSelector((state: any) => state);
+  const reduxState = useSelector((state: RootState) => state);
   const allCordinatesData = useSelector(
-    (state: any) => state.coordinatesList.allCoordinateData
+    (state: RootState) => state.coordinatesList.allCoordinateData
   );
 
   const allDateElementDataSelector = useSelector(
-    (state: any) => state.dateList.allDateData[currentPageNo]
+    (state: RootState) => state.dateList.allDateData[currentPageNo]
   );
 
   const dispatch = useDispatch();

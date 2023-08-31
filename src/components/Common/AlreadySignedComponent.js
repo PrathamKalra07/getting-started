@@ -59,7 +59,7 @@ export default function AlreadySignedComponent({
             </svg>
 
             {/* <img
-              src={require("../assets/img/stopimg.png")}
+              src={require("assets/img/stopimg.png")}
               alt="img"
               style={{ height: "50%" }}
             /> */}

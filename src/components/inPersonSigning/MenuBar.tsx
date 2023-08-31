@@ -5,18 +5,16 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import { useSelector } from "react-redux";
 import { Document, Page, pdfjs } from "react-pdf/dist/esm/entry.webpack";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import {
-  Modal,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
-} from "reactstrap";
+import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+
+//
+import { RootState } from "redux/store";
 
 interface Props {
   isPdfLoaded: boolean;
@@ -38,21 +36,27 @@ export const MenuBar: React.FC<Props> = ({
 
   const toggleDropDown = () => setDropdownOpen((prevState) => !prevState);
   const activeSignatory = useSelector(
-    (state: any) => state.inPersonActiveSignatory.activeSignatory
+    (state: RootState) => state.inPerson.inPersonActiveSignatory.activeSignatory
   );
-  const inPersonCoordinatesList = useSelector((state: any) => state.inPersonCoordinatesList);
+  const inPersonCoordinatesList = useSelector(
+    (state: RootState) => state.inPerson.inPersonCoordinatesList
+  );
   // const trackerData = useSelector((state: any) => state.inPersonCoordinatesList.signatoryList.find(signatory => signatory.signatoryUUID === activeSignatory.value));
-  const basicInfoData = useSelector((state: any) => state.inPersonBasicInfoData);
+  const basicInfoData = useSelector(
+    (state: RootState) => state.inPerson.inPersonBasicInfoData
+  );
 
   let totalNoOfFields = 0;
   let completedNoOfFields = 0;
-  if(inPersonCoordinatesList.signatoryList.length>0) {
-    const trackerData = inPersonCoordinatesList.signatoryList.find(signatory => signatory.signatoryUUID === activeSignatory.value);
-     totalNoOfFields = trackerData.totalNoOfFields;
-     completedNoOfFields = trackerData.completedNoOfFields;
+  if (inPersonCoordinatesList.signatoryList.length > 0) {
+    const trackerData: any = inPersonCoordinatesList.signatoryList.find(
+      (signatory: any) => signatory.signatoryUUID === activeSignatory.value
+    );
+    totalNoOfFields = trackerData.totalNoOfFields;
+    completedNoOfFields = trackerData.completedNoOfFields;
   }
   // console.log(inPersonCoordinatesList);
-  
+
   useEffect(() => {
     if (basicInfoData) {
       const { uuid } = basicInfoData;
@@ -61,7 +65,6 @@ export const MenuBar: React.FC<Props> = ({
 
     return () => {};
   }, [basicInfoData]);
-
 
   const closeCurrentModal = () => {
     setIsFinishAlertShown(false);
@@ -123,8 +126,8 @@ export const MenuBar: React.FC<Props> = ({
               className="text-center mb-1"
               style={{ color: "rgba(255,255,255,0.7)" }}
             >
-              {completedNoOfFields} of {totalNoOfFields}{" "}
-              required fields completed
+              {completedNoOfFields} of {totalNoOfFields} required fields
+              completed
             </div>
 
             {/*  */}
@@ -132,7 +135,6 @@ export const MenuBar: React.FC<Props> = ({
         </div>
 
         <div className="d-flex justify-content-center align-items-center header-main-container gap-sm-2 ">
-          
           {isPdfLoaded && (
             <>
               <button

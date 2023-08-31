@@ -4,7 +4,8 @@ import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 
 //
-import { setActiveElement } from "../../redux/slices/elementsNavigationHelperReducer";
+import { setActiveElement } from "redux/slices/elementsNavigationHelperReducer";
+import { RootState } from "redux/store";
 
 interface Props {
   x: number;
@@ -30,7 +31,7 @@ export const CheckboxPad = ({
   const dispatch = useDispatch();
 
   const elementsNavigationHelperState = useSelector(
-    (state: any) => state.elementsNavigationHelper
+    (state: RootState) => state.elementsNavigationHelper
   );
 
   return (

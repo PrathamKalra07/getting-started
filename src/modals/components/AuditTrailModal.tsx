@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Axios from "axios";
+import { AxiosResponse } from "axios";
 import moment from "moment";
 import momentTz from "moment-timezone";
 
@@ -21,6 +21,13 @@ import {
 import BounceLoader from "react-spinners/BounceLoader";
 
 //
+import { API_ROUTES } from "helpers/constants/apis";
+import { postRequest } from "helpers/axios";
+
+//
+import { RootState } from "redux/store";
+
+//
 
 interface Props {
   setIsAuditHistoryShown: any;
@@ -33,7 +40,7 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
   const [auditTrailData, setAuditTrailData] = useState<any>([]);
   const [templateData, setTemplateData] = useState<any>({});
 
-  const basicInfoData = useSelector((state: any) => state.basicInfoData);
+  const basicInfoData = useSelector((state: RootState) => state.basicInfoData);
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const toggle = () => setTooltipOpen(!tooltipOpen);
@@ -46,25 +53,17 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
 
   const fetchAuditTrailData = async () => {
     try {
-      let headersList = {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-      };
+      const {
+        data: { data: responseData },
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.AUDIT_FETCHAUDITTRAILS,
+        false,
+        {
+          templateInstanceUUID: basicInfoData.uuidTemplateInstance,
+        }
+      );
 
-      let bodyContent = JSON.stringify({
-        templateInstanceUUID: basicInfoData.uuidTemplateInstance,
-      });
-
-      let reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/audit/fetchAuditTrails`,
-        method: "POST",
-        headers: headersList,
-        data: bodyContent,
-      };
-
-      let { data } = await Axios.request(reqOptions);
-
-      const { auditData, templateData } = data.data;
+      const { auditData, templateData } = responseData;
 
       setAuditTrailData(auditData);
       setTemplateData(templateData);

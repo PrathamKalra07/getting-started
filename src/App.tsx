@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useEffect, useRef } from "react";
-import Axios from "axios";
+import { AxiosResponse } from "axios";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -36,6 +36,14 @@ import { Page } from "./components/Page";
 import AlreadySignedComponent from "./components/Common/AlreadySignedComponent";
 import Loading from "./components/Common/Loading";
 
+//
+import { postRequest } from "helpers/axios";
+import { API_ROUTES } from "helpers/constants/apis";
+
+//
+import { RootState } from "redux/store";
+
+//
 import "semantic-ui-css/semantic.min.css";
 import "./App.css";
 
@@ -57,12 +65,12 @@ const App: React.FC = () => {
   const signatureIndicatorRef = useRef<any>(null);
 
   //
-  const currentReduxState = useSelector((state) => state);
+  const currentReduxState = useSelector((state: RootState) => state);
   const allCoordinateDataWithCordinates = useSelector(
-    (state: any) => state.coordinatesList.allCoordinateData
+    (state: RootState) => state.coordinatesList.allCoordinateData
   );
   const elementsNavigationData = useSelector(
-    (state: any) => state.elementsNavigationHelper
+    (state: RootState) => state.elementsNavigationHelper
   );
 
   const {
@@ -144,27 +152,19 @@ const App: React.FC = () => {
 
       const signatoryUUID = tempState.basicInfoData.uuidSignatory;
 
-      let headersList = {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-      };
-
       const locationData = await fetchIpInfo();
 
-      let bodyContent = JSON.stringify({
-        uuid_signatory: signatoryUUID,
-        rejectionReason: commentText,
-        location: locationData,
-      });
-
-      let reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/common/handleSignRejection`,
-        method: "POST",
-        headers: headersList,
-        data: bodyContent,
-      };
-
-      await Axios.request(reqOptions);
+      const {
+        data: { data: responseData },
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.COMMON_HANDLESIGNREJECTION,
+        false,
+        {
+          uuid_signatory: signatoryUUID,
+          rejectionReason: commentText,
+          location: locationData,
+        }
+      );
 
       localStorage.clear();
 
@@ -293,7 +293,7 @@ const App: React.FC = () => {
           ? 0
           : nextIndex;
 
-      const currentElementData = allCoordinateDataWithCordinates[indexNo];
+      const currentElementData: any = allCoordinateDataWithCordinates[indexNo];
 
       if (window.innerWidth > 550) {
         window.scroll({
@@ -357,7 +357,7 @@ const App: React.FC = () => {
       );
 
       if (currentPageElements[0]) {
-        const currentElementData = currentPageElements[0];
+        const currentElementData: any = currentPageElements[0];
 
         if (window.innerWidth > 550) {
           window.scroll({
@@ -402,35 +402,22 @@ const App: React.FC = () => {
     uuidS: string
   ) => {
     try {
-      // {{baseUrl}}/api/fetchCordinatesData
-      let headersList = {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-      };
-
-      let bodyContent = JSON.stringify({
-        uuid_template_instance: uuid_template_instance,
-        uuid_signatory: uuidS,
-      });
-
-      let reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/common/fetchCordinatesData`,
-        method: "POST",
-        headers: headersList,
-        data: bodyContent,
-      };
-
-      let response = await Axios.request(reqOptions);
-
-      const responseData = response.data.data;
-      console.log("@@@ DATA: " + JSON.stringify(responseData));
+      const {
+        data: { data: responseData },
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.COMMON_FETCHCORDINATESDATA,
+        false,
+        {
+          uuid_template_instance: uuid_template_instance,
+          uuid_signatory: uuidS,
+        }
+      );
 
       let coord = responseData.coord;
-      console.log("@@@ CCORDS: " + JSON.stringify(coord));
       const recordData = responseData.recordData;
 
       let completedFieldCount = 0;
-      if (recordData) {
+      if (Object.keys(recordData).length > 0) {
         coord = coord.map((item) => {
           if (item.value !== "") {
             completedFieldCount += 1;
@@ -480,8 +467,6 @@ const App: React.FC = () => {
         finalData.push(...t);
       });
 
-      console.log(finalData);
-      console.log(completedFieldCount);
       dispatch(setCoordinateData({ allCoordinateData: finalData }));
       dispatch(setRecordData({ recordData: recordData }));
       dispatch(setTotalNoOfFields({ allCoordinateData: finalData }));
@@ -504,41 +489,27 @@ const App: React.FC = () => {
 
   const fetchingUsersResources = async (uuidSignatory: string) => {
     try {
-      // {{baseUrl}}/api/fetchCordinatesData
-
-      var reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/common/externalUser/data/checkOrAdd`,
-        method: "POST",
-        headers: {
-          Accept: "*/*",
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({
+      const {
+        data: { data: responseData },
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.COMMON_EXTERNALUSER_DATA_CHECKORADD,
+        false,
+        {
           uuidSignatory: uuidSignatory,
-        }),
-      };
+        }
+      );
 
-      var {
-        data: { data: usersData },
-      } = await Axios.request(reqOptions);
+      const userId = responseData.userId;
 
-      const userId = usersData.userId;
-
-      var reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/common/externalUser/signature/fetchAll`,
-        method: "POST",
-        headers: {
-          Accept: "*/*",
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({
-          userId: userId,
-        }),
-      };
-
-      var {
+      const {
         data: { data: signatureData },
-      } = await Axios.request(reqOptions);
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.COMMON_EXTERNALUSER_SIGNATURE_FETCHALL,
+        false,
+        {
+          userId: userId,
+        }
+      );
 
       dispatch(setUserData({ userId }));
       dispatch(
@@ -598,27 +569,20 @@ const App: React.FC = () => {
         //   "i am from app.tsx in if condition function body on line no 590"
         // );
         // console.log("=============");
-        let headersList = {
-          Accept: "*/*",
-          "Content-Type": "application/json",
-        };
-        let bodyContent = JSON.stringify({
+
+        const {
+          data: { data: responseData },
+        }: AxiosResponse = await postRequest(API_ROUTES.SENDOTP, false, {
           uuid_signatory: signatoryUniqUUID,
           uuid_template_instance: uuidTemplateInstance,
         });
-        let reqOptions = {
-          url: `${process.env.REACT_APP_API_URL}/api/sendOtp`,
-          method: "POST",
-          headers: headersList,
-          data: bodyContent,
-        };
-        let response = await Axios.request(reqOptions);
+
         localStorage.setItem("isOtpSent", "true");
-        localStorage.setItem("otpValue", response.data.data.otpValue);
+        localStorage.setItem("otpValue", responseData.otpValue);
         localStorage.setItem("signatoryUUID", signatoryUniqUUID);
-        localStorage.setItem("signatoryName", response.data.data.signatoryName);
-        setOriginalOtpValue(response.data.data.otpValue);
-        // console.log(response.data.data.otpValue);
+        localStorage.setItem("signatoryName", responseData.signatoryName);
+        setOriginalOtpValue(responseData.otpValue);
+        // console.log(responseData.otpValue);
       }
 
       await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
@@ -678,22 +642,18 @@ const App: React.FC = () => {
       //
       const locationData: any = await fetchIpInfo();
 
-      const headersList = {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-      };
-      const bodyContent = JSON.stringify({
-        tiUUID: uuidTemplateInstance,
-        signatoryUUID: signatoryUniqUUID,
-        location: locationData,
-      });
-      const reqOptions = {
-        url: `${process.env.REACT_APP_API_URL}/api/audit/trackDocumentViewed`,
-        method: "POST",
-        headers: headersList,
-        data: bodyContent,
-      };
-      await Axios.request(reqOptions);
+      //
+      const {
+        data: { data: responseData },
+      }: AxiosResponse = await postRequest(
+        API_ROUTES.AUDIT_TRACKDOCUMENTVIEWED,
+        false,
+        {
+          tiUUID: uuidTemplateInstance,
+          signatoryUUID: signatoryUniqUUID,
+          location: locationData,
+        }
+      );
     } catch (err) {
       console.log(err);
     }
