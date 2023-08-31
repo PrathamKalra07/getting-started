@@ -23,17 +23,6 @@ import BounceLoader from "react-spinners/BounceLoader";
 //
 
 interface Props {
-  // open: boolean;
-  // dismiss: () => void;
-  // confirm: (drawing?: {
-  //   width: number;
-  //   height: number;
-  //   path: string;
-  //   strokeWidth: number;
-  //   stroke: string;
-  //   encodedImgData: string;
-  // }) => void;
-  // drawing?: DrawingAttachment;
   setIsAuditHistoryShown: any;
 }
 

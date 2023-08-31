@@ -8,13 +8,11 @@ import {
   // Modal,
   // Button,
   Menu,
-  Dropdown,
-  Label,
   Icon,
 } from "semantic-ui-react";
 
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
-import { Row, Col, Card, CardBody, CardSubtitle, Button } from "reactstrap";
+import { Row, Col, Card, CardBody } from "reactstrap";
 import SignaturePad from "react-signature-pad-wrapper";
 import BounceLoader from "react-spinners/BounceLoader";
 
@@ -22,32 +20,19 @@ import BounceLoader from "react-spinners/BounceLoader";
 import { createTextSignature } from "../../utils/textSignature";
 
 //
-import { Color } from "../../entities";
-
-//
 import {
   setAllPreviousSignatures,
   setSignaturePathWithEncoddedImg,
 } from "../../redux/slices/signatureReducer";
-import { trimImageData } from "../../utils/module/TrimImageData";
 import trimCanvas from "../../utils/module/trimCanvasModule";
-import { DrawingAttachment, SignatureObject } from "../../types";
+import { SignatureObject } from "../../types";
 
 interface Props {
   open: boolean;
   dismiss: () => void;
-  confirm: (drawing?: {
-    width: number;
-    height: number;
-    path: string;
-    strokeWidth: number;
-    stroke: string;
-    encodedImgData: string;
-  }) => void;
-  drawing?: DrawingAttachment;
 }
 
-export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
+export const DrawingModal = ({ open, dismiss }: Props) => {
   const [allSignatureData, setAllSignatureData] = useState([]);
   const [signatureInputText, setSignatureInputText] = useState(
     localStorage.getItem("signatoryName") ?? ""

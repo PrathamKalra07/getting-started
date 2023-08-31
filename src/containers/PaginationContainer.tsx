@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useControls } from "react-zoom-pan-pinch";
-import {
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownItem,
-  DropdownMenu,
-} from "reactstrap";
-
-//
-import { TextPad } from "../components/TextPad";
-import { changeTextData, setTextData } from "../redux/slices/textReducer";
 
 interface Props {
   page: any;

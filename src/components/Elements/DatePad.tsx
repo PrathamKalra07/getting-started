@@ -4,7 +4,7 @@ import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 
 //
-import { setActiveElement } from "../redux/slices/elementsNavigationHelperReducer";
+import { setActiveElement } from "../../redux/slices/elementsNavigationHelperReducer";
 
 interface Props {
   x: number;

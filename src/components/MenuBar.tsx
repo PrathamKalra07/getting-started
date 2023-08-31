@@ -22,10 +22,6 @@ import {
 } from "reactstrap";
 
 interface Props {
-  uploadNewPdf: () => void;
-  addText: () => void;
-  addImage: () => void;
-  addDrawing: () => void;
   isPdfLoaded: boolean;
   savingPdfStatus: boolean;
   savePdf: () => void;
@@ -34,10 +30,6 @@ interface Props {
 }
 
 export const MenuBar: React.FC<Props> = ({
-  uploadNewPdf,
-  addDrawing,
-  addText,
-  addImage,
   isPdfLoaded,
   savingPdfStatus,
   savePdf,
@@ -94,29 +86,6 @@ export const MenuBar: React.FC<Props> = ({
   const handlePrintPdf = async () => {
     try {
       window.open(pdfLiveUrl, "_blank", "");
-
-      // const innerText = `<iframe id="pdfviewer" src="${pdfLiveUrl}" type="application/pdf"  width="100%" height="500px"></iframe>`;
-      // const iframeElement = document.createElement("iframe");
-      // iframeElement.id = "pdfviewer";
-      // iframeElement.src = pdfLiveUrl;
-      // iframeElement.setAttribute("type", "application/pdf");
-      // iframeElement.style.height = "100%";
-      // iframeElement.style.width = "100%";
-      // // iframeElement.style.display = "none";
-      // iframeElement.onload = () => {
-      //   // window.frames.pdfviewer?.print()
-      //   const element: any = document.getElementById("pdfviewer");
-      //   element.contentWindow.print();
-      //   console.log(element);
-      //   // window.frames.pdfFrame.print();
-      // };
-      // document.body.appendChild(iframeElement);
-      // setTimeout(() => {
-      //   mywindow.focus(); // necessary for IE >= 10*/
-      //   mywindow.document.close(); // necessary for IE >= 10
-      //   mywindow.print();
-      //   mywindow.close();
-      // }, 2000);
     } catch (err) {
       console.log(err);
     }
@@ -134,8 +103,11 @@ export const MenuBar: React.FC<Props> = ({
     }
   };
 
-  const options = [{"label": "signer1", "value": 1}, {"label": "signer1", "value": 2}];
-  const selectedSigner = {"label": "signer1", "value": 1};
+  const options = [
+    { label: "signer1", value: 1 },
+    { label: "signer1", value: 2 },
+  ];
+  const selectedSigner = { label: "signer1", value: 1 };
   return (
     <>
       <div className="menubar-container p-2 px-3 ">
@@ -173,7 +145,6 @@ export const MenuBar: React.FC<Props> = ({
         </div>
 
         <div className="d-flex justify-content-center align-items-center header-main-container gap-sm-2 ">
-          
           {isPdfLoaded && (
             <>
               <button

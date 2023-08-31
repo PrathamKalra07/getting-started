@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Save } from "../utils/pdf";
-import { Attachments, Dimensions } from "../types";
+import { Dimensions } from "../types";
 
 export interface Pdf {
   name: string;
@@ -54,13 +54,13 @@ export const usePdf = () => {
     setIsLastPage(_pages.length === 1);
   };
 
-  const savePdf = async (attachments: Attachments[], tempState: any) => {
+  const savePdf = async (tempState: any) => {
     if (isSaving || !file) return;
 
     setIsSaving(true);
 
     try {
-      await Save(file, attachments, name, tempState);
+      await Save(file, tempState);
     } catch (e) {
       console.log(e);
     } finally {

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
 //
-import { DatePad } from "../components/DatePad";
+import { DatePad } from "../components/Elements/DatePad";
 import { changeDateData, setDateData } from "../redux/slices/dateReducer";
 
 interface Props {

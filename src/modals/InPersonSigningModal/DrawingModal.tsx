@@ -4,10 +4,7 @@ import Axios from "axios";
 import PropagateLoader from "react-spinners/PropagateLoader";
 
 import { useDropzone } from "react-dropzone";
-import {
-  Menu,
-  Icon,
-} from "semantic-ui-react";
+import { Menu, Icon } from "semantic-ui-react";
 
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import { Row, Col, Card, CardBody } from "reactstrap";
@@ -15,31 +12,20 @@ import SignaturePad from "react-signature-pad-wrapper";
 import BounceLoader from "react-spinners/BounceLoader";
 
 //
-import { createTextSignature } from "../../../utils/textSignature";
+import { createTextSignature } from "../../utils/textSignature";
 
 //
-import {
-  setAllPreviousSignatures,
-} from "../../../redux/slices/signatureReducer";
-import trimCanvas from "../../../utils/module/trimCanvasModule";
-import { DrawingAttachment, SignatureObject } from "../../../types";
-import { updateSignatorySignatureValue } from "../../../redux/slices/inPersonSigning/coordinatesReducer";
+import { setAllPreviousSignatures } from "../../redux/slices/signatureReducer";
+import trimCanvas from "../../utils/module/trimCanvasModule";
+import { SignatureObject } from "../../types";
+import { updateSignatorySignatureValue } from "../../redux/slices/inPersonSigning/coordinatesReducer";
 
 interface Props {
   open: boolean;
   dismiss: () => void;
-  confirm: (drawing?: {
-    width: number;
-    height: number;
-    path: string;
-    strokeWidth: number;
-    stroke: string;
-    encodedImgData: string;
-  }) => void;
-  drawing?: DrawingAttachment;
 }
 
-export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
+export const DrawingModal = ({ open, dismiss }: Props) => {
   const [allSignatureData, setAllSignatureData] = useState([]);
   const [signatureInputText, setSignatureInputText] = useState(
     localStorage.getItem("signatoryName") ?? ""
@@ -106,11 +92,11 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
 
   const handleDone = async () => {
     const encodedImgData = allPreviousSignatures[activeSignatureIndex].data;
-    
+
     dispatch(
       updateSignatorySignatureValue({
         signatoryUUID: activeSignatory.value,
-        newValue: encodedImgData
+        newValue: encodedImgData,
       })
     );
 
@@ -179,11 +165,10 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
       await fetchAllSignatures();
 
       if (allPreviousSignatures.length === 1) {
-
         dispatch(
           updateSignatorySignatureValue({
             signatoryUUID: activeSignatory.value,
-            newValue: ""
+            newValue: "",
           })
         );
       }
@@ -211,10 +196,9 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
       dispatch(
         updateSignatorySignatureValue({
           signatoryUUID: activeSignatory.value,
-          newValue: signatureDataBase64
+          newValue: signatureDataBase64,
         })
       );
-
 
       await fetchAllSignatures();
     } catch (err) {
@@ -230,7 +214,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
         dispatch(
           updateSignatorySignatureValue({
             signatoryUUID: activeSignatory.value,
-            newValue: ""
+            newValue: "",
           })
         );
       }
@@ -538,7 +522,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
                             <img
                               alt="Sample"
                               className="w-100"
-                              src={require("../../../assets/illustrations/undraw_learning_sketching_nd4f.png")}
+                              src={require("../../assets/illustrations/undraw_learning_sketching_nd4f.png")}
                             />
                           </Col>
                           <Col
@@ -582,7 +566,7 @@ export const DrawingModal = ({ open, dismiss, confirm, drawing }: Props) => {
                             <img
                               alt="Sample"
                               className="w-100"
-                              src={require("../../../assets/illustrations/undraw_Updated_resume_re_7r9j.png")}
+                              src={require("../../assets/illustrations/undraw_Updated_resume_re_7r9j.png")}
                             />
                           </Col>
                           <Col
@@ -920,7 +904,7 @@ const UploadSignature = memo(
 
               <img
                 style={{ maxWidth: "300px" }}
-                src={require("../../../assets/illustrations/undraw_Going_up_re_86kg.png")}
+                src={require("../../assets/illustrations/undraw_Going_up_re_86kg.png")}
                 className="my-2 w-100"
                 alt="img"
               />

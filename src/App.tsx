@@ -1,50 +1,43 @@
 import React, { useState, useLayoutEffect, useEffect, useRef } from "react";
 import Axios from "axios";
-import "semantic-ui-css/semantic.min.css";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createTextSignature } from "./utils/textSignature";
-import { useControls } from "react-zoom-pan-pinch";
 import moment from "moment";
-import "./App.css";
+import { Container } from "semantic-ui-react";
 
-import { Container, Grid, Button, Segment } from "semantic-ui-react";
-
-import { Container as BootstrapContainer } from "reactstrap";
-
+//
 import { MenuBar } from "./components/MenuBar";
 import { DrawingModal } from "./modals/components/DrawingModal";
 import { usePdf, Pdf } from "./hooks/usePdf";
-import { AttachmentTypes } from "./entities";
-import { ggID } from "./utils/helpers";
-import { useAttachments } from "./hooks/useAttachments";
 import { useUploader, UploadTypes } from "./hooks/useUploader";
-import { Page } from "./components/Page";
-import { Attachments } from "./components/Attachments";
-
-//
-import AlreadySignedComponent from "./components/AlreadySignedComponent";
 
 //
 import { setInfo } from "./redux/slices/basicInfoReducer";
 import { setCoordinateData } from "./redux/slices/coordinatesReducer";
 import { setRecordData } from "./redux/slices/coordinatesReducer";
-
 import { setUserData } from "./redux/slices/externalUserReducer";
 import { setAllPreviousSignatures } from "./redux/slices/signatureReducer";
-import OtpModal from "./modals/components/OtpModal";
-import Loading from "./components/Loading";
-import { CheckboxContainer } from "./containers/CheckboxContainer";
-
-//
-import { setTotalNoOfFields, setCompletedNoOfFields } from "./redux/slices/allFinalDataReducer";
 import {
   setActiveElement,
   setCurrentPage,
 } from "./redux/slices/elementsNavigationHelperReducer";
+import {
+  setTotalNoOfFields,
+  setCompletedNoOfFields,
+} from "./redux/slices/allFinalDataReducer";
+
+//
 import { fetchIpInfo } from "./utils/fetchIpInfo";
 import { AuditTrailModal } from "./modals/components/AuditTrailModal";
-import { TextAttachment } from "./types";
+
+import OtpModal from "./modals/components/OtpModal";
+//
+import { Page } from "./components/Page";
+import AlreadySignedComponent from "./components/Common/AlreadySignedComponent";
+import Loading from "./components/Common/Loading";
+
+import "semantic-ui-css/semantic.min.css";
+import "./App.css";
 
 const App: React.FC = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
@@ -91,15 +84,6 @@ const App: React.FC = () => {
     pages,
     goToPage,
   } = usePdf();
-  const {
-    add: addAttachment,
-    allPageAttachments,
-    pageAttachments,
-    reset: resetAttachments,
-    update,
-    remove,
-    setPageIndex,
-  } = useAttachments();
 
   //
   const dispatch = useDispatch();
@@ -109,7 +93,6 @@ const App: React.FC = () => {
   const initializePageAndAttachments = (pdfDetails: Pdf) => {
     initialize(pdfDetails);
     const numberOfPages = pdfDetails.pages.length;
-    resetAttachments(numberOfPages);
   };
 
   const {
@@ -122,78 +105,6 @@ const App: React.FC = () => {
     use: UploadTypes.PDF,
     afterUploadPdf: initializePageAndAttachments,
   });
-  const {
-    inputRef: imageInput,
-    handleClick: handleImageClick,
-    onClick: onImageClick,
-    upload: uploadImage,
-  } = useUploader({
-    use: UploadTypes.IMAGE,
-    afterUploadAttachment: addAttachment,
-  });
-
-  const addText = () => {
-    const newTextAttachment: TextAttachment = {
-      id: ggID(),
-      type: AttachmentTypes.TEXT,
-      x: 0,
-      y: 0,
-      width: 120,
-      height: 25,
-      size: 16,
-      lineHeight: 1.4,
-      fontFamily: "Times-Roman",
-      text: "Enter Text Here",
-    };
-    addAttachment(newTextAttachment);
-  };
-
-  const addDrawing = (drawing?: {
-    width: number;
-    height: number;
-    path: string;
-    encodedImgData: string;
-  }) => {
-    // if (!drawing) return;
-    // setSignatureData(drawing);
-    // const newDrawingAttachment: DrawingAttachment = {
-    //   id: ggID(),
-    //   type: AttachmentTypes.SIGNATURE,
-    //   ...drawing,
-    //   x: 0,
-    //   y: 0,
-    //   scale: 1,
-    // };
-    // addAttachment(newDrawingAttachment);
-  };
-
-  useLayoutEffect(() => setPageIndex(pageIndex), [pageIndex, setPageIndex]);
-
-  const hiddenInputs = (
-    <>
-      <input
-        data-testid="pdf-input"
-        ref={pdfInput}
-        type="file"
-        name="pdf"
-        id="pdf"
-        accept="application/pdf"
-        onChange={uploadPdf}
-        onClick={onClick}
-        style={{ display: "none" }}
-      />
-      <input
-        ref={imageInput}
-        type="file"
-        id="image"
-        name="image"
-        accept="image/*"
-        onClick={onImageClick}
-        style={{ display: "none" }}
-        onChange={uploadImage}
-      />
-    </>
-  );
 
   const handleSignRejection = async (commentText: string) => {
     const thankYouContainer: HTMLElement = document.getElementById(
@@ -359,7 +270,7 @@ const App: React.FC = () => {
     } else if (!isDateDataDone) {
       alert("Please Fill All Date Data");
     } else {
-      savePdf(allPageAttachments, tempState);
+      savePdf(tempState);
     }
   };
 
@@ -512,23 +423,33 @@ const App: React.FC = () => {
       let response = await Axios.request(reqOptions);
 
       const responseData = response.data.data;
-      console.log('@@@ DATA: '+ JSON.stringify(responseData));
+      console.log("@@@ DATA: " + JSON.stringify(responseData));
 
       let coord = responseData.coord;
-      console.log('@@@ CCORDS: '+ JSON.stringify(coord));
+      console.log("@@@ CCORDS: " + JSON.stringify(coord));
       const recordData = responseData.recordData;
 
       let completedFieldCount = 0;
-      if(recordData) {
-        coord = coord.map(item => {
-          if(item.value !== "") {
+      if (recordData) {
+        coord = coord.map((item) => {
+          if (item.value !== "") {
             completedFieldCount += 1;
           }
-          if (item.isUpdateFromSalesforce && item.mappingField && item.mappingField !== '') {
-            if (recordData.hasOwnProperty(item.mappingField) && recordData[item.mappingField] != null) {
-              
-              item.value = item.fieldType === "Date" ? 
-              moment(recordData[item.mappingField], "YYYY-MM-DD").format("MM-DD-YYYY") : recordData[item.mappingField];
+          if (
+            item.isUpdateFromSalesforce &&
+            item.mappingField &&
+            item.mappingField !== ""
+          ) {
+            if (
+              recordData.hasOwnProperty(item.mappingField) &&
+              recordData[item.mappingField] != null
+            ) {
+              item.value =
+                item.fieldType === "Date"
+                  ? moment(recordData[item.mappingField], "YYYY-MM-DD").format(
+                      "MM-DD-YYYY"
+                    )
+                  : recordData[item.mappingField];
             } else {
               item.value = item.fieldType === "Checkbox" ? false : "";
             }
@@ -537,7 +458,7 @@ const App: React.FC = () => {
           }
           return item;
         });
-  
+
         console.log(coord);
       }
       const sortedCoordinateData: any = [
@@ -551,9 +472,7 @@ const App: React.FC = () => {
       const finalData: Array<Object> = [];
 
       sortedCoordinateData.map((currentPageNo: number) => {
-        const data = coord.filter(
-          (item: any) => item.pageNo == currentPageNo
-        );
+        const data = coord.filter((item: any) => item.pageNo == currentPageNo);
 
         const t = data.sort((a: any, b: any) => {
           return a.y - b.y;
@@ -566,7 +485,9 @@ const App: React.FC = () => {
       dispatch(setCoordinateData({ allCoordinateData: finalData }));
       dispatch(setRecordData({ recordData: recordData }));
       dispatch(setTotalNoOfFields({ allCoordinateData: finalData }));
-      dispatch(setCompletedNoOfFields({completedNoOfFields: completedFieldCount}));
+      dispatch(
+        setCompletedNoOfFields({ completedNoOfFields: completedFieldCount })
+      );
       setIsFetchingCordinatesData(false);
     } catch (err: any) {
       // console.log(err);
@@ -872,15 +793,10 @@ const App: React.FC = () => {
               />
             ) : (
               <>
-                {hiddenInputs}
                 <MenuBar
                   rejectSign={handleSignRejection}
                   savePdf={handleSavePdf}
-                  addText={addText}
-                  addImage={handleImageClick}
-                  addDrawing={() => setDrawingModalOpen(true)}
                   savingPdfStatus={isSaving}
-                  uploadNewPdf={handlePdfClick}
                   isPdfLoaded={!!file}
                   setIsAuditHistoryShown={setIsAuditHistoryShown}
                 />
@@ -894,6 +810,7 @@ const App: React.FC = () => {
                           <div className="border mb-5 position-relative">
                             {" "}
                             <div>
+                              {/*  */}
                               <Page
                                 dimensions={dimensions}
                                 updateDimensions={setDimensions}
@@ -910,48 +827,7 @@ const App: React.FC = () => {
                                 signatureIndicatorRef={signatureIndicatorRef}
                               />
 
-                              {/* <div
-                                className="signature-indicator"
-                                onClick={handleStartAndScrollElement}
-                              >
-                                {elementsNavigationData.activeElementCoordinateId ==
-                                0 ? (
-                                  `Start`
-                                ) : (
-                                  <span>
-                                    <i className="fa-solid fa-circle-arrow-down"></i>{" "}
-                                    Next
-                                  </span>
-                                )}
-                              </div> */}
-
                               {/*  */}
-
-                              {/* <SignatureContainer
-                              page={currentPage}
-                              addDrawing={() => setDrawingModalOpen(true)}
-                              isFetchingCordinatesData={
-                                isFetchingCordinatesData
-                              }
-                            />
-                            <TextContainer
-                              page={currentPage}
-                              isFetchingCordinatesData={
-                                isFetchingCordinatesData
-                              }
-                            />
-                            <DateContainer
-                              page={currentPage}
-                              isFetchingCordinatesData={
-                                isFetchingCordinatesData
-                              }
-                            />
-                            <CheckboxContainer
-                              page={currentPage}
-                              isFetchingCordinatesData={
-                                isFetchingCordinatesData
-                              }
-                            /> */}
                             </div>
                           </div>
                         )}
@@ -964,7 +840,6 @@ const App: React.FC = () => {
                   <DrawingModal
                     open={drawingModalOpen}
                     dismiss={() => setDrawingModalOpen(false)}
-                    confirm={addDrawing}
                   />
                 ) : null}
               </>

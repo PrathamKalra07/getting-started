@@ -1,17 +1,10 @@
 import { readAsArrayBuffer } from "./asyncReader";
 import { getAsset } from "./prepareAssets";
-import { normalize } from "./helpers";
-import { Buffer } from "buffer";
+
 import axios from "axios";
 import { fetchIpInfo } from "./fetchIpInfo";
-import { Attachments } from "../types";
 
-export async function Save(
-  pdfFile: File,
-  objects: Attachments[],
-  name: string,
-  tempState: any
-) {
+export async function Save(pdfFile: File, tempState: any) {
   const PDFLib = await getAsset("PDFLib");
   const download = await getAsset("download");
   let pdfDoc: {

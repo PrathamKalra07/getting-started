@@ -1,9 +1,7 @@
 import React, { useState, createRef } from "react";
 import { readAsPDF, readAsDataURL, readAsImage } from "../utils/asyncReader";
-import { ggID } from "../utils/helpers";
 import { Pdf } from "./usePdf";
-import { AttachmentTypes } from "../entities";
-import { Attachment, ImageAttachment } from "../types";
+import { Attachment } from "../types";
 
 type ActionEvent<T> = React.TouchEvent<T> | React.MouseEvent<T>;
 
@@ -26,30 +24,6 @@ const handlers = {
     } catch (error) {
       console.log("Failed to load pdf", error);
       throw new Error("Failed to load PDF");
-    }
-  },
-  image: async (file: File) => {
-    try {
-      const url = await readAsDataURL(file);
-
-      const img = await readAsImage(url as string);
-      const id = ggID();
-      const { width, height } = img;
-
-      const imageAttachemnt: ImageAttachment = {
-        id,
-        type: AttachmentTypes.IMAGE,
-        width,
-        height,
-        x: 0,
-        y: 0,
-        img,
-        file,
-      };
-      return imageAttachemnt;
-    } catch (error) {
-      console.log("Failed to load image", error);
-      throw new Error("Failed to load image");
     }
   },
 };
@@ -120,7 +94,7 @@ export const useUploader = ({
 
     if (use === UploadTypes.IMAGE && afterUploadAttachment) {
       console.log("===> was this also called");
-      afterUploadAttachment(result as ImageAttachment);
+      afterUploadAttachment(result);
     }
     setIsUploading(false);
     return;

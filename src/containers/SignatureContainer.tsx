@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 //
-import { SignaturePad } from "../components/SignaturePad";
+import { SignaturePad } from "../components/Elements/SignaturePad";
 
 //
 
