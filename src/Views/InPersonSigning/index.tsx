@@ -133,14 +133,15 @@ const InPersonSigningPage = () => {
       return;
     }
 
-    const firstSignatoryWithEmptyValue =
-      tempState.inPersonCoordinatesList.signatoryList.find(
-        (signatory) => signatory.value.length === 0
-      );
-    const firstFieldWithEmptyValue =
-      tempState.inPersonCoordinatesList.allCoordinateData.find(
-        (field) => field.fieldType !== "Signature" && field.value.length === 0
-      );
+    let signatureFieldCount = 0;
+    const firstFieldWithEmptyValue = tempState.inPersonCoordinatesList.allCoordinateData.find((field) => {
+      if(field.fieldType === 'Signature') signatureFieldCount += 1;
+      if(field.fieldType !== 'Signature' && field.value.length === 0) {
+        return field;
+      }
+    });
+
+    const firstSignatoryWithEmptyValue = signatureFieldCount === 0 ? undefined : tempState.inPersonCoordinatesList.signatoryList.find(signatory => signatory.value.length === 0);
 
     if (firstSignatoryWithEmptyValue) {
       alert(

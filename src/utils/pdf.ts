@@ -131,7 +131,7 @@ export async function Save(pdfFile: File, tempState: any) {
       location: locationData,
     };
 
-    // console.log(bodyContent);
+    console.log('@@@ bodyContent'+ JSON.stringify(bodyContent));
 
     const { data } = await axios.request({
       url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
