@@ -127,21 +127,21 @@ const InPersonSigningPage = () => {
   const handleSavePdf = async () => {
     const tempState = currentReduxState as any;
 
-    if (tempState.inPersonCoordinatesList.length === 0) {
+    if (tempState.inPerson.inPersonCoordinatesList.length === 0) {
       alert("oops there is no fields are seems");
 
       return;
     }
 
     let signatureFieldCount = 0;
-    const firstFieldWithEmptyValue = tempState.inPersonCoordinatesList.allCoordinateData.find((field) => {
+    const firstFieldWithEmptyValue = tempState.inPerson.inPersonCoordinatesList.allCoordinateData.find((field) => {
       if(field.fieldType === 'Signature') signatureFieldCount += 1;
       if(field.fieldType !== 'Signature' && field.value.length === 0) {
         return field;
       }
     });
 
-    const firstSignatoryWithEmptyValue = signatureFieldCount === 0 ? undefined : tempState.inPersonCoordinatesList.signatoryList.find(signatory => signatory.value.length === 0);
+    const firstSignatoryWithEmptyValue = signatureFieldCount === 0 ? undefined : tempState.inPerson.inPersonCoordinatesList.signatoryList.find(signatory => signatory.value.length === 0);
 
     if (firstSignatoryWithEmptyValue) {
       alert(

@@ -2,9 +2,9 @@ import axios from "axios";
 
 const generateData = (tempState) => {
     console.log('@@@ tempState: '+ JSON.stringify(tempState));
-    const { inPersonCoordinatesList } = tempState;
-    let coordinatesData = inPersonCoordinatesList.allCoordinateData;
-    const signatoryList = inPersonCoordinatesList.signatoryList;
+    const { inPerson } = tempState;
+    let coordinatesData = inPerson.inPersonCoordinatesList.allCoordinateData;
+    const signatoryList = inPerson.inPersonCoordinatesList.signatoryList;
     coordinatesData = coordinatesData.map((coordData) => {
         if (coordData.fieldType === "Signature") {  
             const matchingSignatory = signatoryList.find(
