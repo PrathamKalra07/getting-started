@@ -316,9 +316,11 @@ const InPersonSigningPage = () => {
       }: AxiosResponse = await getRequest(
         API_ROUTES.COMMON_DOCUMENTS_INPERSONSIGNING_FETCHSIGNATORIES,
         false,
-        `?tiUUID=${uuid_template_instance}`
+        `tiUUID=${uuid_template_instance}`
       );
 
+      console.log('@@@ responseData: '+JSON.stringify(responseData));
+      
       dispatch(setFullData({ data: responseData }));
 
       let tempSignatories: { label: string; value: string; coordData: [] }[] =
@@ -464,6 +466,9 @@ const InPersonSigningPage = () => {
           return;
         }
 
+        console.log(uuid);
+        console.log(uuidTemplateInstance);
+        
         await fetchingCordinates(
           uuid as string,
           uuidTemplateInstance as string

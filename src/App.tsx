@@ -413,6 +413,8 @@ const App: React.FC = () => {
         }
       );
 
+      console.log('@@@ DATA: '+ JSON.stringify(responseData));
+      
       let coord = responseData.coord;
       const recordData = responseData.recordData;
 
