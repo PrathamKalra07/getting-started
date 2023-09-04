@@ -16,6 +16,8 @@ interface Props {
   textElementIndex: number;
   handleTextChange: Function;
   coordinateId: number;
+  //
+  isRequired: boolean;
 }
 
 export const CheckboxPad = ({
@@ -27,6 +29,7 @@ export const CheckboxPad = ({
   textElementIndex,
   handleTextChange,
   coordinateId,
+  isRequired,
 }: Props) => {
   const dispatch = useDispatch();
 
@@ -49,15 +52,16 @@ export const CheckboxPad = ({
           borderRadius: 5,
         }}
       >
-        <input
-          // style={{ height: height, width: width }}
-          onChange={(e) => handleTextChange(e, textElementIndex)}
-          type="checkbox"
-          onClick={() => {
-            dispatch(setActiveElement({ coordinateId, y, x }));
-          }}
-          checked={textInputValue}
-          className={`form-check-input
+        <span style={{ position: "relative" }}>
+          <input
+            // style={{ height: height, width: width }}
+            onChange={(e) => handleTextChange(e, textElementIndex)}
+            type="checkbox"
+            onClick={() => {
+              dispatch(setActiveElement({ coordinateId, y, x }));
+            }}
+            checked={textInputValue}
+            className={`form-check-input
           ${
             elementsNavigationHelperState.activeElementCoordinateId ===
             coordinateId
@@ -67,7 +71,23 @@ export const CheckboxPad = ({
               : "empty-data-container-input-checkbox"
           }
         `}
-        />
+          />
+
+          {isRequired && (
+            <span
+              style={{
+                position: "absolute",
+                fontWeight: "bold",
+                color: "#BB2525",
+                fontSize: "1.2rem",
+                top: "-10px",
+                right: "-10px",
+              }}
+            >
+              *
+            </span>
+          )}
+        </span>
       </div>
     </>
   );

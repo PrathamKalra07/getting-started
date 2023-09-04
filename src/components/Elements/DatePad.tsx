@@ -16,6 +16,9 @@ interface Props {
   textElementIndex: number;
   handleTextChange: Function;
   coordinateId: number;
+
+  //
+  isRequired: boolean;
 }
 
 export const DatePad = ({
@@ -27,6 +30,7 @@ export const DatePad = ({
   textElementIndex,
   handleTextChange,
   coordinateId,
+  isRequired,
 }: Props) => {
   const dispatch = useDispatch();
 
@@ -49,26 +53,42 @@ export const DatePad = ({
           borderRadius: 5,
         }}
       >
-        <input
-          placeholder="Enter Data Here..."
-          style={{ height: height, width: width }}
-          onChange={(e) => handleTextChange(e, textElementIndex)}
-          value={moment(textInputValue, "MM-DD-YYYY").format("YYYY-MM-DD")}
-          type="date"
-          // className="form-control"
-          className={`${
-            elementsNavigationHelperState.activeElementCoordinateId ===
-            coordinateId
-              ? "active-data-container-input-date"
-              : textInputValue
-              ? "filled-data-container-input-date"
-              : "empty-data-container-input-date"
-          }`}
-          onClick={(e: any) => {
-            e.currentTarget.showPicker();
-            dispatch(setActiveElement({ coordinateId, y, x }));
-          }}
-        />
+        <span style={{ position: "relative" }}>
+          <input
+            placeholder="Enter Data Here..."
+            style={{ height: height, width: width }}
+            onChange={(e) => handleTextChange(e, textElementIndex)}
+            value={moment(textInputValue, "MM-DD-YYYY").format("YYYY-MM-DD")}
+            type="date"
+            // className="form-control"
+            className={`${
+              elementsNavigationHelperState.activeElementCoordinateId ===
+              coordinateId
+                ? "active-data-container-input-date"
+                : textInputValue
+                ? "filled-data-container-input-date"
+                : "empty-data-container-input-date"
+            }`}
+            onClick={(e: any) => {
+              e.currentTarget.showPicker();
+              dispatch(setActiveElement({ coordinateId, y, x }));
+            }}
+          />
+          {isRequired && (
+            <span
+              style={{
+                position: "absolute",
+                fontWeight: "bold",
+                color: "#BB2525",
+                fontSize: "1.2rem",
+                top: "-10px",
+                right: "-10px",
+              }}
+            >
+              *
+            </span>
+          )}
+        </span>
       </div>
     </>
   );

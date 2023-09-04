@@ -13,6 +13,8 @@ interface Props {
   textElementIndex: number;
   handleTextChange: Function;
   coordinateId: number;
+  //
+  isRequired: boolean;
 }
 
 export const TextPad = ({
@@ -24,6 +26,7 @@ export const TextPad = ({
   textElementIndex,
   handleTextChange,
   coordinateId,
+  isRequired,
 }: Props) => {
   const dispatch = useDispatch();
 
@@ -49,20 +52,21 @@ export const TextPad = ({
       >
         {/* signatureData */}
 
-        <input
-          maxLength={width / 7}
-          placeholder="Click To Enter Text Here..."
-          style={{ height: height, width: width }}
-          onClick={(e: any) => {
-            dispatch(setActiveElement({ coordinateId, y, x }));
+        <span style={{ position: "relative" }}>
+          <input
+            maxLength={width / 7}
+            placeholder="Click To Enter Text Here..."
+            style={{ height: height, width: width }}
+            onClick={(e: any) => {
+              dispatch(setActiveElement({ coordinateId, y, x }));
 
-            e.target.focus();
-          }}
-          onChange={(e) => {
-            handleTextChange(e, textElementIndex);
-          }}
-          value={textInputValue}
-          className={`
+              e.target.focus();
+            }}
+            onChange={(e) => {
+              handleTextChange(e, textElementIndex);
+            }}
+            value={textInputValue}
+            className={`
             ${
               elementsNavigationHelperState.activeElementCoordinateId ===
               coordinateId
@@ -72,7 +76,24 @@ export const TextPad = ({
                 : "empty-data-container-input-text"
             }
           `}
-        />
+          />
+
+          {/* isRequired */}
+          {isRequired && (
+            <span
+              style={{
+                position: "absolute",
+                fontWeight: "bold",
+                color: "#BB2525",
+                fontSize: "1.2rem",
+                top: "-10px",
+                right: "-10px",
+              }}
+            >
+              *
+            </span>
+          )}
+        </span>
       </div>
     </>
   );

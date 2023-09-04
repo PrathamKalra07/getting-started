@@ -218,29 +218,39 @@ const App: React.FC = () => {
   };
 
   const handleSavePdf = () => {
-    const tempState = currentReduxState as any;
+    const tempState = currentReduxState as RootState;
+    const { coordinatesList, signatureList, textList, dateList, checkboxList } =
+      currentReduxState as RootState;
 
-    const isSignatureDone = tempState.coordinatesList.allCoordinateData.find(
-      (item: any) => item.fieldType === "Signature"
-    )
-      ? tempState.signatureList.encodedImgData.length > 0
-        ? true
-        : false
-      : true;
-    const textData = tempState.textList.allTextData;
-    const dateData = tempState.dateList.allDateData;
+    const signatureData = signatureList.allSignatureData;
+    const textData = textList.allTextData;
+    const dateData = dateList.allDateData;
+    const checkboxData = checkboxList.allCheckboxData;
 
-    var isTextDataDone = true;
-    var isDateDataDone = true;
+    for (const indexNo in signatureData) {
+      for (let i = 0; i < signatureData[indexNo].length; i++) {
+        const innerElement = signatureData[indexNo][i];
 
+        if (
+          innerElement.isRequired &&
+          signatureList.encodedImgData.length === 0
+        ) {
+          // alert("Please Fill Signature");
+          handleRequiredFieldLogic(innerElement);
+
+          return;
+        }
+      }
+    }
     for (const indexNo in textData) {
       for (let i = 0; i < textData[indexNo].length; i++) {
         const innerElement = textData[indexNo][i];
 
-        if (innerElement.value.length == 0) {
-          isTextDataDone = false;
+        if (innerElement.isRequired && innerElement.value.length === 0) {
+          // alert("Please Fill All Text Data");
+          handleRequiredFieldLogic(innerElement);
 
-          break;
+          return;
         }
       }
     }
@@ -248,29 +258,51 @@ const App: React.FC = () => {
       for (let i = 0; i < dateData[indexNo].length; i++) {
         const innerElement = dateData[indexNo][i];
 
-        if (innerElement.value.length == 0) {
-          isDateDataDone = false;
+        if (innerElement.isRequired && innerElement.value.length === 0) {
+          // alert("Please Fill All Date Data");
+          handleRequiredFieldLogic(innerElement);
 
-          break;
+          return;
+        }
+      }
+    }
+    for (const indexNo in checkboxData) {
+      for (let i = 0; i < checkboxData[indexNo].length; i++) {
+        const innerElement = checkboxData[indexNo][i];
+
+        if (innerElement.isRequired && innerElement.value === false) {
+          // alert("Please Check All Checkbox Data");
+          handleRequiredFieldLogic(innerElement);
+
+          return;
         }
       }
     }
 
     // here changed
-    if (tempState.coordinatesList.length === 0) {
+    if (coordinatesList.allCoordinateData.length === 0) {
       alert("oops there is no fields are seems");
 
       return;
     }
 
-    if (!isSignatureDone) {
-      alert("Please Fill Signature");
-    } else if (!isTextDataDone) {
-      alert("Please Fill All Text Data");
-    } else if (!isDateDataDone) {
-      alert("Please Fill All Date Data");
-    } else {
-      savePdf(tempState);
+    savePdf(tempState);
+  };
+
+  //
+  const handleRequiredFieldLogic = (innerElement) => {
+    try {
+      document.getElementsByClassName(
+        "signature-indicator"
+      )[0].innerHTML = `<span>
+      <i class="fa-solid fa-circle-arrow-down"></i> Required
+    </span>`;
+
+      const { coordinateId, x, y } = innerElement;
+
+      dispatch(setActiveElement({ coordinateId, y, x }));
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -413,8 +445,6 @@ const App: React.FC = () => {
         }
       );
 
-      console.log('@@@ DATA: '+ JSON.stringify(responseData));
-      
       let coord = responseData.coord;
       const recordData = responseData.recordData;
 

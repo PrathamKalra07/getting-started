@@ -22,6 +22,8 @@ export const CheckboxContainer: React.FC<Props> = ({
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
 
+  const reduxState = useSelector((state: RootState) => state);
+
   const allCordinatesData = useSelector(
     (state: RootState) => state.coordinatesList.allCoordinateData
   );
@@ -77,6 +79,7 @@ export const CheckboxContainer: React.FC<Props> = ({
           elementIndex: targetElementIndex,
           textValue: value,
           currentPageNo: currentPageNo,
+          reduxState,
         })
       );
     } catch (err) {

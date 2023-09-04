@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { changeTextData } from "./textReducer";
 import { changeDateData } from "./dateReducer";
+import { changeCheckboxData } from "./checkboxReducer";
 import { setSignaturePathWithEncoddedImg } from "./signatureReducer";
 
 export const allFinalDataSlice = createSlice({
@@ -15,7 +16,7 @@ export const allFinalDataSlice = createSlice({
     setTotalNoOfFields: (state, action) => {
       const { allCoordinateData } = action.payload;
       state.totalNoOfFields = allCoordinateData.filter(
-        (item) => item.fieldType !== "Checkbox"
+        (item) => item.isRequired
       ).length;
     },
     setCompletedNoOfFields: (state, action) => {
@@ -24,19 +25,29 @@ export const allFinalDataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    //
     builder.addCase(changeTextData.type, (state, action) => {
       const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
       const { totalDoneElements } = FetchAllElementsStatus(action.payload);
 
       state.completedNoOfFields = totalDoneElements;
     });
+    //
     builder.addCase(changeDateData.type, (state, action) => {
       const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
       const { totalDoneElements } = FetchAllElementsStatus(action.payload);
 
       state.completedNoOfFields = totalDoneElements;
     });
+    //
     builder.addCase(setSignaturePathWithEncoddedImg.type, (state, action) => {
+      const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
+      const { totalDoneElements } = FetchAllElementsStatus(action.payload);
+
+      state.completedNoOfFields = totalDoneElements;
+    });
+    //
+    builder.addCase(changeCheckboxData.type, (state, action) => {
       const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
       const { totalDoneElements } = FetchAllElementsStatus(action.payload);
 

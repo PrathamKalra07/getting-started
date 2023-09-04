@@ -15,6 +15,8 @@ interface Props {
   signatureEncodedImgData: string;
   // signatureData: any;
   coordinateId: number;
+  //
+  isRequired: boolean;
 }
 
 export const SignaturePad = ({
@@ -25,6 +27,7 @@ export const SignaturePad = ({
   addDrawing,
   signatureEncodedImgData,
   coordinateId,
+  isRequired,
 }: // signatureData,
 Props) => {
   const dispatch = useDispatch();
@@ -94,12 +97,26 @@ Props) => {
               <Icon name="signup" size="small" />
             </div> */}
 
-            <h3
+            {/* <h3
               style={{ position: "absolute", right: "4px", top: 0 }}
               className="text-light"
             >
               *
-            </h3>
+            </h3> */}
+            {isRequired && (
+              <span
+                style={{
+                  position: "absolute",
+                  fontWeight: "bold",
+                  color: "#BB2525",
+                  fontSize: "1.2rem",
+                  top: 0,
+                  right: "-10px",
+                }}
+              >
+                *
+              </span>
+            )}
           </div>
         )}
       </div>
