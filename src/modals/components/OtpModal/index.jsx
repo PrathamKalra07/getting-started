@@ -7,6 +7,7 @@ export default function OtpModal({
   setIsOtpVerificationDone,
   setIsResendOtp,
   setOriginalOtpValue,
+  setOtp,
 }) {
   const [errorMsg, setErrorMsg] = useState("");
   var [timer, setTimer] = useState(60);
@@ -19,7 +20,12 @@ export default function OtpModal({
           inputs[i].value = "";
           if (i !== 0) inputs[i - 1].focus();
         } else if (event.key === "Enter") {
+          handleConfirmOtp();
           event.preventDefault();
+        } else if (event.key === "Control" || event.key === "v") {
+          // console.log(event);
+          // handleConfirmOtp();
+          // event.preventDefault();
         } else {
           if (i === inputs.length - 1 && inputs[i].value !== "") {
             return true;
@@ -40,7 +46,7 @@ export default function OtpModal({
   useEffect(() => {
     OTPInput();
     return () => {};
-  }, []);
+  }, [originalOtpValue]);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -75,9 +81,10 @@ export default function OtpModal({
     // originalOtpValue
     if (otp.join("") !== originalOtpValue || otp.join("").length === 0) {
       setErrorMsg("wrong otp please re enter");
-      for (let i = 0; i < 4; i++) {
-        otp[i] = "";
-      }
+      setOtp((oldData) => {
+        return oldData.map((item) => "");
+      });
+      document.getElementById(inputList[0].id).focus();
     } else if (otp.join("") === originalOtpValue) {
       setIsOtpVerificationDone(true);
       localStorage.setItem("isOtpVerifyOffline", "true");
@@ -137,6 +144,18 @@ export default function OtpModal({
                   value={otp[i]}
                   onKeyDown={(e) => {
                     otp[i] = e.target.value;
+                  }}
+                  onPaste={(e) => {
+                    const pasteText = e.clipboardData.getData("Text");
+                    if (parseInt(pasteText) && pasteText.length === 4) {
+                      const allDigit = pasteText.split("");
+                      setOtp((oldData) => {
+                        return oldData.map(
+                          (innerItem, indexNo) => allDigit[indexNo]
+                        );
+                      });
+                    }
+                    e.preventDefault();
                   }}
                 />
               );

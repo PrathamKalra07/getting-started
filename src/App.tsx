@@ -778,6 +778,7 @@ const App: React.FC = () => {
             {!isOtpVerificationDone ? (
               <OtpModal
                 otp={otp}
+                setOtp={setOtp}
                 originalOtpValue={originalOtpValue}
                 setIsOtpVerificationDone={setIsOtpVerificationDone}
                 setIsResendOtp={setIsResendOtp}

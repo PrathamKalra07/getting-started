@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: space-around;
   /* width: 15%; */
-  width: 28%;
+  width: 22%;
   border-radius: 10px;
   background-color: var(--color4);
 }
@@ -27,26 +27,26 @@
 
 @media screen and (max-width: 1200px) {
   .pagination-inner-container {
-    width: 35% !important;
+    width: 25% !important;
     /* max-width: 220px; */
   }
 }
 
 @media screen and (max-width: 992px) {
   .pagination-inner-container {
-    width: 35% !important;
+    width: 33% !important;
     /* max-width: 220px; */
   }
 }
 @media screen and (max-width: 700px) {
   .pagination-inner-container {
-    width: 50% !important;
+    width: 40% !important;
     /* min-width: 180px; */
   }
 }
 @media screen and (max-width: 600px) {
   .pagination-inner-container {
-    width: 40% !important;
+    width: 35% !important;
     /* min-width: 180px; */
   }
 
