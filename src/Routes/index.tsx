@@ -7,6 +7,7 @@ import PageNotFound404 from "Views/PageNotFound404/PageNotFound404";
 import DemoPage from "Views/Demo";
 import ViewFinalPdf from "Views/ViewFinalPdf";
 import InPersonSigningPage from "Views/InPersonSigning";
+import SelfSigningPage from "Views/SelfSigning";
 
 const AllRoutes = () => {
   return (
@@ -16,7 +17,9 @@ const AllRoutes = () => {
         <Route path="/viewFinalPdf" Component={ViewFinalPdf} />
         <Route path="/demo" Component={DemoPage} />
         <Route path="/in-person-signing" Component={InPersonSigningPage} />
+        <Route path="/self-signing" Component={SelfSigningPage} />
         <Route path="/page404" Component={PageNotFound404} />
+        <Route path="*" Component={PageNotFound404} />
       </Routes>
     </Router>
   );

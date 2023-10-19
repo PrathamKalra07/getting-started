@@ -10,6 +10,12 @@ export const API_ROUTES = {
   COMMON_EXTERNALUSER_SIGNATURE_ADD: "/common/externalUser/signature/add",
   COMMON_DOCUMENTS_INPERSONSIGNING_FETCHSIGNATORIES:
     "/common/documents/inPersonSigning/fetchSignatories",
+  COMMON_DOCUMENTS_INPERSONSIGNING_SAVESIGNATURE:
+    "/common/documents/inPersonSigning/saveSignatures",
+  COMMON_DOCUMENTS_SELFSIGNING_FETCHSIGNATORIES:
+    "/common/documents/selfSigning/fetchSignatories",
+  COMMON_DOCUMENTS_SELFSIGNING_SAVESIGNATURE:
+    "/common/documents/selfSigning/saveSignatures",
 
   // auth
   SENDOTP: "/sendOtp",

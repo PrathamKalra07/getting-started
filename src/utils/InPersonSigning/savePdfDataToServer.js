@@ -1,49 +1,65 @@
 import axios from "axios";
+//
+import { patchRequest, postRequest } from "helpers/axios";
+import { API_ROUTES } from "helpers/constants/apis";
 
 const generateData = (tempState) => {
-    console.log('@@@ tempState: '+ JSON.stringify(tempState));
-    const { inPerson } = tempState;
-    let coordinatesData = inPerson.inPersonCoordinatesList.allCoordinateData;
-    const signatoryList = inPerson.inPersonCoordinatesList.signatoryList;
-    coordinatesData = coordinatesData.map((coordData) => {
-        if (coordData.fieldType === "Signature") {  
-            const matchingSignatory = signatoryList.find(
-                (signatory) => signatory.signatoryUUID === coordData.signatoryUUID
-            );
-                
-            console.log('@@@ matchingSignatory: '+ JSON.stringify(matchingSignatory));
-            if (matchingSignatory) {
-                return {
-                    eleId: coordData.eleId,
-                    value: matchingSignatory.value,
-                };
-            }
-        }
-        return coordData;
-    });
+  console.log("@@@ tempState: " + JSON.stringify(tempState));
+  const { inPerson } = tempState;
+  let coordinatesData = inPerson.inPersonCoordinatesList.allCoordinateData;
+  const signatoryList = inPerson.inPersonCoordinatesList.signatoryList;
+  coordinatesData = coordinatesData.map((coordData) => {
+    if (coordData.fieldType === "Signature") {
+      const matchingSignatory = signatoryList.find(
+        (signatory) => signatory.signatoryUUID === coordData.signatoryUUID
+      );
 
-    console.log('@@@ coordinatesData: '+ JSON.stringify(coordinatesData));
-    return coordinatesData;
-}
+      console.log(
+        "@@@ matchingSignatory: " + JSON.stringify(matchingSignatory)
+      );
+      if (matchingSignatory) {
+        return {
+          eleId: coordData.eleId,
+          value: matchingSignatory.value,
+        };
+      }
+    }
+    return coordData;
+  });
+
+  console.log("@@@ coordinatesData: " + JSON.stringify(coordinatesData));
+  return coordinatesData;
+};
 
 const savePdfDataToServer = async (tempState, tiUUID) => {
-    try {
-        
-            const coordinatesData = generateData(tempState);
-        
-            const bodyContent = {
-                tiUUID: tiUUID,
-                allElementsData: coordinatesData
-            };
-            console.log('@@@ bodyContent: '+ JSON.stringify(bodyContent));
-            const { data } = await axios.request({
-                url: `${process.env.REACT_APP_API_URL}/api/common/documents/inPersonSigning/saveSignatures`,
-                method: "PATCH",
-                data: bodyContent,
-            });
-        
-            const thankYouContainer = document.getElementById("thankyou-container");
-            thankYouContainer.innerHTML = `<div
+  try {
+    const coordinatesData = generateData(tempState);
+
+    if (window.location.pathname === "/in-person-signing/") {
+      await patchRequest(
+        API_ROUTES.COMMON_DOCUMENTS_INPERSONSIGNING_SAVESIGNATURE,
+        false,
+        {
+          tiUUID: tiUUID,
+          allElementsData: coordinatesData,
+        }
+      );
+    } else if (window.location.pathname === "/self-signing/") {
+      await patchRequest(
+        API_ROUTES.COMMON_DOCUMENTS_SELFSIGNING_SAVESIGNATURE,
+        false,
+        {
+          tiUUID: tiUUID,
+          allElementsData: coordinatesData,
+        }
+      );
+    } else {
+      alert("contact developer something want wrong");
+      return;
+    }
+
+    const thankYouContainer = document.getElementById("thankyou-container");
+    thankYouContainer.innerHTML = `<div
             style="
             position: fixed;
             z-index: 5;
@@ -81,16 +97,14 @@ const savePdfDataToServer = async (tempState, tiUUID) => {
             </span>
             </div>
         </div>`;
-        localStorage.clear();
-    } catch (error) {
-        console.log("Failed to save PDF.");
-        const thankYouContainer = document.getElementById("thankyou-container");
-        thankYouContainer.innerHTML = "";
-        alert("Something Want Wrong Try Again");
-        console.log(error);
-    }
-}
-
-
+    localStorage.clear();
+  } catch (error) {
+    console.log("Failed to save PDF.");
+    const thankYouContainer = document.getElementById("thankyou-container");
+    thankYouContainer.innerHTML = "";
+    alert("Something Want Wrong Try Again");
+    console.log(error);
+  }
+};
 
 export { savePdfDataToServer };

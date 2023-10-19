@@ -49,7 +49,7 @@ import { getRequest, postRequest } from "helpers/axios";
 //
 import { RootState } from "redux/store";
 
-const InPersonSigningPage = () => {
+const SelfSigningPage = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
   const [isFetchingCordinatesData, setIsFetchingCordinatesData] =
     useState(true);
@@ -117,26 +117,21 @@ const InPersonSigningPage = () => {
     afterUploadPdf: initializePageAndAttachments,
   });
 
-  const addDrawing = (drawing?: {
-    width: number;
-    height: number;
-    path: string;
-    encodedImgData: string;
-  }) => {};
-
   const handleSavePdf = async () => {
-    const tempState = currentReduxState as any;
+    const tempState = currentReduxState as RootState;
 
-    if (tempState.inPerson.inPersonCoordinatesList.length === 0) {
+    if (
+      tempState.inPerson.inPersonCoordinatesList.allCoordinateData.length === 0
+    ) {
       alert("oops there is no fields are seems");
 
       return;
     }
 
     let signatureFieldCount = 0;
-    const firstFieldWithEmptyValue =
+    const firstFieldWithEmptyValue: any =
       tempState.inPerson.inPersonCoordinatesList.allCoordinateData.find(
-        (field) => {
+        (field: any) => {
           if (field.fieldType === "Signature") signatureFieldCount += 1;
           if (field.fieldType !== "Signature" && field.value.length === 0) {
             return field;
@@ -144,11 +139,11 @@ const InPersonSigningPage = () => {
         }
       );
 
-    const firstSignatoryWithEmptyValue =
+    const firstSignatoryWithEmptyValue: any =
       signatureFieldCount === 0
         ? undefined
         : tempState.inPerson.inPersonCoordinatesList.signatoryList.find(
-            (signatory) => signatory.value.length === 0
+            (signatory: any) => signatory.value.length === 0
           );
 
     if (firstSignatoryWithEmptyValue) {
@@ -322,7 +317,7 @@ const InPersonSigningPage = () => {
       const {
         data: { data: responseData },
       }: AxiosResponse = await getRequest(
-        API_ROUTES.COMMON_DOCUMENTS_INPERSONSIGNING_FETCHSIGNATORIES,
+        API_ROUTES.COMMON_DOCUMENTS_SELFSIGNING_FETCHSIGNATORIES,
         false,
         `tiUUID=${uuid_template_instance}`
       );
@@ -524,42 +519,6 @@ const InPersonSigningPage = () => {
                 ) : (
                   <div className=" d-flex justify-content-center align-items-center overflow-x-scroll">
                     <div className="inner-container">
-                      <CustomSelect
-                        options={signatories}
-                        value={activeSignatory}
-                        onChange={(e) => {
-                          console.log("CustomSelect: " + e);
-
-                          localStorage.setItem("signatoryUUID", e.value);
-                          localStorage.setItem("signatoryName", e.label);
-
-                          if (activeSignatory.value === e.value) {
-                            return;
-                          }
-                          dispatch(setActiveSignatory({ activeSignatory: e }));
-                          dispatch(
-                            setInfo({
-                              uuid: searchParams.get("uuid"),
-                              uuidTemplateInstance: searchParams.get(
-                                "uuid_template_instance"
-                              ),
-                              uuidSignatory: e.value,
-                            })
-                          );
-                          fetchingUsersResources(e.value as string);
-                          const coordData =
-                            allCoordinateDataWithCordinates.filter(
-                              (coord: any) => coord.signatoryUUID === e.value
-                            );
-                          dispatch(
-                            setActiveSignatoriesCoordinateData({
-                              activeSignatoriesCoordinateData: coordData,
-                            })
-                          );
-                          // dispatch(setTotalNoOfFields({ allCoordinateData: coordData }));
-                        }}
-                      />
-
                       {currentPage && (
                         <div className="border mb-5 position-relative">
                           {" "}
@@ -622,4 +581,4 @@ const InPersonSigningPage = () => {
   );
 };
 
-export default InPersonSigningPage;
+export default SelfSigningPage;
