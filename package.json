@@ -11,7 +11,6 @@
     "@types/node": "^16.18.14",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "@types/react-pdf": "^7.0.0",
     "@types/styled-components": "^5.1.26",
     "axios": "^1.3.4",
     "bootstrap": "^5.2.3",
@@ -42,12 +41,11 @@
     "text-signature": "^1.1.2",
     "trim-canvas": "^0.1.2",
     "trim-image-data": "^2.0.0",
-    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "rmdir /s build && react-scripts build || react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -67,5 +65,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "typescript": "^5.5.4"
   }
 }

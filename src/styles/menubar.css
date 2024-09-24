@@ -10,6 +10,11 @@
   justify-content: space-between;
 }
 
+.logo {
+  height: 35px;
+  margin: 10px;
+}   
+
 .menubar-inner-container {
   margin-left: 10px !important;
 }

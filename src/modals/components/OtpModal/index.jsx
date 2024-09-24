@@ -23,17 +23,26 @@ export default function OtpModal({
           handleConfirmOtp();
           event.preventDefault();
         } else if (event.key === "Control" || event.key === "v") {
-          // console.log(event);
-          // handleConfirmOtp();
-          // event.preventDefault();
+          console.log(event);
+          handleConfirmOtp();
+          event.preventDefault(); 
         } else {
           if (i === inputs.length - 1 && inputs[i].value !== "") {
             return true;
-          } else if (event.keyCode > 47 && event.keyCode < 58) {
+          } else if (
+            (event.keyCode > 47 && event.keyCode < 58)
+          ) {
             inputs[i].value = event.key;
             if (i !== inputs.length - 1) inputs[i + 1].focus();
             event.preventDefault();
-          } else if (event.keyCode > 64 && event.keyCode < 91) {
+          } else if (
+            (event.keyCode > 95 && event.keyCode < 106)
+          ) {
+            inputs[i].value = event.key;
+            if (i !== inputs.length - 1) inputs[i + 1].focus();
+            event.preventDefault();
+          }
+          else if (event.keyCode > 64 && event.keyCode < 91) {
             inputs[i].value = String.fromCharCode(event.keyCode);
             if (i !== inputs.length - 1) inputs[i + 1].focus();
             event.preventDefault();

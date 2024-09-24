@@ -244,7 +244,7 @@ export const MenuBar: React.FC<Props> = ({
         fade={false}
         size={"lg"}
       >
-        <ModalHeader>Are You Agree ?</ModalHeader>
+        <ModalHeader>Do You Agree ?</ModalHeader>
         <ModalBody>
           <div>
             <div className="form-group mb-0">

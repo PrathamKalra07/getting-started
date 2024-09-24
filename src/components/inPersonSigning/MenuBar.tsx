@@ -111,8 +111,12 @@ export const MenuBar: React.FC<Props> = ({
           <h4 className="text-light fw-bold">
             Ew<span className="mx-1">Sign</span>Pad
           </h4>
+          {/* <img
+              src={`${process.env.REACT_APP_API_URL}/api/admin/branding/fetchBrandLogo?orgId=${orgId}`}
+              className="logo"
+              alt="logo img"
+            /> */}
           <div className="custom-progressbar-container">
-            {/*  */}
 
             <ProgressBar
               completed={completedNoOfFields}
@@ -216,7 +220,7 @@ export const MenuBar: React.FC<Props> = ({
         fade={false}
         size={"lg"}
       >
-        <ModalHeader>Are You Agree ?</ModalHeader>
+        <ModalHeader>Do You Agree ?</ModalHeader>
         <ModalBody>
           <div>
             <div className="form-group mb-0">

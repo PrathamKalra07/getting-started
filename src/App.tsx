@@ -134,7 +134,7 @@ const App: React.FC = () => {
     >
       <div
         style="
-          display: flex;
+          display: flex;otp
           align-items: center;
           justify-content: center;
           height: 100vh;
@@ -560,9 +560,9 @@ const App: React.FC = () => {
     try {
       // {{baseUrl}}/api/fetchCordinatesData
 
-      // console.log("=============");
-      // console.log("i am from app.tsx in sendotp function body on line no 554");
-      // console.log("=============");
+      console.log("=============");
+      console.log("i am from app.tsx in sendotp function body on line no 564");
+      console.log("=============");
 
       const isOtpSent = localStorage.getItem("isOtpSent") ? true : false;
       const signatodyUUIDStorage = localStorage.getItem("signatoryUUID")
@@ -574,20 +574,20 @@ const App: React.FC = () => {
         : false;
 
       if (isOtpVerifyOffline && signatodyUUIDStorage === signatoryUniqUUID) {
-        // console.log("=============");
-        // console.log(
-        //   "i am from app.tsx in if condition function body on line no 569"
-        // );
-        // console.log("=============");
+        console.log("=============");
+        console.log(
+          "i am from app.tsx in if condition function body on line no 579"
+        );
+        console.log("=============");
         setIsOtpVerificationDone(true);
       }
 
       if (isOtpSent && signatodyUUIDStorage === signatoryUniqUUID) {
-        // console.log("=============");
-        // console.log(
-        //   "i am from app.tsx in if condition function body on line no 578"
-        // );
-        // console.log("=============");
+        console.log("=============");
+        console.log(
+          "i am from app.tsx in if condition function body on line no 588"
+        );
+        console.log("=============");
         const otpValue = localStorage.getItem("otpValue") || "";
         setOriginalOtpValue(otpValue);
       } else if (
@@ -596,11 +596,11 @@ const App: React.FC = () => {
         signatodyUUIDStorage !== signatoryUniqUUID
       ) {
         localStorage.clear();
-        // console.log("=============");
-        // console.log(
-        //   "i am from app.tsx in if condition function body on line no 590"
-        // );
-        // console.log("=============");
+        console.log("=============");
+        console.log(
+          "i am from app.tsx in if condition function body on line no 601"
+        );
+        console.log("=============");
 
         const {
           data: { data: responseData },
@@ -734,11 +734,11 @@ const App: React.FC = () => {
           uuidTemplateInstance &&
           uuidSignatory
         ) {
-          // console.log("--------");
-          // console.log(
-          //   "i am from app.tsx in if condition above sentotp on line no 696"
-          // );
-          // console.log("--------");
+          console.log("--------");
+          console.log(
+            "i am from app.tsx in if condition above sentotp on line no 739"
+          );
+          console.log("--------");
 
           await sendOtp(
             uuidSignatory as string,
