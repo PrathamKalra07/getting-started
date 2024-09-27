@@ -1,3 +1,4 @@
+import axios from "axios";
 import Axios, { AxiosResponse } from "axios";
 
 //
@@ -6,10 +7,13 @@ import { API_ROUTES } from "helpers/constants/apis";
 
 const fetchIpInfo = async () => {
   try {
-    const { data }: AxiosResponse = await getRequest(
-      API_ROUTES.GEOLOLCATION,
-      false
-    );
+    // const { data }: AxiosResponse = await getRequest(
+    //   API_ROUTES.GEOLOLCATION,
+    //   false
+    // );
+
+    // Perform a GET request
+    const {data} : AxiosResponse = await axios.get('https://geolocation-db.com/json/')
 
     // return data;
     const {

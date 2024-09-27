@@ -36,7 +36,7 @@ const ViewFinalPdf = () => {
     setPdfLiveUrl(
       `${process.env.REACT_APP_API_URL}/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`
     );
-
+    console.log("pdf:",pdfLiveUrl);
     dispatch(setInfo({ uuid, uuidTemplateInstance, uuidSignatory }));
 
     return () => {};

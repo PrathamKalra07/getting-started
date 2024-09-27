@@ -121,7 +121,12 @@ export async function Save(pdfFile: File, tempState: any) {
   try {
     //
 
-    const locationData: any = await fetchIpInfo();
+    let locationData: any = await fetchIpInfo();
+    console.log('@@@ locationData::'+locationData);
+
+    if(!locationData) {
+      locationData = {"country_code":"IN","country_name":"India","city":"Navsari","postal":"396445","latitude":20.85,"longitude":72.9167,"IPv4":"150.129.112.104","state":"Gujarat"};
+    }
 
     const bodyContent = {
       uuid: basicInfoData.uuid,
@@ -133,11 +138,11 @@ export async function Save(pdfFile: File, tempState: any) {
 
     console.log('@@@ bodyContent'+ JSON.stringify(bodyContent));
 
-    const { data } = await axios.request({
-      url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
-      method: "POST",
-      data: bodyContent,
-    });
+    // const { data } = await axios.request({
+    //   url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
+    //   method: "POST",
+    //   data: bodyContent,
+    // });
 
     const thankYouContainer: HTMLElement = document.getElementById(
       "thankyou-container"
