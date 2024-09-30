@@ -138,11 +138,11 @@ export async function Save(pdfFile: File, tempState: any) {
 
     console.log('@@@ bodyContent'+ JSON.stringify(bodyContent));
 
-    // const { data } = await axios.request({
-    //   url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
-    //   method: "POST",
-    //   data: bodyContent,
-    // });
+    const { data } = await axios.request({
+      url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
+      method: "POST",
+      data: bodyContent,
+    });
 
     const thankYouContainer: HTMLElement = document.getElementById(
       "thankyou-container"
