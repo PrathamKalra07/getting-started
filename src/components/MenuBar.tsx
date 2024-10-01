@@ -48,6 +48,7 @@ export const MenuBar: React.FC<Props> = ({
   //
   const [commentText, setCommentText] = useState("");
   const [pdfLiveUrl, setPdfLiveUrl] = useState("");
+  const [brandLogo, setBrandLogo] = useState("");
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -57,7 +58,10 @@ export const MenuBar: React.FC<Props> = ({
     (state: RootState) => state.allFinalDataReducer
   );
   const basicInfoData = useSelector((state: RootState) => state.basicInfoData);
-
+  
+  const textList = useSelector((state: RootState) => state.textList);
+  console.log("textList:", textList);
+  
   useEffect(() => {
     if (basicInfoData) {
       const { uuid } = basicInfoData;
@@ -66,6 +70,29 @@ export const MenuBar: React.FC<Props> = ({
 
     return () => {};
   }, [basicInfoData]);
+
+  useEffect(() => {
+    if (textList && textList.allTextData) {
+      const allTextData = textList.allTextData;
+  
+      const firstKey = Object.keys(allTextData)[0];
+      
+      if (firstKey && Array.isArray(allTextData[firstKey]) && allTextData[firstKey].length > 0) {
+        const salesforceOrgId = allTextData[firstKey][0]?.salesforce_org_id; 
+  
+        if (salesforceOrgId) {
+          console.log("Salesforce Org ID:", salesforceOrgId);    
+          setBrandLogo(`${process.env.REACT_APP_API_URL}/api/admin/branding/fetchBrandLogo?orgId=${salesforceOrgId}`);
+        } else {
+          console.error("Salesforce Org ID is not available");
+        }
+      } else {
+        console.error("allTextData is empty or not in the expected format");
+      }
+    } else {
+      console.error("textList or allTextData is undefined");
+    }
+  }, [textList]);
 
   const handleRejection = () => {
     if (commentText) {
@@ -122,9 +149,16 @@ export const MenuBar: React.FC<Props> = ({
             justifyContent: "center",
           }}
         >
-          <h4 className="text-light fw-bold">
+          {/* <h4 className="text-light fw-bold">
             Ew<span className="mx-1">Sign</span>Pad
-          </h4>
+          </h4> */}
+          
+            <img
+              src= {brandLogo}
+              className="logo"
+              alt="logo img"
+            />
+          
           <div className="custom-progressbar-container">
             {/*  */}
 
