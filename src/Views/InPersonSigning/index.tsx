@@ -336,6 +336,7 @@ const InPersonSigningPage = () => {
       let signatoryList: {
         signatoryName: string;
         signatoryUUID: string;
+        salesforce_org_id: string,
         value: string;
         totalNoOfFields: number;
         completedNoOfFields: number;
@@ -349,6 +350,7 @@ const InPersonSigningPage = () => {
         signatoryList.push({
           signatoryName: ele.signatoryName,
           signatoryUUID: ele.signatoryUUID,
+          salesforce_org_id: ele.salesforce_org_id,
           value: "",
           totalNoOfFields: ele.coordData.filter(
             (coordinate) => coordinate.fieldType !== "Checkbox"

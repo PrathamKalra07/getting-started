@@ -47,8 +47,8 @@ export const MenuBar: React.FC<Props> = ({
     (state: RootState) => state.inPerson.inPersonBasicInfoData
   );
 
-  const textList = useSelector((state: RootState) => state.textList);
-  console.log("textList:", textList);
+  const inPerson = useSelector((state: RootState) => state.inPerson);
+  console.log("inPerson:", inPerson);
 
   let totalNoOfFields = 0;
   let completedNoOfFields = 0;
@@ -71,27 +71,25 @@ export const MenuBar: React.FC<Props> = ({
   }, [basicInfoData]);
 
   useEffect(() => {
-    if (textList && textList.allTextData) {
-      const allTextData = textList.allTextData;
+    if (inPerson && inPerson.inPersonCoordinatesList && inPerson.inPersonCoordinatesList.signatoryList) {
+      const signatoryList = inPerson.inPersonCoordinatesList.signatoryList;
   
-      const firstKey = Object.keys(allTextData)[0];
-      
-      if (firstKey && Array.isArray(allTextData[firstKey]) && allTextData[firstKey].length > 0) {
-        const salesforceOrgId = allTextData[firstKey][0]?.salesforce_org_id; 
+      if (Array.isArray(signatoryList) && signatoryList.length > 0) {
+        const salesforceOrgId = (signatoryList[0] as { salesforce_org_id?: string }).salesforce_org_id;
   
         if (salesforceOrgId) {
-          console.log("Salesforce Org ID:", salesforceOrgId);    
+          console.log("Salesforce Org ID:", salesforceOrgId);
           setBrandLogo(`${process.env.REACT_APP_API_URL}/api/admin/branding/fetchBrandLogo?orgId=${salesforceOrgId}`);
         } else {
           console.error("Salesforce Org ID is not available");
         }
       } else {
-        console.error("allTextData is empty or not in the expected format");
+        console.error("signatoryList is empty or not in the expected format");
       }
     } else {
-      console.error("textList or allTextData is undefined");
+      console.error("inPerson or inPersonCoordinatesList is undefined");
     }
-  }, [textList]);
+  }, [inPerson]);  
 
   const closeCurrentModal = () => {
     setIsFinishAlertShown(false);

@@ -149,10 +149,7 @@ export const MenuBar: React.FC<Props> = ({
             justifyContent: "center",
           }}
         >
-          {/* <h4 className="text-light fw-bold">
-            Ew<span className="mx-1">Sign</span>Pad
-          </h4> */}
-          
+         
             <img
               src= {brandLogo}
               className="logo"
