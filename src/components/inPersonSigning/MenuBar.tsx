@@ -33,6 +33,7 @@ export const MenuBar: React.FC<Props> = ({
   const [isAgreeCheckBoxChecked, setIsAgreeCheckBoxChecked] = useState(false);
   const [pdfLiveUrl, setPdfLiveUrl] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [brandLogo, setBrandLogo] = useState("");
 
   const toggleDropDown = () => setDropdownOpen((prevState) => !prevState);
   const activeSignatory = useSelector(
@@ -45,6 +46,9 @@ export const MenuBar: React.FC<Props> = ({
   const basicInfoData = useSelector(
     (state: RootState) => state.inPerson.inPersonBasicInfoData
   );
+
+  const textList = useSelector((state: RootState) => state.textList);
+  console.log("textList:", textList);
 
   let totalNoOfFields = 0;
   let completedNoOfFields = 0;
@@ -65,6 +69,29 @@ export const MenuBar: React.FC<Props> = ({
 
     return () => {};
   }, [basicInfoData]);
+
+  useEffect(() => {
+    if (textList && textList.allTextData) {
+      const allTextData = textList.allTextData;
+  
+      const firstKey = Object.keys(allTextData)[0];
+      
+      if (firstKey && Array.isArray(allTextData[firstKey]) && allTextData[firstKey].length > 0) {
+        const salesforceOrgId = allTextData[firstKey][0]?.salesforce_org_id; 
+  
+        if (salesforceOrgId) {
+          console.log("Salesforce Org ID:", salesforceOrgId);    
+          setBrandLogo(`${process.env.REACT_APP_API_URL}/api/admin/branding/fetchBrandLogo?orgId=${salesforceOrgId}`);
+        } else {
+          console.error("Salesforce Org ID is not available");
+        }
+      } else {
+        console.error("allTextData is empty or not in the expected format");
+      }
+    } else {
+      console.error("textList or allTextData is undefined");
+    }
+  }, [textList]);
 
   const closeCurrentModal = () => {
     setIsFinishAlertShown(false);
@@ -108,14 +135,13 @@ export const MenuBar: React.FC<Props> = ({
             justifyContent: "center",
           }}
         >
-          <h4 className="text-light fw-bold">
-            Ew<span className="mx-1">Sign</span>Pad
-          </h4>
-          {/* <img
-              src={`${process.env.REACT_APP_API_URL}/api/admin/branding/fetchBrandLogo?orgId=${orgId}`}
+          
+          <img
+              src= {brandLogo}
               className="logo"
               alt="logo img"
-            /> */}
+            />
+
           <div className="custom-progressbar-container">
 
             <ProgressBar
