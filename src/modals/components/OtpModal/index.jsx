@@ -180,7 +180,7 @@ export default function OtpModal({
               Confirm
             </button>{" "}
           </div>{" "}
-          <div className="mt-3">
+          {/* <div className="mt-3">
             {timer != 0 ? (
               <b>
                 {" "}
@@ -201,7 +201,7 @@ export default function OtpModal({
                 Resend OTP
               </b>
             )}
-          </div>
+          </div> */}
         </div>{" "}
       </div>
     </div>

@@ -559,74 +559,65 @@ const App: React.FC = () => {
   ) => {
     try {
       // {{baseUrl}}/api/fetchCordinatesData
-
-      console.log("=============");
-      console.log("i am from app.tsx in sendotp function body on line no 564");
-      console.log("=============");
+      console.log("signatory",signatoryUniqUUID);
+      console.log("uuidTemplateInstance",uuidTemplateInstance);
+      
 
       const isOtpSent = localStorage.getItem("isOtpSent") ? true : false;
       const signatodyUUIDStorage = localStorage.getItem("signatoryUUID")
         ? localStorage.getItem("signatoryUUID")
         : "";
-
+      
+      console.log("isOtpSent",isOtpSent);
+      console.log("signatodyUUIDStorage",signatodyUUIDStorage);
+      
       const isOtpVerifyOffline = localStorage.getItem("isOtpVerifyOffline")
-        ? true
-        : false;
+      ? true
+      : false;
+      
+      console.log("isOtpVerifyOffline",isOtpVerifyOffline);
 
       if (isOtpVerifyOffline && signatodyUUIDStorage === signatoryUniqUUID) {
-        console.log("=============");
-        console.log(
-          "i am from app.tsx in if condition function body on line no 579"
-        );
-        console.log("=============");
+        console.log("i am from app.tsx in if condition function body on line no 581");
         setIsOtpVerificationDone(true);
       }
-
+      
+      console.log("isOtpSent",isOtpSent);
+      console.log("isResendOtp",isResendOtp);
+      
       if (isOtpSent && signatodyUUIDStorage === signatoryUniqUUID) {
-        console.log("=============");
-        console.log(
-          "i am from app.tsx in if condition function body on line no 588"
-        );
-        console.log("=============");
+        console.log("i am from app.tsx in if condition function body on line no 588");
         const otpValue = localStorage.getItem("otpValue") || "";
+        console.log("otpValue",otpValue);
         setOriginalOtpValue(otpValue);
-      } else if (
-        !isOtpSent ||
-        isResendOtp != false ||
-        signatodyUUIDStorage !== signatoryUniqUUID
-      ) {
+        console.log("originalOtpValue",originalOtpValue);
+       
+      } 
+      else if (!isOtpSent || isResendOtp != false || signatodyUUIDStorage !== signatoryUniqUUID)
+        {
         localStorage.clear();
-        console.log("=============");
-        console.log(
-          "i am from app.tsx in if condition function body on line no 601"
-        );
-        console.log("=============");
-
+        console.log("=============else if");
+        console.log("i am from app.tsx in if condition function body on line no 597");
         const {
           data: { data: responseData },
         }: AxiosResponse = await postRequest(API_ROUTES.SENDOTP, false, {
           uuid_signatory: signatoryUniqUUID,
           uuid_template_instance: uuidTemplateInstance,
         });
-
+        
         localStorage.setItem("isOtpSent", "true");
         localStorage.setItem("otpValue", responseData.otpValue);
         localStorage.setItem("signatoryUUID", signatoryUniqUUID);
         localStorage.setItem("signatoryName", responseData.signatoryName);
         setOriginalOtpValue(responseData.otpValue);
-        // console.log(responseData.otpValue);
+        console.log(responseData.otpValue);
       }
 
       await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
-    } catch (err: any) {
-      // console.log(err);
-      // console.log(err.response);
-
-      // console.log("=============");
-      // console.log(
-      //   "i am from app.tsx in catch block in sentotp body on line no 620"
-      // );
-      // console.log("=============");
+    } catch (err: any) {  
+      console.log(err);
+      console.log(err.response);
+      console.log("i am from app.tsx in catch block in sentotp body on line no 620");
 
       if (err.response.data.msg) {
         if (
@@ -656,10 +647,8 @@ const App: React.FC = () => {
 
         localStorage.clear();
       }
-      // console.log("=============");
-      // console.log("i am from app.tsx above finally block on line no 654");
-      // console.log("=============");
-    } finally {
+      console.log("i am from app.tsx above finally block on line no 654");
+      } finally {
       setIsLoading(false);
     }
   };
@@ -669,12 +658,9 @@ const App: React.FC = () => {
     signatoryUniqUUID: any
   ) => {
     try {
-      //
-      //
-      //
+      
       const locationData: any = await fetchIpInfo();
 
-      //
       const {
         data: { data: responseData },
       }: AxiosResponse = await postRequest(
@@ -686,10 +672,12 @@ const App: React.FC = () => {
           location: locationData,
         }
       );
+      console.log("Response",JSON.stringify(responseData));
     } catch (err) {
       console.log(err);
     }
   };
+  console.log("trackDocumentViewed",JSON.stringify(trackDocumentViewed));
 
   useEffect(() => {
     if (isOtpVerificationDone) {
@@ -713,49 +701,47 @@ const App: React.FC = () => {
     return () => {};
   }, [isOtpVerificationDone]);
 
-  useEffect(() => {
-    const fetchParamsAndFetchPdf = async () => {
-      try {
-        const uuid = searchParams.get("uuid");
-        const uuidTemplateInstance = searchParams.get("uuid_template_instance");
-        const uuidSignatory = searchParams.get("uuid_signatory");
 
-        if (!uuid || !uuidTemplateInstance || !uuidSignatory) {
-          navigate("/page404", { replace: true });
 
-          return;
-        }
+  const fetchParamsAndFetchPdf = async () => {
+    try {
+      const uuid = searchParams.get("uuid");
+      const uuidTemplateInstance = searchParams.get("uuid_template_instance");
+      const uuidSignatory = searchParams.get("uuid_signatory");
 
-        dispatch(setInfo({ uuid, uuidTemplateInstance, uuidSignatory }));
-
-        if (
-          originalOtpValue.length == 0 &&
-          uuid &&
-          uuidTemplateInstance &&
-          uuidSignatory
-        ) {
-          console.log("--------");
-          console.log(
-            "i am from app.tsx in if condition above sentotp on line no 739"
-          );
-          console.log("--------");
-
-          await sendOtp(
-            uuidSignatory as string,
-            uuidTemplateInstance as string
-          );
-
-          // setIsOtpVerificationDone(true);
-          // setIsLoading(false);
-        }
-      } catch (err) {
-        console.log(err);
+      if (!uuid || !uuidTemplateInstance || !uuidSignatory) {
+        navigate("/page404", { replace: true });
+        return;
       }
-    };
-    fetchParamsAndFetchPdf();
+      dispatch(setInfo({ uuid, uuidTemplateInstance, uuidSignatory }));
 
-    return () => {};
-  }, [isResendOtp]);
+      if (
+        originalOtpValue.length == 0 &&
+        uuid &&
+        uuidTemplateInstance &&
+        uuidSignatory
+      ) {
+        console.log("--------");
+        console.log(
+          "i am from app.tsx in if condition above sentotp on line no 739"
+        );
+        console.log("--------");
+        await sendOtp(
+          uuidSignatory as string,
+          uuidTemplateInstance as string
+        );
+        // setIsOtpVerificationDone(true);
+        // setIsLoading(false);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchParamsAndFetchPdf();
+  }, []);
 
   return (
     <>

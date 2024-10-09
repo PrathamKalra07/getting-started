@@ -40,7 +40,7 @@ export const MenuBar: React.FC<Props> = ({
 }) => {
   const [isRejectMenuOpen, setIsRejectMenuOpen] = useState(false);
   const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
-
+  const [documentLiveUrl, setDocumentLiveUrl] = useState("");
   //
   const [isFinishAlertShown, setIsFinishAlertShown] = useState(false);
   const [isAgreeCheckBoxChecked, setIsAgreeCheckBoxChecked] = useState(false);
@@ -62,13 +62,31 @@ export const MenuBar: React.FC<Props> = ({
   const textList = useSelector((state: RootState) => state.textList);
   console.log("textList:", textList);
   
+  // useEffect(() => {
+  //   if (basicInfoData) {
+  //     const { uuid } = basicInfoData;
+  //     setPdfLiveUrl(`${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`);
+  //   }
+
+  //   return () => {};
+  // }, [basicInfoData]);
+
   useEffect(() => {
     if (basicInfoData) {
-      const { uuid } = basicInfoData;
-      setPdfLiveUrl(`${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`);
+      console.log("basicInfo", basicInfoData);
+      const { uuid, uuidTemplateInstance } = basicInfoData;
+  
+      // Set the URLs
+      const newPdfLiveUrl = `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`;
+      const newDocumentLiveUrl = `${process.env.REACT_APP_API_URL}/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
+      
+      setPdfLiveUrl(newPdfLiveUrl);
+      setDocumentLiveUrl(newDocumentLiveUrl);
+      
+      // Log the new URLs
+      console.log("PdfLiveUrl", newPdfLiveUrl);
+      console.log("DocumentLiveUrl", newDocumentLiveUrl);
     }
-
-    return () => {};
   }, [basicInfoData]);
 
   useEffect(() => {
@@ -133,6 +151,29 @@ export const MenuBar: React.FC<Props> = ({
       console.log(err);
     }
   };
+  
+  const handleViewDocument = async () => {
+    try {
+      setIsPdfViewerOpen(true); // Reuse the PDF viewer state to show the document
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+  const handleDownloadDocument = () => {
+    try {
+      const a = document.createElement("a");
+      a.href = `${documentLiveUrl}&isDownload=true`; // Use the document URL
+      a.download = "document.pdf"; // Specify the file name
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+  
 
   const options = [
     { label: "signer1", value: 1 },
@@ -228,6 +269,11 @@ export const MenuBar: React.FC<Props> = ({
                   >
                     View PDF
                   </DropdownItem>
+
+
+                  <DropdownItem onClick={handleViewDocument}>View Document</DropdownItem> 
+                  <DropdownItem onClick={handleDownloadDocument}>Download Document</DropdownItem> 
+
                   <DropdownItem
                     onClick={() => {
                       setIsAuditHistoryShown(true);
@@ -263,6 +309,12 @@ export const MenuBar: React.FC<Props> = ({
         pdfLiveUrl={pdfLiveUrl}
         handleDownloadPdf={handleDownloadPdf}
       />
+      <DocumentViewer
+  isViewerOpen={isPdfViewerOpen} 
+  setIsViewerOpen={setIsPdfViewerOpen}
+  documentLiveUrl={documentLiveUrl} 
+  handleDownloadDocument={handleDownloadDocument}
+/>
       {/*  */}
 
       {/* check to agree modal */}
@@ -381,6 +433,47 @@ export const MenuBar: React.FC<Props> = ({
   );
 };
 
+
+const DocumentViewer = ({
+  isViewerOpen,
+  setIsViewerOpen,
+  documentLiveUrl,
+  handleDownloadDocument,
+}: {
+  isViewerOpen: boolean;
+  setIsViewerOpen: (open: boolean) => void;
+  documentLiveUrl: string;
+  handleDownloadDocument: () => void;
+}) => {
+  return (
+    <Modal
+      isOpen={isViewerOpen}
+      onClosed={() => setIsViewerOpen(false)}
+      centered
+      className="modal-container"
+      toggle={() => setIsViewerOpen(false)}
+      fade={false}
+      fullscreen
+    >
+      <ModalBody>
+        {/* <div className="document-viewer-header">
+          <button onClick={handleDownloadDocument}>Download Document</button>
+        </div> */}
+        <iframe
+          src={documentLiveUrl}
+          style={{ width: "100%", height: "100%" }}
+          title="Document Viewer"
+        />
+      </ModalBody>
+      <ModalFooter>
+        <button className="btn custom-btn1" onClick={() => setIsViewerOpen(false)}>
+          Close
+        </button>
+      </ModalFooter>
+    </Modal>
+  );
+};
+
 const PdfViewer = ({
   isPdfViewerOpen,
   setIsPdfViewerOpen,
@@ -411,6 +504,8 @@ const PdfViewer = ({
         break;
     }
   };
+
+
 
   return (
     <Modal

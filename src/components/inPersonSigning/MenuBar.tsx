@@ -32,6 +32,7 @@ export const MenuBar: React.FC<Props> = ({
   const [isFinishAlertShown, setIsFinishAlertShown] = useState(false);
   const [isAgreeCheckBoxChecked, setIsAgreeCheckBoxChecked] = useState(false);
   const [pdfLiveUrl, setPdfLiveUrl] = useState("");
+  const [documentLiveUrl, setDocumentLiveUrl] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [brandLogo, setBrandLogo] = useState("");
 
@@ -46,6 +47,8 @@ export const MenuBar: React.FC<Props> = ({
   const basicInfoData = useSelector(
     (state: RootState) => state.inPerson.inPersonBasicInfoData
   );
+  console.log("inPerson:", basicInfoData);
+
 
   const inPerson = useSelector((state: RootState) => state.inPerson);
   console.log("inPerson:", inPerson);
@@ -60,16 +63,24 @@ export const MenuBar: React.FC<Props> = ({
     completedNoOfFields = trackerData.completedNoOfFields;
   }
   // console.log(inPersonCoordinatesList);
-
   useEffect(() => {
     if (basicInfoData) {
-      const { uuid } = basicInfoData;
-      setPdfLiveUrl(`${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`);
+      console.log("basicInfo", basicInfoData);
+      const { uuid, uuidTemplateInstance } = basicInfoData;
+  
+      // Set the URLs
+      const newPdfLiveUrl = `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`;
+      const newDocumentLiveUrl = `${process.env.REACT_APP_API_URL}/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
+      
+      setPdfLiveUrl(newPdfLiveUrl);
+      setDocumentLiveUrl(newDocumentLiveUrl);
+      
+      // Log the new URLs
+      console.log("PdfLiveUrl", newPdfLiveUrl);
+      console.log("DocumentLiveUrl", newDocumentLiveUrl);
     }
-
-    return () => {};
   }, [basicInfoData]);
-
+  
   useEffect(() => {
     if (inPerson && inPerson.inPersonCoordinatesList && inPerson.inPersonCoordinatesList.signatoryList) {
       const signatoryList = inPerson.inPersonCoordinatesList.signatoryList;
@@ -122,6 +133,30 @@ export const MenuBar: React.FC<Props> = ({
       console.log(err);
     }
   };
+
+
+  const handleViewDocument = async () => {
+    try {
+      setIsPdfViewerOpen(true); // Reuse the PDF viewer state to show the document
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+  const handleDownloadDocument = () => {
+    try {
+      const a = document.createElement("a");
+      a.href = `${documentLiveUrl}&isDownload=true`; // Use the document URL
+      a.download = "document.pdf"; // Specify the file name
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+  
 
   return (
     <>
@@ -204,13 +239,10 @@ export const MenuBar: React.FC<Props> = ({
                   >
                     View PDF
                   </DropdownItem>
-                  <DropdownItem
-                    onClick={() => {
-                      setIsAuditHistoryShown(true);
-                    }}
-                  >
-                    View History
-                  </DropdownItem>
+
+                  <DropdownItem onClick={handleViewDocument}>View Document</DropdownItem> 
+                  <DropdownItem onClick={handleDownloadDocument}>Download Document</DropdownItem> 
+
                   <DropdownItem
                     onClick={() => {
                       window.open("https://www.eruditeworks.com/", "_blank");
@@ -220,6 +252,15 @@ export const MenuBar: React.FC<Props> = ({
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
+                                {/* <DropdownItem
+                    onClick={() => {
+                      setIsAuditHistoryShown(true);
+                    }}
+                  >
+                    View History
+                  </DropdownItem> */}
+              
+
             </>
           )}
         </div>
@@ -232,6 +273,13 @@ export const MenuBar: React.FC<Props> = ({
         pdfLiveUrl={pdfLiveUrl}
         handleDownloadPdf={handleDownloadPdf}
       />
+      <DocumentViewer
+  isViewerOpen={isPdfViewerOpen} 
+  setIsViewerOpen={setIsPdfViewerOpen}
+  documentLiveUrl={documentLiveUrl} 
+  handleDownloadDocument={handleDownloadDocument}
+/>
+          
       {/*  */}
 
       {/* check to agree modal */}
@@ -295,6 +343,48 @@ export const MenuBar: React.FC<Props> = ({
     </>
   );
 };
+
+
+const DocumentViewer = ({
+  isViewerOpen,
+  setIsViewerOpen,
+  documentLiveUrl,
+  handleDownloadDocument,
+}: {
+  isViewerOpen: boolean;
+  setIsViewerOpen: (open: boolean) => void;
+  documentLiveUrl: string;
+  handleDownloadDocument: () => void;
+}) => {
+  return (
+    <Modal
+      isOpen={isViewerOpen}
+      onClosed={() => setIsViewerOpen(false)}
+      centered
+      className="modal-container"
+      toggle={() => setIsViewerOpen(false)}
+      fade={false}
+      fullscreen
+    >
+      <ModalBody>
+        {/* <div className="document-viewer-header">
+          <button onClick={handleDownloadDocument}>Download Document</button>
+        </div> */}
+        <iframe
+          src={documentLiveUrl}
+          style={{ width: "100%", height: "100%" }}
+          title="Document Viewer"
+        />
+      </ModalBody>
+      <ModalFooter>
+        <button className="btn custom-btn1" onClick={() => setIsViewerOpen(false)}>
+          Close
+        </button>
+      </ModalFooter>
+    </Modal>
+  );
+};
+
 
 const PdfViewer = ({
   isPdfViewerOpen,

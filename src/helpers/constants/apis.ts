@@ -16,7 +16,6 @@ export const API_ROUTES = {
     "/common/documents/selfSigning/fetchSignatories",
   COMMON_DOCUMENTS_SELFSIGNING_SAVESIGNATURE:
     "/common/documents/selfSigning/saveSignatures",
-
   // auth
   SENDOTP: "/sendOtp",
 
