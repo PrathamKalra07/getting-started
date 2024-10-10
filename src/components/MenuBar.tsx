@@ -40,6 +40,7 @@ export const MenuBar: React.FC<Props> = ({
 }) => {
   const [isRejectMenuOpen, setIsRejectMenuOpen] = useState(false);
   const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
+  const [isDocumentViewerOpen, setIsDocumentViewerOpen] = useState(false);
   const [documentLiveUrl, setDocumentLiveUrl] = useState("");
   //
   const [isFinishAlertShown, setIsFinishAlertShown] = useState(false);
@@ -154,7 +155,7 @@ export const MenuBar: React.FC<Props> = ({
   
   const handleViewDocument = async () => {
     try {
-      setIsPdfViewerOpen(true); // Reuse the PDF viewer state to show the document
+      setIsDocumentViewerOpen(true); 
     } catch (err) {
       console.log(err);
     }
@@ -163,8 +164,8 @@ export const MenuBar: React.FC<Props> = ({
   const handleDownloadDocument = () => {
     try {
       const a = document.createElement("a");
-      a.href = `${documentLiveUrl}&isDownload=true`; // Use the document URL
-      a.download = "document.pdf"; // Specify the file name
+      a.href = `${documentLiveUrl}&isDownload=true`;
+      a.download = "document.pdf"; 
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -246,48 +247,17 @@ export const MenuBar: React.FC<Props> = ({
                 </DropdownToggle>
                 <DropdownMenu style={{ minWidth: 150 }}>
                   {/* <DropdownItem header>Header</DropdownItem> */}
-                  <DropdownItem onClick={() => setIsRejectMenuOpen(true)}>
-                    Reject
-                  </DropdownItem>
-                  <DropdownItem
-                    onClick={() => {
-                      handlePrintPdf();
-                    }}
-                  >
-                    Print
-                  </DropdownItem>
-                  <DropdownItem onClick={() => handleDownloadPdf()}>
-                    Download
-                  </DropdownItem>
+                  <DropdownItem onClick={() => setIsRejectMenuOpen(true)}>Reject</DropdownItem>
+                  <DropdownItem onClick={() => {handlePrintPdf();}}>Print</DropdownItem>
+                  <DropdownItem onClick={() => {setIsAuditHistoryShown(true);}}>View History</DropdownItem>
+                  <DropdownItem onClick={() => {window.open("https://www.eruditeworks.com/", "_blank");}}>Help & Support</DropdownItem>
                   {/* <DropdownItem text>Asign To Someone Else</DropdownItem> */}
                   {/* <DropdownItem disabled>Action (disabled)</DropdownItem> */}
                   <DropdownItem divider />
-                  <DropdownItem
-                    onClick={() => {
-                      handleViewPdf();
-                    }}
-                  >
-                    View PDF
-                  </DropdownItem>
-
-
-                  <DropdownItem onClick={handleViewDocument}>View Document</DropdownItem> 
-                  <DropdownItem onClick={handleDownloadDocument}>Download Document</DropdownItem> 
-
-                  <DropdownItem
-                    onClick={() => {
-                      setIsAuditHistoryShown(true);
-                    }}
-                  >
-                    View History
-                  </DropdownItem>
-                  <DropdownItem
-                    onClick={() => {
-                      window.open("https://www.eruditeworks.com/", "_blank");
-                    }}
-                  >
-                    Help & Support
-                  </DropdownItem>
+                  <DropdownItem onClick={() => {handleViewPdf();}}>View Unsigned Document</DropdownItem>
+                  <DropdownItem onClick={() => handleDownloadPdf()}>Download Unsigned Document</DropdownItem>
+                  <DropdownItem onClick={handleViewDocument}>View Signed Document</DropdownItem> 
+                  <DropdownItem onClick={handleDownloadDocument}>Download Signed Document</DropdownItem> 
                 </DropdownMenu>
               </Dropdown>
 
@@ -309,12 +279,13 @@ export const MenuBar: React.FC<Props> = ({
         pdfLiveUrl={pdfLiveUrl}
         handleDownloadPdf={handleDownloadPdf}
       />
-      <DocumentViewer
-  isViewerOpen={isPdfViewerOpen} 
-  setIsViewerOpen={setIsPdfViewerOpen}
+  <DocumentViewer
+  isDocumentViewerOpen={isDocumentViewerOpen} 
+  setIsDocumentViewerOpen={setIsDocumentViewerOpen} 
   documentLiveUrl={documentLiveUrl} 
   handleDownloadDocument={handleDownloadDocument}
 />
+
       {/*  */}
 
       {/* check to agree modal */}
@@ -435,44 +406,109 @@ export const MenuBar: React.FC<Props> = ({
 
 
 const DocumentViewer = ({
-  isViewerOpen,
-  setIsViewerOpen,
+  isDocumentViewerOpen,
+  setIsDocumentViewerOpen,
   documentLiveUrl,
   handleDownloadDocument,
 }: {
-  isViewerOpen: boolean;
-  setIsViewerOpen: (open: boolean) => void;
+  isDocumentViewerOpen: boolean;
+  setIsDocumentViewerOpen: (open: boolean) => void;
   documentLiveUrl: string;
   handleDownloadDocument: () => void;
 }) => {
+  const [numPages, setNumPages] = useState(0);
+  const zoomContainerRef = useRef<any>(null);
+
+  const zoomControl = (operation: string) => {
+    switch (operation) {
+      case "in":
+        zoomContainerRef.current.zoomIn(0.1);
+        break;
+      case "out":
+        zoomContainerRef.current.zoomOut();
+        break;
+
+      default:
+        break;
+    }
+  };
+
   return (
     <Modal
-      isOpen={isViewerOpen}
-      onClosed={() => setIsViewerOpen(false)}
+      isOpen={isDocumentViewerOpen}
+      onClosed={() => setIsDocumentViewerOpen(false)}
       centered
       className="modal-container"
-      toggle={() => setIsViewerOpen(false)}
+      toggle={() => setIsDocumentViewerOpen(false)}
       fade={false}
       fullscreen
     >
       <ModalBody>
-        {/* <div className="document-viewer-header">
-          <button onClick={handleDownloadDocument}>Download Document</button>
-        </div> */}
-        <iframe
-          src={documentLiveUrl}
-          style={{ width: "100%", height: "100%" }}
-          title="Document Viewer"
-        />
+        <div
+          className="document-viewer-header d-flex justify-content-center gap-3 py-2 text-light mb-2"
+          style={{
+            fontSize: "1rem",
+            backgroundColor: "#354259",
+            position: "sticky",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1,
+          }}
+        >
+          <span>
+            <i
+              className="fa-solid fa-download cursor-pointer"
+              onClick={() => handleDownloadDocument()}
+            ></i>
+          </span>
+          <span>
+            <i className="fa-solid fa-print cursor-pointer"></i>
+          </span>
+        </div>
+        <div className="d-flex justify-content-center print-document-main-container">
+          <TransformWrapper
+            maxScale={3}
+            initialScale={1}
+            disablePadding
+            ref={zoomContainerRef}
+          >
+            <TransformComponent>
+              <Document
+                file={documentLiveUrl}
+                onLoadSuccess={({ numPages }) => {
+                  setNumPages(numPages);
+                }}
+                renderMode="canvas"
+              >
+                {[...Array(numPages)].map((_, index) => (
+                  <div key={index} className="m-0 p-0 mb-5 my-3">
+                    <Page
+                      pageNumber={index + 1}
+                      className="border animated-document-page"
+                    />
+                    <div style={{ textAlign: "right" }} className="fw-bold">
+                      {index + 1} of {numPages}
+                    </div>
+                  </div>
+                ))}
+              </Document>
+            </TransformComponent>
+          </TransformWrapper>
+        </div>
       </ModalBody>
       <ModalFooter>
-        <button className="btn custom-btn1" onClick={() => setIsViewerOpen(false)}>
+        <button
+          className="btn custom-btn1"
+          onClick={() => setIsDocumentViewerOpen(false)}
+        >
           Close
         </button>
       </ModalFooter>
     </Modal>
   );
 };
+
 
 const PdfViewer = ({
   isPdfViewerOpen,
