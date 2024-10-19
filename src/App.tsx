@@ -12,7 +12,7 @@ import { usePdf, Pdf } from "./hooks/usePdf";
 import { useUploader, UploadTypes } from "./hooks/useUploader";
 
 //
-import { setInfo } from "./redux/slices/basicInfoReducer";
+import { setInfo, setSalesforceOrgId } from "./redux/slices/basicInfoReducer";
 import { setCoordinateData } from "./redux/slices/coordinatesReducer";
 import { setRecordData } from "./redux/slices/coordinatesReducer";
 import { setUserData } from "./redux/slices/externalUserReducer";
@@ -447,6 +447,11 @@ const App: React.FC = () => {
 
       let coord = responseData.coord;
       const recordData = responseData.recordData;
+      
+      if(coord && coord.length>0) {
+        const salesforceOrgId = coord[0].salesforce_org_id;
+        dispatch(setSalesforceOrgId({ salesforceOrgId }));
+      }
 
       let completedFieldCount = 0;
       if (Object.keys(recordData).length > 0) {
@@ -480,6 +485,7 @@ const App: React.FC = () => {
 
         console.log(coord);
       }
+
       const sortedCoordinateData: any = [
         ...(new Set(
           coord
