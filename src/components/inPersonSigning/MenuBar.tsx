@@ -84,7 +84,6 @@ export const MenuBar: React.FC<Props> = ({
   useEffect(() => {
     if (inPerson && inPerson.inPersonCoordinatesList && inPerson.inPersonCoordinatesList.signatoryList) {
       const signatoryList = inPerson.inPersonCoordinatesList.signatoryList;
-  
       if (Array.isArray(signatoryList) && signatoryList.length > 0) {
         const salesforceOrgId = (signatoryList[0] as { salesforce_org_id?: string }).salesforce_org_id;
   
