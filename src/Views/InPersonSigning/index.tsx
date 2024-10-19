@@ -19,7 +19,7 @@ import AlreadySignedComponent from "components/Common/AlreadySignedComponent";
 
 //
 import { setFullData } from "redux/slices/inPersonSigning/originalSignatoryWithCoordsDataReducer";
-import { setInfo } from "redux/slices/inPersonSigning/basicInfoReducer";
+import { setInfo, setSalesforceOrgId } from "redux/slices/inPersonSigning/basicInfoReducer";
 import { setActiveSignatory } from "redux/slices/inPersonSigning/activeSignatoryReducer";
 import {
   setCoordinateData,
@@ -366,7 +366,7 @@ const InPersonSigningPage = () => {
       const firstSignatoryData = responseData[0].coordData;
       const signatoryUUID = responseData[0].signatoryUUID;
       const signatoryName = responseData[0].signatoryName;
-
+      const salesforceOrgId = responseData[0].salesforceOrgId;
       localStorage.setItem("signatoryUUID", signatoryUUID);
       localStorage.setItem("signatoryName", signatoryName);
 
@@ -380,6 +380,11 @@ const InPersonSigningPage = () => {
           uuid,
           uuidTemplateInstance: uuid_template_instance,
           uuidSignatory: signatoryUUID,
+        })
+      );
+      dispatch(
+        setSalesforceOrgId({
+          salesforceOrgId: salesforceOrgId
         })
       );
       await fetchingUsersResources(signatoryUUID as string);
