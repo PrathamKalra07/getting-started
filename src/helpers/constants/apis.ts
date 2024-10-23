@@ -18,6 +18,7 @@ export const API_ROUTES = {
     "/common/documents/selfSigning/saveSignatures",
   // auth
   SENDOTP: "/sendOtp",
+  CHECKSTATUS: "/checkStatus",
 
   // audit
   AUDIT_TRACKDOCUMENTVIEWED: "/audit/trackDocumentViewed",
