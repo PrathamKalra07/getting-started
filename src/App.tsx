@@ -559,105 +559,105 @@ const App: React.FC = () => {
     }
   };
 
-  // const sendOtp = async (
-  //   signatoryUniqUUID: string,
-  //   uuidTemplateInstance: string
-  // ) => {
-  //   try {
-  //     // {{baseUrl}}/api/fetchCordinatesData
-  //     console.log("signatory",signatoryUniqUUID);
-  //     console.log("uuidTemplateInstance",uuidTemplateInstance);
+  const sendOtp = async (
+    signatoryUniqUUID: string,
+    uuidTemplateInstance: string
+  ) => {
+    try {
+      // {{baseUrl}}/api/fetchCordinatesData
+      console.log("signatory",signatoryUniqUUID);
+      console.log("uuidTemplateInstance",uuidTemplateInstance);
       
 
-  //     const isOtpSent = localStorage.getItem("isOtpSent") ? true : false;
-  //     const signatodyUUIDStorage = localStorage.getItem("signatoryUUID")
-  //       ? localStorage.getItem("signatoryUUID")
-  //       : "";
+      const isOtpSent = localStorage.getItem("isOtpSent") ? true : false;
+      const signatodyUUIDStorage = localStorage.getItem("signatoryUUID")
+        ? localStorage.getItem("signatoryUUID")
+        : "";
       
-  //     console.log("isOtpSent",isOtpSent);
-  //     console.log("signatodyUUIDStorage",signatodyUUIDStorage);
+      console.log("isOtpSent",isOtpSent);
+      console.log("signatodyUUIDStorage",signatodyUUIDStorage);
       
-  //     const isOtpVerifyOffline = localStorage.getItem("isOtpVerifyOffline")
-  //     ? true
-  //     : false;
+      const isOtpVerifyOffline = localStorage.getItem("isOtpVerifyOffline")
+      ? true
+      : false;
       
-  //     console.log("isOtpVerifyOffline",isOtpVerifyOffline);
+      console.log("isOtpVerifyOffline",isOtpVerifyOffline);
 
-  //     if (isOtpVerifyOffline && signatodyUUIDStorage === signatoryUniqUUID) {
-  //       console.log("i am from app.tsx in if condition function body on line no 581");
-  //       setIsOtpVerificationDone(true);
-  //     }
+      if (isOtpVerifyOffline && signatodyUUIDStorage === signatoryUniqUUID) {
+        console.log("i am from app.tsx in if condition function body on line no 581");
+        setIsOtpVerificationDone(true);
+      }
       
-  //     console.log("isOtpSent",isOtpSent);
-  //     console.log("isResendOtp",isResendOtp);
+      console.log("isOtpSent",isOtpSent);
+      console.log("isResendOtp",isResendOtp);
       
-  //     if (isOtpSent && signatodyUUIDStorage === signatoryUniqUUID) {
-  //       console.log("i am from app.tsx in if condition function body on line no 588");
-  //       const otpValue = localStorage.getItem("otpValue") || "";
-  //       console.log("otpValue",otpValue);
-  //       setOriginalOtpValue(otpValue);
-  //       console.log("originalOtpValue",originalOtpValue);
+      if (isOtpSent && signatodyUUIDStorage === signatoryUniqUUID) {
+        console.log("i am from app.tsx in if condition function body on line no 588");
+        const otpValue = localStorage.getItem("otpValue") || "";
+        console.log("otpValue",otpValue);
+        setOriginalOtpValue(otpValue);
+        console.log("originalOtpValue",originalOtpValue);
        
-  //     } 
-  //     else if (!isOtpSent || isResendOtp != false || signatodyUUIDStorage !== signatoryUniqUUID)
-  //       {
-  //       localStorage.clear();
-  //       console.log("=============else if");
-  //       console.log("i am from app.tsx in if condition function body on line no 597");
-  //       const {
-  //         data: { data: responseData },
-  //       }: AxiosResponse = await postRequest(API_ROUTES.SENDOTP, false, {
-  //         uuid_signatory: signatoryUniqUUID,
-  //         uuid_template_instance: uuidTemplateInstance,
-  //       });
+      } 
+      else if (!isOtpSent || isResendOtp != false || signatodyUUIDStorage !== signatoryUniqUUID)
+        {
+        localStorage.clear();
+        console.log("=============else if");
+        console.log("i am from app.tsx in if condition function body on line no 597");
+        const {
+          data: { data: responseData },
+        }: AxiosResponse = await postRequest(API_ROUTES.SENDOTP, false, {
+          uuid_signatory: signatoryUniqUUID,
+          uuid_template_instance: uuidTemplateInstance,
+        });
         
-  //       localStorage.setItem("isOtpSent", "true");
-  //       localStorage.setItem("otpValue", responseData.otpValue);
-  //       localStorage.setItem("signatoryUUID", signatoryUniqUUID);
-  //       localStorage.setItem("signatoryName", responseData.signatoryName);
-  //       setOriginalOtpValue(responseData.otpValue);
-  //       console.log(responseData.otpValue);
-  //     }
+        localStorage.setItem("isOtpSent", "true");
+        localStorage.setItem("otpValue", responseData.otpValue);
+        localStorage.setItem("signatoryUUID", signatoryUniqUUID);
+        localStorage.setItem("signatoryName", responseData.signatoryName);
+        setOriginalOtpValue(responseData.otpValue);
+        console.log(responseData.otpValue);
+      }
 
-  //     await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
-  //   } catch (err: any) {  
-  //     console.log(err);
-  //     console.log(err.response);
-  //     console.log("i am from app.tsx in catch block in sentotp body on line no 620");
+      await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
+    } catch (err: any) {  
+      console.log(err);
+      console.log(err.response);
+      console.log("i am from app.tsx in catch block in sentotp body on line no 620");
 
-  //     if (err.response.data.msg) {
-  //       if (
-  //         err.response.data.msg.toLowerCase() ==
-  //         "Sorry Your Signature Is Already Done".toLowerCase()
-  //       ) {
-  //         const msg: string = "Sorry You Had Already Done Your Work";
-  //         setUserErrorMsg(msg);
-  //         setIsAlreadySign(true);
-  //       } else if (
-  //         err.response.data.msg.toLowerCase() ==
-  //         "Sorry Your Template Is Already Signed".toLowerCase()
-  //       ) {
-  //         const msg: string =
-  //           "Sorry Your Template Is Already Signed Either By You Or By SomeOne Else In Your Group";
-  //         setUserErrorMsg(msg);
-  //         setIsAlreadySign(true);
-  //       } else if (
-  //         err.response.data.msg.toLowerCase() ==
-  //         "Sorry Someone Had Rejected This Template".toLowerCase()
-  //       ) {
-  //         const msg: string =
-  //           "Sorry one of the signatory had rejected this template so you are unable to go further";
-  //         setUserErrorMsg(msg);
-  //         setIsAlreadySign(true);
-  //       }
+      if (err.response.data.msg) {
+        if (
+          err.response.data.msg.toLowerCase() ==
+          "Sorry Your Signature Is Already Done".toLowerCase()
+        ) {
+          const msg: string = "Sorry You Had Already Done Your Work";
+          setUserErrorMsg(msg);
+          setIsAlreadySign(true);
+        } else if (
+          err.response.data.msg.toLowerCase() ==
+          "Sorry Your Template Is Already Signed".toLowerCase()
+        ) {
+          const msg: string =
+            "Sorry Your Template Is Already Signed Either By You Or By SomeOne Else In Your Group";
+          setUserErrorMsg(msg);
+          setIsAlreadySign(true);
+        } else if (
+          err.response.data.msg.toLowerCase() ==
+          "Sorry Someone Had Rejected This Template".toLowerCase()
+        ) {
+          const msg: string =
+            "Sorry one of the signatory had rejected this template so you are unable to go further";
+          setUserErrorMsg(msg);
+          setIsAlreadySign(true);
+        }
 
-  //       localStorage.clear();
-  //     }
-  //     console.log("i am from app.tsx above finally block on line no 654");
-  //     } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+        localStorage.clear();
+      }
+      console.log("i am from app.tsx above finally block on line no 654");
+      } finally {
+      setIsLoading(false);
+    }
+  };
 
 
   const checkStatus = async (
@@ -788,6 +788,7 @@ const App: React.FC = () => {
           uuidSignatory as string,
           uuidTemplateInstance as string
         );
+        setIsOtpVerificationDone(true);
         // await sendOtp(
         //   uuidSignatory as string,
         //   uuidTemplateInstance as string
@@ -823,7 +824,7 @@ const App: React.FC = () => {
           />
         ) : (
           <>
-            {/* {!isOtpVerificationDone ? (
+            {!isOtpVerificationDone ? (
               <OtpModal
                 otp={otp}
                 setOtp={setOtp}
@@ -832,7 +833,7 @@ const App: React.FC = () => {
                 setIsResendOtp={setIsResendOtp}
                 setOriginalOtpValue={setOriginalOtpValue}
               />
-            ) :  */}
+            ) : 
             (
               <>
                 <MenuBar
@@ -886,7 +887,7 @@ const App: React.FC = () => {
                 ) : null}
               </>
             )
-            {/* } */}
+             } 
           </>
         )}
 
