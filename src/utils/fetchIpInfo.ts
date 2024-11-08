@@ -11,10 +11,10 @@ const fetchIpInfo = async () => {
     //   API_ROUTES.GEOLOLCATION,
     //   false
     // );
-
+    console.log("inside fetchIpInfo");
     // Perform a GET request
     const {data} : AxiosResponse = await axios.get('https://geolocation-db.com/json/')
-
+    console.log("fetchIpInfo ",JSON.stringify(data));
     // return data;
     const {
       country_code,
@@ -39,6 +39,16 @@ const fetchIpInfo = async () => {
     };
   } catch (err) {
     console.log(err);
+    return {
+      country_code:  "IN",
+      country_name:  "India",
+      city: "navsari",
+      postal: "396450",
+      latitude:  "",
+      longitude: "",
+      IPv4:  "192.168.1.11",
+      state: "Gujrat",
+    };
   }
 };
 export { fetchIpInfo };

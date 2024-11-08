@@ -5,6 +5,8 @@ import axios from "axios";
 import { fetchIpInfo } from "./fetchIpInfo";
 
 export async function Save(pdfFile: File, tempState: any) {
+  console.log('SAVE FUNTION CALLED.....pdf.js....');
+  
   const PDFLib = await getAsset("PDFLib");
   const download = await getAsset("download");
   let pdfDoc: {
@@ -122,7 +124,7 @@ export async function Save(pdfFile: File, tempState: any) {
     //
 
     let locationData: any = await fetchIpInfo();
-    console.log('@@@ locationData::'+locationData);
+    console.log('@@@ locationData::'+JSON.stringify(locationData));
 
     if(!locationData) {
       locationData = {"country_code":"IN","country_name":"India","city":"Navsari","postal":"396445","latitude":20.85,"longitude":72.9167,"IPv4":"150.129.112.104","state":"Gujarat"};
