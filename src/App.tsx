@@ -134,7 +134,7 @@ const App: React.FC = () => {
     >
       <div
         style="
-          display: flex;otp
+          display: flex;
           align-items: center;
           justify-content: center;
           height: 100vh;
