@@ -20,6 +20,7 @@ export const DateContainer: React.FC<Props> = ({
 }) => {
   const [currentPageNo, setCurrentPageNo] = useState(0);
 
+  console.log("isFetchingCordinatesData",isFetchingCordinatesData);
   const reduxState = useSelector((state: RootState) => state);
   const allCordinatesData = useSelector(
     (state: RootState) => state.coordinatesList.allCoordinateData

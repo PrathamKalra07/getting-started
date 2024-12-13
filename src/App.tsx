@@ -55,7 +55,7 @@ const App: React.FC = () => {
   const [originalOtpValue, setOriginalOtpValue] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isAlreadySign, setIsAlreadySign] = useState(false);
-  const [isOtpVerificationDone, setIsOtpVerificationDone] = useState(false);
+  const [isOtpVerificationDone, setIsOtpVerificationDone] = useState(true);
   const [isResendOtp, setIsResendOtp] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userErrorMsg, setUserErrorMsg] = useState("");
@@ -775,9 +775,10 @@ const App: React.FC = () => {
         return;
       }
       dispatch(setInfo({ uuid, uuidTemplateInstance, uuidSignatory }));
+      setIsOtpVerificationDone(true);
 
       if (
-        originalOtpValue.length == 0 &&
+        // originalOtpValue.length == 0 &&
         uuid &&
         uuidTemplateInstance &&
         uuidSignatory
@@ -792,7 +793,6 @@ const App: React.FC = () => {
           uuidSignatory as string,
           uuidTemplateInstance as string
         );
-        setIsOtpVerificationDone(true);
         // await sendOtp(
         //   uuidSignatory as string,
         //   uuidTemplateInstance as string
@@ -826,20 +826,9 @@ console.log("isOtpVerificationDone",isOtpVerificationDone);
             userErrorMsg={userErrorMsg}
             setIsAuditHistoryShown={setIsAuditHistoryShown}
           />
-        ) : (
+        ) : 
+        (
           <>
-            {!isOtpVerificationDone ? (
-              <OtpModal
-                otp={otp}
-                setOtp={setOtp}
-                originalOtpValue={originalOtpValue}
-                setIsOtpVerificationDone={setIsOtpVerificationDone}
-                setIsResendOtp={setIsResendOtp}
-                setOriginalOtpValue={setOriginalOtpValue}
-              />
-            ) : 
-            (
-              <>
                 <MenuBar
                   rejectSign={handleSignRejection}
                   savePdf={handleSavePdf}
@@ -890,10 +879,77 @@ console.log("isOtpVerificationDone",isOtpVerificationDone);
                   />
                 ) : null}
               </>
-            )
-             } 
-          </>
-        )}
+        )
+        
+        // (
+        //   <>
+        //     {!isOtpVerificationDone ? (
+        //       <OtpModal
+        //         otp={otp}
+        //         setOtp={setOtp}
+        //         originalOtpValue={originalOtpValue}
+        //         setIsOtpVerificationDone={setIsOtpVerificationDone}
+        //         setIsResendOtp={setIsResendOtp}
+        //         setOriginalOtpValue={setOriginalOtpValue}
+        //       />
+        //     ) : 
+        //     (
+        //       <>
+        //         <MenuBar
+        //           rejectSign={handleSignRejection}
+        //           savePdf={handleSavePdf}
+        //           savingPdfStatus={isSaving}
+        //           isPdfLoaded={!!file}
+        //           setIsAuditHistoryShown={setIsAuditHistoryShown}
+        //         />
+        //         <div className="pdf-viewer-div">
+        //           {!file || isFetchingCordinatesData ? (
+        //             <Loading />
+        //           ) : (
+        //             <div className=" d-flex justify-content-center align-items-center overflow-x-scroll">
+        //               <div className="inner-container">
+        //                 {currentPage && (
+        //                   <div className="border mb-5 position-relative">
+        //                     {" "}
+        //                     <div>
+        //                       {/*  */}
+        //                       <Page
+        //                         dimensions={dimensions}
+        //                         updateDimensions={setDimensions}
+        //                         page={currentPage}
+        //                         allPages={pages}
+        //                         goToPage={goToPage}
+        //                         isFetchingCordinatesData={
+        //                           isFetchingCordinatesData
+        //                         }
+        //                         setDrawingModalOpen={setDrawingModalOpen}
+        //                         handleStartAndScrollElement={
+        //                           handleStartAndScrollElement
+        //                         }
+        //                         signatureIndicatorRef={signatureIndicatorRef}
+        //                       />
+
+        //                       {/*  */}
+        //                     </div>
+        //                   </div>
+        //                 )}
+        //               </div>
+        //             </div>
+        //           )}
+        //         </div>
+
+        //         {drawingModalOpen ? (
+        //           <DrawingModal
+        //             open={drawingModalOpen}
+        //             dismiss={() => setDrawingModalOpen(false)}
+        //           />
+        //         ) : null}
+        //       </>
+        //     )
+        //      } 
+        //   </>
+        // )
+        }
 
         {isAuditHistoryShown && (
           <AuditTrailModal setIsAuditHistoryShown={setIsAuditHistoryShown} />

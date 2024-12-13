@@ -74,9 +74,13 @@ export const MenuBar: React.FC<Props> = ({
       
       setPdfLiveUrl(newPdfLiveUrl);
       setDocumentLiveUrl(newDocumentLiveUrl);
+      console.log("brandlogo checkk");
+      console.log("brandlogo checkk",salesforceOrgId);
       setBrandLogo(`${process.env.REACT_APP_API_URL}/api/admin/branding/fetchBrandLogo?orgId=${salesforceOrgId}`);
+      // setBrandLogo(`${process.env.REACT_APP_API_URL}/api/admin/branding/fetchBrandLogo?orgId=${salesforceOrgId}`);
       
       // Log the new URLs
+      console.log("brandlogo", brandLogo);
       console.log("PdfLiveUrl", newPdfLiveUrl);
       console.log("DocumentLiveUrl", newDocumentLiveUrl);
     }
