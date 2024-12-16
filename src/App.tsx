@@ -222,6 +222,8 @@ const App: React.FC = () => {
     const { coordinatesList, signatureList, textList, dateList, checkboxList } =
       currentReduxState as RootState;
 
+    console.log("DataList",dateList);
+    console.log("DataList",JSON.stringify(dateList));
     const signatureData = signatureList.allSignatureData;
     const textData = textList.allTextData;
     const dateData = dateList.allDateData;

@@ -64,7 +64,8 @@ export const TextContainer: React.FC<Props> = ({
           ];
         }
       });
-
+      console.log("textDataPagesWise",textDataPagesWise);
+      console.log("textDataPagesWise",JSON.stringify(textDataPagesWise));
       dispatch(setTextData({ allTextData: textDataPagesWise }));
 
       // localStorage.setItem(

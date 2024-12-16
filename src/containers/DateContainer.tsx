@@ -29,6 +29,8 @@ export const DateContainer: React.FC<Props> = ({
   const allDateElementDataSelector = useSelector(
     (state: RootState) => state.dateList.allDateData[currentPageNo]
   );
+  console.log("dateList container:",allDateElementDataSelector);
+  console.log("dateList container:",JSON.stringify(allDateElementDataSelector));
 
   const dispatch = useDispatch();
 
@@ -51,6 +53,7 @@ export const DateContainer: React.FC<Props> = ({
       //
       allCordinatesData.map((item: any, i: number) => {
         if (item.fieldType == "Date") {
+          console.log("date",item.value);
           if (!dateDataPagesWise[item.pageNo]) {
             dateDataPagesWise[item.pageNo] = [];
           }
@@ -61,7 +64,8 @@ export const DateContainer: React.FC<Props> = ({
           ];
         }
       });
-
+      console.log("dateDataPagesWise",dateDataPagesWise);
+      console.log("dateDataPagesWise",JSON.stringify(dateDataPagesWise));
       dispatch(setDateData({ allDateData: dateDataPagesWise }));
     }
     return () => {};
@@ -71,7 +75,7 @@ export const DateContainer: React.FC<Props> = ({
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
       const value = e.target.value;
-
+      console.log("value",value);
       const formatValue = value
         ? moment(value, "YYYY-MM-DD").format("MM-DD-YYYY")
         : "";
@@ -93,10 +97,15 @@ export const DateContainer: React.FC<Props> = ({
     <>
       {allDateElementDataSelector
         ? allDateElementDataSelector.map((item: any, i: number) => {
+            const formattedValue = item.value
+              ? moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY")
+              : "";
+  
             return (
               <DatePad
                 key={i}
                 {...item}
+                value={formattedValue}  
                 handleTextChange={handleTextChange}
                 textElementIndex={item.index}
               />
@@ -106,3 +115,4 @@ export const DateContainer: React.FC<Props> = ({
     </>
   );
 };
+  
