@@ -146,47 +146,119 @@ export async function Save(pdfFile: File, tempState: any) {
       data: bodyContent,
     });
 
+
+
+
     const thankYouContainer: HTMLElement = document.getElementById(
       "thankyou-container"
     ) as HTMLElement;
-    thankYouContainer.innerHTML = `<div
-    style="
-      position: fixed;
-      z-index: 5;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #F4EDE4;
-      display:flex;
-      justify-content:center;
-    "
-  >
-    <div
-      style="
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        width: 90vw;
-        flex-direction: column;
-      "
-    >
-
-        <div class="w-100 d-flex justify-content-center">
-          <svg height="100" width="100" viewBox="-2 -2 24.00 24.00" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-2" y="-2" width="24.00" height="24.00" rx="12" fill="#354259" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 5L8 15l-5-4"></path> </g></svg>
+    
+    thankYouContainer.innerHTML = `
+      <div
+        style="
+          position: fixed;
+          z-index: 5;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #F4EDE4;
+          display: flex;
+          justify-content: center;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 90vw;
+            flex-direction: column;
+          "
+        >
+          <!-- Download Button -->
+          <a href="https://ew-signpad.netlify.app/viewFinalPdf?uuid=${basicInfoData.uuid}&uuid_template_instance=${basicInfoData.uuidTemplateInstance}"
+             target="_blank"
+             style="
+               position: absolute;
+               top: 10px;
+               right: 10px;
+               background-color: #354259;
+               color: white;
+               padding: 10px 20px;
+               border-radius: 5px;
+               text-decoration: none;
+               font-weight: bold;
+             "
+          >
+            Download Document
+          </a>
+    
+          <div class="w-100 d-flex justify-content-center">
+            <svg height="100" width="100" viewBox="-2 -2 24.00 24.00" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#000000">
+              <g id="SVGRepo_bgCarrier" stroke-width="0">
+                <rect x="-2" y="-2" width="24.00" height="24.00" rx="12" fill="#354259" strokewidth="0"></rect>
+              </g>
+              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+              <g id="SVGRepo_iconCarrier">
+                <path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 5L8 15l-5-4"></path>
+              </g>
+            </svg>
+          </div>
+    
+          <span class="my-5">
+            <h4 class="text-center"><b>Congratulations! You have successfully completed the signature.</b></h4>
+            <h6 class="text-center text-secondary mt-4 text-justify">
+              We are one step closer to finalizing the document. Please wait for the remaining signatories to complete their signatures.<br /><br />
+              The final signed PDF will be emailed to you once all signers have finished signing the document.
+            </h6>
+          </span>
         </div>
+      </div>
+    `;
+    
+  //   const thankYouContainer: HTMLElement = document.getElementById(
+  //     "thankyou-container"
+  //   ) as HTMLElement;
+  //   thankYouContainer.innerHTML = `<div
+  //   style="
+  //     position: fixed;
+  //     z-index: 5;
+  //     top: 0;
+  //     left: 0;
+  //     right: 0;
+  //     bottom: 0;
+  //     background-color: #F4EDE4;
+  //     display:flex;
+  //     justify-content:center;
+  //   "
+  // >
+  //   <div
+  //     style="
+  //       display: flex;
+  //       align-items: center;
+  //       justify-content: center;
+  //       height: 100vh;
+  //       width: 90vw;
+  //       flex-direction: column;
+  //     "
+  //   >
 
-      <span class="my-5">
-      
-      <h4 class="text-center"><b>Congratulations! you have successfully completed the signature</b></h4>
-      
-      <h6 class="text-center text-secondary mt-4 text-justify" > We are one step closer to finalizing the document. Please wait for the remaining signatories to complete their signatures.<br/><br/> The final singed pdf will be emailed to you once all signers have finished signing the document. </h6>
+  //       <div class="w-100 d-flex justify-content-center">
+  //         <svg height="100" width="100" viewBox="-2 -2 24.00 24.00" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-2" y="-2" width="24.00" height="24.00" rx="12" fill="#354259" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 5L8 15l-5-4"></path> </g></svg>
+  //       </div>
 
-      <!-- <h6 class="text-center mt-4">For More Information About EwSign  <a target="_blank" href="https://www.eruditeworks.com/ewsign/">Click Here</a> </h6>-->
-      </span>
-    </div>
-  </div>`;
+  //     <span class="my-5">
+      
+  //     <h4 class="text-center"><b>Congratulations! you have successfully completed the signature</b></h4>
+      
+  //     <h6 class="text-center text-secondary mt-4 text-justify" > We are one step closer to finalizing the document. Please wait for the remaining signatories to complete their signatures.<br/><br/> The final singed pdf will be emailed to you once all signers have finished signing the document. </h6>
+
+  //     <!-- <h6 class="text-center mt-4">For More Information About EwSign  <a target="_blank" href="https://www.eruditeworks.com/ewsign/">Click Here</a> </h6>-->
+  //     </span>
+  //   </div>
+  // </div>`;
     localStorage.clear();
   } catch (e) {
     console.log("Failed to save PDF.");

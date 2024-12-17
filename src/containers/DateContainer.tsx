@@ -97,9 +97,11 @@ export const DateContainer: React.FC<Props> = ({
     <>
       {allDateElementDataSelector
         ? allDateElementDataSelector.map((item: any, i: number) => {
-            const formattedValue = item.value
-              ? moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY")
-              : "";
+          const formattedValue = item.value
+          ? moment(item.value, "MM-DD-YYYY").isValid()
+            ? moment(item.value, "MM-DD-YYYY").format("MM-DD-YYYY")
+            : ""
+          : "";        
   
             return (
               <DatePad

@@ -231,8 +231,8 @@ export const MenuBar: React.FC<Props> = ({
                   <DropdownItem onClick={() => handleDownloadPdf()}>
                   Download Unsigned Document
                   </DropdownItem>
-                  <DropdownItem onClick={handleViewDocument}>View Signed Documentt</DropdownItem> 
-                  <DropdownItem onClick={handleDownloadDocument}>Download Signed Document</DropdownItem> 
+                  {/* <DropdownItem onClick={handleViewDocument}>View Signed Documentt</DropdownItem>  */}
+                  {/* <DropdownItem onClick={handleDownloadDocument}>Download Signed Document</DropdownItem>  */}
 
                 </DropdownMenu>
               </Dropdown>
