@@ -77,9 +77,9 @@ export const DateContainer: React.FC<Props> = ({
       const value = e.target.value;
       console.log("value",value);
       const formatValue = value
-        ? moment(value, "YYYY-MM-DD").format("MM-DD-YYYY")
+        ? moment(value, "YYYY-MM-DD").format("DD-MM-YYYY")
         : "";
-
+        console.log("formatValue",formatValue);
       dispatch(
         changeDateData({
           elementIndex: targetElementIndex,
@@ -97,12 +97,7 @@ export const DateContainer: React.FC<Props> = ({
     <>
       {allDateElementDataSelector
         ? allDateElementDataSelector.map((item: any, i: number) => {
-          const formattedValue = item.value
-          ? moment(item.value, "MM-DD-YYYY").isValid()
-            ? moment(item.value, "MM-DD-YYYY").format("MM-DD-YYYY")
-            : ""
-          : "";        
-  
+            const formattedValue = item.value   ? moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY")   : "";
             return (
               <DatePad
                 key={i}

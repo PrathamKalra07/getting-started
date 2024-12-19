@@ -351,7 +351,7 @@ const InPersonSigningPage = () => {
           signatoryName: ele.signatoryName,
           signatoryUUID: ele.signatoryUUID,
           salesforce_org_id: ele.salesforce_org_id,
-          value: "",
+          value: ele.value,
           totalNoOfFields: ele.coordData.filter(
             (coordinate) => coordinate.fieldType !== "Checkbox"
           ).length,
@@ -389,6 +389,7 @@ const InPersonSigningPage = () => {
       );
       await fetchingUsersResources(signatoryUUID as string);
       const coordList = transformData(responseData);
+      console.log("@@@ coordList",coordList);
       dispatch(setCoordinateData({ allCoordinateData: coordList }));
       const finalData = sortData(firstSignatoryData);
       dispatch(

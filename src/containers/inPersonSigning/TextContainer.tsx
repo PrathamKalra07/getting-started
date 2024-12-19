@@ -37,6 +37,8 @@ export const TextContainer: React.FC<Props> = ({
     (state: RootState) =>
       state.inPerson.inPersonTextList.allTextData[currentPageNo]
   );
+
+  console.log("allTextElementDataSelector",JSON.stringify(allTextElementDataSelector));
   const reduxState = useSelector((state: RootState) => state);
 
   const dispatch = useDispatch();

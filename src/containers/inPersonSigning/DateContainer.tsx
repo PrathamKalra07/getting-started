@@ -52,24 +52,26 @@ export const DateContainer: React.FC<Props> = ({
     return () => {};
   }, [page]);
 
+  
+
   useEffect(() => {
-    console.log("@@@ DATE CONTAINER called....");
     const { coordsPagesWise } = fetchCoordsPageAndTypeWise(
       allCordinatesData,
       activeSignatory.value,
       "Date"
     );
-
+    
+    console.log("@@@ Fetched coordsPagesWise:", coordsPagesWise);
     dispatch(setDateData({ allDateData: coordsPagesWise }));
-    return () => {};
   }, [activeSignatory]);
+  
 
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
       const value = e.target.value;
 
       const formatValue = value
-        ? moment(value, "YYYY-MM-DD").format("MM-DD-YYYY")
+        ? moment(value, "YYYY-MM-DD").format("DD-MM-YYYY")
         : "";
 
       console.log(
@@ -101,17 +103,12 @@ export const DateContainer: React.FC<Props> = ({
     <>
       {allDateElementDataSelector
         ? allDateElementDataSelector.map((item: any, i: number) => {
-              const formattedValue = item.value
-                    ? moment(item.value, "MM-DD-YYYY").isValid()
-                      ? moment(item.value, "MM-DD-YYYY").format("MM-DD-YYYY")
-                      : ""
-                    : "";   
-  
+          const formattedValue = item.value   ? moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY")   : "";
             return (
               <DatePad
                 key={i}
                 {...item}
-                value={formattedValue}  
+                value={formattedValue || ""}  
                 handleTextChange={handleTextChange}
                 textElementIndex={item.index}
               />

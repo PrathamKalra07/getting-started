@@ -13,13 +13,13 @@ const transformData = (inputData) => {
           fieldId: coordData.fieldId,
           fieldType: coordData.fieldType,
           eleId: coordData.eleId,
-          value: "",
+          value: coordData.value,
           signatoryUUID: entry.signatoryUUID,
           signatoryName: entry.signatoryName,
         });
       }
     }
-    
+    console.log("transformedData",transformedData);
     return transformedData;
   }
 
