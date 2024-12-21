@@ -3,8 +3,12 @@ import axios from "axios";
 import { patchRequest, postRequest } from "helpers/axios";
 import { API_ROUTES } from "helpers/constants/apis";
 
+let uuid;
+let uuidTemplateInstance;
 const generateData = (tempState) => {
-  console.log("@@@ tempState: " + JSON.stringify(tempState));
+  uuid=tempState.basicInfoData.uuid;
+  uuidTemplateInstance=tempState.basicInfoData.uuidTemplateInstance;
+  console.log("@@@ tempState: "  + JSON.stringify(tempState));
   const { inPerson } = tempState;
   let coordinatesData = inPerson.inPersonCoordinatesList.allCoordinateData;
   const signatoryList = inPerson.inPersonCoordinatesList.signatoryList;
@@ -82,7 +86,24 @@ const savePdfDataToServer = async (tempState, tiUUID) => {
                 flex-direction: column;
             "
             >
-        
+              <!-- Download Button -->
+          <a href="https://ew-signpad.netlify.app/viewFinalPdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}"
+             target="_blank"
+             style="
+               position: absolute;  
+               top: 10px;
+               right: 10px;
+               background-color: #354259;
+               color: white;
+               padding: 10px 20px;
+               border-radius: 5px;
+               text-decoration: none;
+               font-weight: bold;
+             "
+          >
+            Preview Document
+          </a>
+
                 <div class="w-100 d-flex justify-content-center">
                 <svg height="100" width="100" viewBox="-2 -2 24.00 24.00" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-2" y="-2" width="24.00" height="24.00" rx="12" fill="#354259" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 5L8 15l-5-4"></path> </g></svg>
                 </div>

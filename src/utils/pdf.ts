@@ -192,7 +192,7 @@ export async function Save(pdfFile: File, tempState: any) {
                font-weight: bold;
              "
           >
-            Download Document
+            Preview Document
           </a>
     
           <div class="w-100 d-flex justify-content-center">

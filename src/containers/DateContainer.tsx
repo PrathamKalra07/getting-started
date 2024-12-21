@@ -71,27 +71,55 @@ export const DateContainer: React.FC<Props> = ({
     return () => {};
   }, [isFetchingCordinatesData]);
 
-  //
+  
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
       const value = e.target.value;
-      console.log("value",value);
-      const formatValue = value
-        ? moment(value, "YYYY-MM-DD").format("DD-MM-YYYY")
-        : "";
-        console.log("formatValue",formatValue);
-      dispatch(
-        changeDateData({
-          elementIndex: targetElementIndex,
-          textValue: formatValue,
-          currentPageNo: currentPageNo,
-          reduxState,
-        })
-      );
+      console.log("Entered value:", value);
+      
+      const parsedDate = moment(value, "YYYY-MM-DD", true);
+      console.log("Parsed Date (strict):", parsedDate);
+  
+      if (parsedDate.isValid()) {
+        const formatValue = parsedDate.format("DD-MM-YYYY");
+        console.log("Formatted Date:", formatValue);
+  
+        dispatch(
+          changeDateData({
+            elementIndex: targetElementIndex,
+            textValue: formatValue,
+            currentPageNo: currentPageNo,
+            reduxState,
+          })
+        );
+      } else {
+        console.log("Invalid date entered:", value);
+      }
     } catch (err) {
-      console.log(err);
+      console.log("Error in handleTextChange:", err);
     }
   };
+  
+  // const handleTextChange = (e: any, targetElementIndex: number) => {
+  //   try {
+  //     const value = e.target.value;
+  //     console.log("value",value);
+  //     const formatValue = value
+  //       ? moment(value, "YYYY-MM-DD").format("DD-MM-YYYY")
+  //       : "";
+  //       console.log("formatValue",formatValue);
+  //     dispatch(
+  //       changeDateData({
+  //         elementIndex: targetElementIndex,
+  //         textValue: formatValue,
+  //         currentPageNo: currentPageNo,
+  //         reduxState,
+  //       })
+  //     );
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   return (
     <>
