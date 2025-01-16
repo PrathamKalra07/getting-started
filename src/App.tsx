@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { Container } from "semantic-ui-react";
+import {disableReactDevTools} from "@fvilers/disable-react-devtools"
 
 //
 import { MenuBar } from "./components/MenuBar";
@@ -376,12 +377,50 @@ const App: React.FC = () => {
     return () => {};
   }, [elementsNavigationData]);
 
+
+  // useEffect(() => {
+  //   disableReactDevTools();
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     if (
+  //       event.key === "F12" ||
+  //       (event.ctrlKey && event.shiftKey && (event.key === "I" || event.key === "C" || event.key === "J" || event.key === "K")) ||
+  //       (event.ctrlKey && event.key === "U")
+  //     ) {
+  //       event.preventDefault();
+  //     }
+  //   };
+  
+  //   const handleContextMenu = (event: MouseEvent) => {
+  //     event.preventDefault();
+  //   };
+  
+  //   const handleResize = () => {
+  //     if (
+  //       window.outerWidth - window.innerWidth > 100 || 
+  //       window.outerHeight - window.innerHeight > 100 
+  //     ) {
+  //       // window.location.reload(); 
+  //     }
+  //   };
+  
+  //   window.addEventListener("keydown", handleKeyDown);
+  //   window.addEventListener("contextmenu", handleContextMenu);
+  //   window.addEventListener("resize", handleResize);
+  
+  //   return () => {
+  //     window.removeEventListener("keydown", handleKeyDown);
+  //     window.removeEventListener("contextmenu", handleContextMenu);
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
+  
+
   useEffect(() => {
     if (elementsNavigationData.activeElementCoordinateId > 0) {
       const indexNoList: Array<number> = [];
 
       const currentPageElements = allCoordinateDataWithCordinates.filter(
-        (item: any, index: number) => {
+        (item: any, index: number) => { 
           if (item.pageNo == pageIndex) {
             indexNoList.push(index);
 
@@ -675,7 +714,22 @@ const App: React.FC = () => {
             uuid_signatory: signatoryUniqUUID,
             uuid_template_instance: uuidTemplateInstance,
           });
-          console.log("calling track....");
+          console.log("calling track....",JSON.stringify(responseData));
+
+          const expiryDate = responseData?.expiryDate;
+          if (expiryDate) {
+            const currentDate = new Date();
+            const expiryDateObj = new Date(expiryDate);
+      
+            if (currentDate > expiryDateObj) {
+              const msg: string = "Sorry, the document has expired.";
+              setUserErrorMsg(msg);
+              setIsAlreadySign(true);
+              localStorage.clear();
+              return;
+            }
+          }
+          
       await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
     } catch (err: any) {   
 
