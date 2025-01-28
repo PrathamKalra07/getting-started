@@ -233,6 +233,42 @@ const InPersonSigningPage = () => {
     return () => {};
   }, [elementsNavigationData]);
 
+  //  useEffect(() => {
+  //     const handleKeyDown = (event: KeyboardEvent) => {
+  //       if (
+  //         event.key === "F12" ||
+  //         (event.ctrlKey && event.shiftKey && (event.key === "I" || event.key === "C" || event.key === "J" || event.key === "K")) ||
+  //         (event.ctrlKey && event.key === "U")
+  //       ) {
+  //         event.preventDefault();
+  //       }
+  //     };
+    
+  //     const handleContextMenu = (event: MouseEvent) => {
+  //       event.preventDefault();
+  //     };
+    
+  //     const handleResize = () => {
+  //       if (
+  //         window.outerWidth - window.innerWidth > 100 || 
+  //         window.outerHeight - window.innerHeight > 100 
+  //       ) {
+  //         window.close();
+  //       }
+  //     };
+    
+  //     window.addEventListener("keydown", handleKeyDown);
+  //     window.addEventListener("contextmenu", handleContextMenu);
+  //     window.addEventListener("resize", handleResize);
+    
+  //     return () => {
+  //       window.removeEventListener("keydown", handleKeyDown);
+  //       window.removeEventListener("contextmenu", handleContextMenu);
+  //       window.removeEventListener("resize", handleResize);
+  //     };
+  //   }, []);
+    
+
   useEffect(() => {
     if (elementsNavigationData.activeElementCoordinateId > 0) {
       const indexNoList: Array<number> = [];
