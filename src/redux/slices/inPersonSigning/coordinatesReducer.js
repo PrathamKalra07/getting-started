@@ -44,19 +44,19 @@ export const coordinatesSlice = createSlice({
     },
 
     updateCoordinateData: (state, action) => {
+      console.log('@@@ action.payload::'+JSON.stringify(action.payload));
       const { signatoryUUID, eleId, newValue } = action.payload;
-      console.log("updateCoordinateData",action.payload);
-      console.log("state.allCoordinateData",state.allCoordinateData);
-      console.log("eleId",eleId);
+      console.log('state.allCoordinateData: '+ JSON.stringify(state.allCoordinateData));
+      console.log('eleId: '+ JSON.stringify(eleId));
+      console.log('newValue: '+ JSON.stringify(newValue));
       state.allCoordinateData = updateValueByEleId(
         state.allCoordinateData,
         eleId,
         newValue
       );
+      console.log('state.allCoordinateData: '+ JSON.stringify(state.allCoordinateData));
 
-      console.log('state.allCoordinateData: '+ state.allCoordinateData);
-      console.log('before updatedSignatoryList: '+ signatoryUUID);
-      console.log('before updatedSignatoryList: '+ JSON.stringify(state));
+
       const updatedSignatoryList = fetchAllElementsStatus(signatoryUUID, state);
       console.log('updatedSignatoryList: '+ JSON.stringify(updatedSignatoryList));
       state.signatoryList = updatedSignatoryList;

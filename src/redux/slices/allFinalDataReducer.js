@@ -47,12 +47,12 @@ export const allFinalDataSlice = createSlice({
       state.completedNoOfFields = totalDoneElements;
     });
     //
-    builder.addCase(changeCheckboxData.type, (state, action) => {
-      const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
-      const { totalDoneElements } = FetchAllElementsStatus(action.payload);
+    // builder.addCase(changeCheckboxData.type, (state, action) => {
+    //   const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
+    //   const { totalDoneElements } = FetchAllElementsStatus(action.payload);
 
-      state.completedNoOfFields = totalDoneElements;
-    });
+    //   state.completedNoOfFields = totalDoneElements;
+    // });
   },
 });
 
