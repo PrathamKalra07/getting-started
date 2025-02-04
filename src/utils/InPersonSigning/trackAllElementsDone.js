@@ -1,12 +1,17 @@
 const fetchAllElementsStatus = (signatoryUUID, allCoordinatesState) => {
     const updatedSignatoryList = allCoordinatesState.signatoryList.map(signatory => {
+        console.log('@@@ signatory::'+ JSON.stringify(signatory));
         
         if (signatory.signatoryUUID === signatoryUUID) {
             
-            let completedFields = allCoordinatesState.allCoordinateData.filter(coordinate => {
+            const completedFieldsList = allCoordinatesState.allCoordinateData.filter(coordinate => {
+                console.log('@@@ coordinate::'+ JSON.stringify(coordinate));
+
                 return coordinate.signatoryUUID === signatoryUUID && coordinate.fieldType !== 'Checkbox' && coordinate.value !== '';
-            }).length;
+            });
             
+            let completedFields = completedFieldsList ? completedFieldsList.length : 0;
+
             if(signatory.value !== "") {
                 for (const item of allCoordinatesState.activeSignatoriesCoordinateData) {
                     if (item.fieldType === 'Signature') {

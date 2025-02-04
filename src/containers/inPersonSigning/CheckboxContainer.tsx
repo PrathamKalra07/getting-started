@@ -36,6 +36,7 @@ export const CheckboxContainer: React.FC<Props> = ({
       state.inPerson.inPersonCheckboxList.allCheckboxData[currentPageNo]
   );
 
+  console.log('@@@ allCheckboxElementDataSelector::'+JSON.stringify(allCheckboxElementDataSelector));
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -66,7 +67,7 @@ export const CheckboxContainer: React.FC<Props> = ({
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
       const value = e.target.checked;
-
+      console.log('@@@ checkbox...'+value);
       dispatch(
         changeCheckboxData({
           elementIndex: targetElementIndex,
@@ -74,6 +75,7 @@ export const CheckboxContainer: React.FC<Props> = ({
           currentPageNo: currentPageNo,
         })
       );
+
       dispatch(
         updateCoordinateData({
           signatoryUUID: activeSignatory.value,
@@ -95,7 +97,7 @@ export const CheckboxContainer: React.FC<Props> = ({
                 key={i}
                 {...item}
                 handleTextChange={handleTextChange}
-                textElementIndex={item.eleId}
+                textElementIndex={item.id}
               />
             );
           })

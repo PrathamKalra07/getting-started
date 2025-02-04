@@ -100,7 +100,7 @@ export const TextContainer: React.FC<Props> = ({
                 key={i}
                 {...item}
                 handleTextChange={handleTextChange}
-                textElementIndex={item.eleId}
+                textElementIndex={item.id}
               />
             );
           })

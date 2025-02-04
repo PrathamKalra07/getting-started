@@ -16,13 +16,14 @@ export const checkboxSlice = createSlice({
 
       state.allCheckboxData[currentPageNo] = tempData.map((item) => {
         if (elementIndex === item.id) {
-          return {
+          item = {
             ...item,
             value: textValue,
           };
         }
         return item;
       });
+      console.log('@@@ state.allCheckboxData::'+ JSON.stringify(state.allCheckboxData));
     },
   },
 });
