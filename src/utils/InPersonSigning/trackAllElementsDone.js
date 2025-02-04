@@ -1,8 +1,7 @@
 const fetchAllElementsStatus = (signatoryUUID, allCoordinatesState) => {
     const updatedSignatoryList = allCoordinatesState.signatoryList.map(signatory => {
-        
         if (signatory.signatoryUUID === signatoryUUID) {
-            
+            console.log(" Inside fetchAllElement");
             let completedFields = allCoordinatesState.allCoordinateData.filter(coordinate => {
                 return coordinate.signatoryUUID === signatoryUUID && coordinate.fieldType !== 'Checkbox' && coordinate.value !== '';
             }).length;

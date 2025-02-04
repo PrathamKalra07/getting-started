@@ -45,12 +45,18 @@ export const coordinatesSlice = createSlice({
 
     updateCoordinateData: (state, action) => {
       const { signatoryUUID, eleId, newValue } = action.payload;
-      console.log('action.payload: '+ JSON.stringify(action.payload));
+      console.log("updateCoordinateData",action.payload);
+      console.log("state.allCoordinateData",state.allCoordinateData);
+      console.log("eleId",eleId);
       state.allCoordinateData = updateValueByEleId(
         state.allCoordinateData,
         eleId,
         newValue
       );
+
+      console.log('state.allCoordinateData: '+ state.allCoordinateData);
+      console.log('before updatedSignatoryList: '+ signatoryUUID);
+      console.log('before updatedSignatoryList: '+ JSON.stringify(state));
       const updatedSignatoryList = fetchAllElementsStatus(signatoryUUID, state);
       console.log('updatedSignatoryList: '+ JSON.stringify(updatedSignatoryList));
       state.signatoryList = updatedSignatoryList;
