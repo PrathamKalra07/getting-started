@@ -47,7 +47,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "rmdir /s build && react-scripts build || react-scripts build",
+    "build": "rmdir /s build && react-scripts build",
+    "dev-build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

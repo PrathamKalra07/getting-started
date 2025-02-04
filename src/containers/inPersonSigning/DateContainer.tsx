@@ -37,7 +37,7 @@ export const DateContainer: React.FC<Props> = ({
     (state: RootState) =>
       state.inPerson.inPersonDateList.allDateData[currentPageNo]
   );
-
+  console.log('@@@ allDateElementDataSelector::'+JSON.stringify(allDateElementDataSelector));
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -78,6 +78,7 @@ export const DateContainer: React.FC<Props> = ({
         "@@@ DATE CONTAINER targetElementIndex...." + targetElementIndex
       );
       console.log("@@@ DATE CONTAINER formatValue...." + formatValue);
+      console.log('@@@ state.allCoordinateData::'+allCordinatesData);
 
       dispatch(
         changeDateData({
@@ -110,7 +111,7 @@ export const DateContainer: React.FC<Props> = ({
                 {...item}
                 value={formattedValue || ""}  
                 handleTextChange={handleTextChange}
-                textElementIndex={item.index}
+                textElementIndex={item.id}
               />
             );
           })

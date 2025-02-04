@@ -71,9 +71,9 @@ export const TextPad = ({
               elementsNavigationHelperState.activeElementCoordinateId ===
               coordinateId
                 ? "active-data-container-input-text"
-                : textInputValue
+                : (textInputValue
                 ? "filled-data-container-input-text"
-                : "empty-data-container-input-text"
+                : "empty-data-container-input-text")
             }
           `}
           />

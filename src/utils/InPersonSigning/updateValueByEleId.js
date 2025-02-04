@@ -1,10 +1,11 @@
 const updateValueByEleId = (dataList, eleId, newValue) => {
-  for (const data of dataList) {
+  return dataList.map(data => {
+    console.log('@@@ data::'+ JSON.stringify(data));
     if (data.eleId === eleId) {
       data.value = newValue;
-      return dataList;
     }
-  }
+    return data;
+  }) 
 }
 
 export { updateValueByEleId };
