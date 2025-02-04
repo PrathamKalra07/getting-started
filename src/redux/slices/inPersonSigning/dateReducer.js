@@ -12,7 +12,6 @@ export const dateSlice = createSlice({
     },
     changeDateData: (state, action) => {
       const { elementIndex, textValue, currentPageNo } = action.payload;
-      console.log("changeDateData",action.payload);
       const tempData = current(state.allDateData)[currentPageNo];
 
       state.allDateData[currentPageNo] = tempData.map((item) => {
@@ -24,7 +23,6 @@ export const dateSlice = createSlice({
         }
         return item;
       });
-      console.log('@@@ state.allDateData::'+state.allDateData);
     },
   },
 });
