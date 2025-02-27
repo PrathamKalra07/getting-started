@@ -31,7 +31,7 @@ const FetchAllElementsStatus = (allPayload) => {
 
     dateData[i] &&
       dateData[i].map((item) => {
-        if (item.isRequired) {
+        if (item.isRequired && item.value !== "Invalid date") {
           if (
             allPayload.textValue.length > 0 &&
             item.index === allPayload.elementIndex
@@ -58,14 +58,16 @@ const FetchAllElementsStatus = (allPayload) => {
   }
 
   allCoordinateData.map((item, i) => {
-    if (
-      item.fieldType === "Signature" &&
-      allPayload.isSignature &&
-      allPayload.encodedImgData.length > 0
-    ) {
-      listOfCompletedElements.push("sign" + i);
-    } else if (item.fieldType === "Signature" && encodedImgData.length > 0) {
-      listOfCompletedElements.push("sign" + i);
+    if(item.isRequired){
+      if (
+        item.fieldType === "Signature" &&
+        allPayload.isSignature &&
+        allPayload.encodedImgData.length > 0
+      ) {
+        listOfCompletedElements.push("sign" + i);
+      } else if (item.fieldType === "Signature" && encodedImgData.length > 0) {
+        listOfCompletedElements.push("sign" + i);
+      } 
     }
   });
 

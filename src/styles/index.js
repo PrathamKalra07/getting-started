@@ -5,3 +5,4 @@ import "./drawingmodal.css";
 import "./pdfviewer.css";
 import "./pageStyle.css";
 import "./thankyou.css";
+import "./reject.css";

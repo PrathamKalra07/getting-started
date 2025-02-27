@@ -182,32 +182,36 @@ const App: React.FC = () => {
         justify-content:center;
       "
     >
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          width: 90vw;
-          flex-direction: column;
-        "
-      >
-  
-          <div class="w-100 d-flex justify-content-center">
-              <svg height="100" width="100" fill="#ffffff" viewBox="-3.6 -3.6 31.20 31.20" id="Layer_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-3.6" y="-3.6" width="31.20" height="31.20" rx="15.6" fill="#354259" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" strokeLinejoin="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M18,18c-0.55,0-1,0.45-1,1v1H6V4h6v5c0,0.55,0.45,1,1,1h4v1c0,0.55,0.45,1,1,1s1-0.45,1-1V9c0-0.13-0.03-0.25-0.07-0.37 c-0.02-0.04-0.04-0.08-0.07-0.11c-0.03-0.05-0.05-0.11-0.09-0.16l-5-6c-0.01-0.01-0.02-0.02-0.03-0.03 c-0.07-0.07-0.15-0.13-0.23-0.18c-0.03-0.02-0.06-0.05-0.1-0.06C13.28,2.03,13.15,2,13,2H5C4.45,2,4,2.45,4,3v18c0,0.55,0.45,1,1,1 h13c0.55,0,1-0.45,1-1v-2C19,18.45,18.55,18,18,18z M14,5.76L15.86,8H14V5.76z"></path><path d="M8,10h2c0.55,0,1-0.45,1-1s-0.45-1-1-1H8C7.45,8,7,8.45,7,9S7.45,10,8,10z"></path><path d="M13,11H8c-0.55,0-1,0.45-1,1s0.45,1,1,1h5c0.55,0,1-0.45,1-1S13.55,11,13,11z"></path><path d="M13,14H8c-0.55,0-1,0.45-1,1s0.45,1,1,1h5c0.55,0,1-0.45,1-1S13.55,14,13,14z"></path><path d="M13,17H8c-0.55,0-1,0.45-1,1s0.45,1,1,1h5c0.55,0,1-0.45,1-1S13.55,17,13,17z"></path><path d="M20.71,12.29c-0.39-0.39-1.02-0.39-1.41,0L18,13.59l-1.29-1.29c-0.39-0.39-1.02-0.39-1.41,0s-0.39,1.02,0,1.41L16.59,15 l-1.29,1.29c-0.39,0.39-0.39,1.02,0,1.41s1.02,0.39,1.41,0L18,16.41l1.29,1.29C19.49,17.9,19.74,18,20,18s0.51-0.1,0.71-0.29 c0.39-0.39,0.39-1.02,0-1.41L19.41,15l1.29-1.29C21.1,13.32,21.1,12.68,20.71,12.29z"></path></g></svg>
-          </div>
-  
-        <span class="my-5">
-        
-        <h4 class="text-center"><b>Oops! you have rejected signature</b></h4>
-        
-        <h6 class="text-center text-secondary mt-4 text-justify" >
+      <div class="parent-container-reject">
+      <div class="child-container-reject">
+        <div class="img-container-reject">
+          <img
+            src="/reject.svg"
+            alt="reject svg"
+            class="img-size-reject"
+          />
+          <p class="congrats-text-reject">
+          Oops! you have rejected signature
+          </p>
+          <p class="closer-text-reject">
           We regret to see that you had rejected for signature. If this happens by mistake then please notify admin.
-        </h6>
-  
-        <!-- <h6 class="text-center mt-4">For More Information About EwSign  <a target="_blank" href="https://www.eruditeworks.com/ewsign/">Click Here</a> </h6>-->
-        </span>
+          </p>
+        </div>
+
+        <div class="footer-parent-reject">
+          <div class="footer-child-reject">
+            <span>Learn more about </span>
+            <a
+              href="https://www.eruditeworks.com/ew-sign/demo/"
+              class="span-one"
+            >
+              EWSIGN
+            </a>
+          </div>
+        </div>
       </div>
+    </div>
+   
     </div>`;
     } catch (err) {
       console.log(err);
@@ -497,9 +501,9 @@ const App: React.FC = () => {
       let completedFieldCount = 0;
       if (Object.keys(recordData).length > 0) {
         coord = coord.map((item) => {
-          if (item.value !== "") {
-            completedFieldCount += 1;
-          }
+          // if (item.value !== "") {
+          //   completedFieldCount += 1;
+          // }
           if (
             item.isUpdateFromSalesforce &&
             item.mappingField &&
@@ -509,6 +513,9 @@ const App: React.FC = () => {
               recordData.hasOwnProperty(item.mappingField) &&
               recordData[item.mappingField] != null
             ) {
+              if(item.fieldType !== "Checkbox") {
+                completedFieldCount += 1;
+              }
               item.value =
                 item.fieldType === "Date"
                   ? moment(recordData[item.mappingField], "YYYY-MM-DD").format(

@@ -395,6 +395,7 @@ const DocumentViewer = ({
   handleDownloadDocument: () => void;
 }) => {
   const [numPages, setNumPages] = useState(0);
+  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const zoomContainerRef = useRef<any>(null);
 
   const zoomControl = (operation: string) => {
@@ -444,11 +445,19 @@ const DocumentViewer = ({
             <i className="fa-solid fa-print cursor-pointer"></i>
           </span>
         </div>
-        <div className="d-flex justify-content-center print-document-main-container">
+        <div 
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "5px",
+          padding: "10px",
+        }}>
           <TransformWrapper
             maxScale={3}
             initialScale={1}
             disablePadding
+            wheel={{ disabled: true }}
+            // disabled={deviceWidth <= 600}
             ref={zoomContainerRef}
           >
             <TransformComponent>
@@ -460,10 +469,10 @@ const DocumentViewer = ({
                 renderMode="canvas"
               >
                 {[...Array(numPages)].map((_, index) => (
-                  <div key={index} className="m-0 p-0 mb-5 my-3">
+                  <div key={index} className="page-div-signed">
                     <Page
                       pageNumber={index + 1}
-                      className="border animated-document-page"
+                      className="page-section-signed"
                     />
                     <div style={{ textAlign: "right" }} className="fw-bold">
                       {index + 1} of {numPages}
@@ -522,18 +531,19 @@ const PdfViewer = ({
 
 
   return (
+    
     <Modal
       isOpen={isPdfViewerOpen}
       onClosed={() => setIsPdfViewerOpen(false)}
       centered
-      className="modal-container"
+      // className="modal-container"
       toggle={() => setIsPdfViewerOpen(false)}
       fade={false}
       // size={"xl"}
       fullscreen
     >
       {/* <ModalHeader>Total Pages :- {numPages === 0 ? "" : numPages}</ModalHeader> */}
-      <ModalBody className="">
+      <ModalBody>
         <div
           className="pdfviewer-header d-flex justify-content-center gap-3 py-2 text-light mb-2"
           style={{
@@ -583,25 +593,30 @@ const PdfViewer = ({
           >
             <TransformComponent>
               <Document
-                file={pdfLiveUrl}
-                onLoadSuccess={({ numPages }) => {
-                  setNumPages(numPages);
-                }}
-                renderMode="canvas"
+          file={pdfLiveUrl}
+          onLoadSuccess={({ numPages }) => {
+            setNumPages(numPages);
+          }}
+          renderMode="canvas"
+          // style={{ overflowX: "scroll" }}
               >
-                {[...Array(numPages)].map((_, index) => {
-                  return (
-                    <div key={index} className="m-0 p-0 mb-5 my-3">
-                      <Page
-                        pageNumber={index + 1}
-                        className="border animated-pdf-page"
-                      />
-                      <div style={{ textAlign: "right" }} className="fw-bold">
-                        {index + 1} of {numPages}
-                      </div>
-                    </div>
-                  );
-                })}
+          {[...Array(numPages)].map((_, index) => {
+            return (
+              <div key={index} 
+              className="page-div"
+              // className="m-0 p-0 mb-5 my-3"
+              >
+                <Page
+                pageNumber={index + 1}
+                className="page-section"
+                // style={{ overflowX: "scroll" }}
+                />
+                <div style={{ textAlign: "right" }} className="fw-bold">
+            {index + 1} of {numPages}
+                </div>
+              </div>
+            );
+          })}
               </Document>
             </TransformComponent>
           </TransformWrapper>

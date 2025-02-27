@@ -77,17 +77,17 @@ export const DateContainer: React.FC<Props> = ({
       const value = e.target.value;
       console.log("Entered value:", value);
       
-      const parsedDate = moment(value, "YYYY-MM-DD", true);
-      console.log("Parsed Date (strict):", parsedDate);
+      // const parsedDate = moment(value, "YYYY-MM-DD", true);
+      // console.log("Parsed Date (strict):", parsedDate);
   
-      if (parsedDate.isValid()) {
-        const formatValue = parsedDate.format("DD-MM-YYYY");
-        console.log("Formatted Date:", formatValue);
+      if (value) {
+        const formattedValue = value   ? moment(value, "YYYY-MM-DD").format("MM-DD-YYYY")   : "";
+       console.log("formated",formattedValue);
   
         dispatch(
           changeDateData({
             elementIndex: targetElementIndex,
-            textValue: formatValue,
+            textValue: formattedValue,
             currentPageNo: currentPageNo,
             reduxState,
           })
@@ -125,12 +125,14 @@ export const DateContainer: React.FC<Props> = ({
     <>
       {allDateElementDataSelector
         ? allDateElementDataSelector.map((item: any, i: number) => {
-            const formattedValue = item.value   ? moment(item.value, "DD-MM-YYYY").format("MM-DD-YYYY")   : "";
+        //   const formattedValue = item.value   ? item.value
+        //   : moment(item.value, "MM-DD-YYYY").format("DD-MM-YYYY");
+        //  console.log("formattedValue",formattedValue);
             return (
               <DatePad
                 key={i}
                 {...item}
-                value={formattedValue}  
+                value={item.value}  
                 handleTextChange={handleTextChange}
                 textElementIndex={item.index}
               />

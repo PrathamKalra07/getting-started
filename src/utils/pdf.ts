@@ -181,7 +181,7 @@ export async function Save(pdfFile: File, tempState: any) {
      </a>
       </div>
         <div class="img-container">
-          <img src="../assets/img/thankyou.png'" alt="Thank You Illustration" class="img-size"/>
+          <img src="/thankyou.png" alt="Thank You Illustration" class="img-size"/>
           <p class="congrats-text">
             Congratulations! You have successfully completed the signature.
           </p>
