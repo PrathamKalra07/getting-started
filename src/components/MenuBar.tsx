@@ -78,7 +78,7 @@ export const MenuBar: React.FC<Props> = ({
       const { uuid, uuidTemplateInstance, salesforceOrgId } = basicInfoData;
   
       // Set the URLs
-      const newPdfLiveUrl = `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`;
+      const newPdfLiveUrl = `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
       const newDocumentLiveUrl = `${process.env.REACT_APP_API_URL}/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
       
       setPdfLiveUrl(newPdfLiveUrl);
