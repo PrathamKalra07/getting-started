@@ -1,7 +1,7 @@
 const transformData = (inputData) => {
     const transformedData = [];
     
-    for (const entry of inputData) {
+    for (const entry of inputData.coord) {
       for (const coordData of entry.coordData) {
         transformedData.push({
           coordinateId: coordData.coordinateId,

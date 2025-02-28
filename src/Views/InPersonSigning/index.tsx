@@ -377,7 +377,7 @@ const InPersonSigningPage = () => {
         totalNoOfFields: number;
         completedNoOfFields: number;
       }[] = [];
-      responseData.forEach((ele) => {
+      responseData.coord.forEach((ele) => {
         tempSignatories.push({
           label: ele.signatoryName,
           value: ele.signatoryUUID,
@@ -399,10 +399,10 @@ const InPersonSigningPage = () => {
       setSignatories(tempSignatories);
       dispatch(setSingatoryList({ signatoryList: signatoryList }));
 
-      const firstSignatoryData = responseData[0].coordData;
-      const signatoryUUID = responseData[0].signatoryUUID;
-      const signatoryName = responseData[0].signatoryName;
-      const salesforceOrgId = responseData[0].salesforceOrgId;
+      const firstSignatoryData = responseData.coord[0].coordData;
+      const signatoryUUID = responseData.coord[0].signatoryUUID;
+      const signatoryName = responseData.coord[0].signatoryName;
+      const salesforceOrgId = responseData.coord[0].salesforceOrgId;
       localStorage.setItem("signatoryUUID", signatoryUUID);
       localStorage.setItem("signatoryName", signatoryName);
 
@@ -441,10 +441,13 @@ const InPersonSigningPage = () => {
       console.log(err.response);
 
       if (
-        err.response.data.msg.toLowerCase() ==
+        err.response?.data.msg.toLowerCase() ==
         "Sorry Your Signature Is Already Done".toLowerCase()
       ) {
         setIsAlreadySign(true);
+      }
+      else{
+        console.error('Unexpected Error : ',err);
       }
     }
   };
