@@ -526,9 +526,10 @@ const App: React.FC = () => {
               item.value = item.fieldType === "Checkbox" ? false : "";
             }
           } 
-          // else if (item.fieldType === "Date") {
-          //   item.value = moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY");
-          // }
+          else if (item.fieldType === "Date") {
+            item.value = moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY");
+            completedFieldCount += 1;
+          }
           return item;
         });
 

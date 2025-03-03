@@ -52,7 +52,7 @@ export const DateContainer: React.FC<Props> = ({
     if (allCordinatesData) {
       //
       allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType == "Date") {
+        if (item.fieldType === "Date") {
           console.log("date",item.value);
           if (!dateDataPagesWise[item.pageNo]) {
             dateDataPagesWise[item.pageNo] = [];
