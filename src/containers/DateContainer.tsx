@@ -53,7 +53,7 @@ export const DateContainer: React.FC<Props> = ({
       //
       allCordinatesData.map((item: any, i: number) => {
         if (item.fieldType === "Date") {
-          console.log("date",item.value);
+          console.log("dateee",item.value);
           if (!dateDataPagesWise[item.pageNo]) {
             dateDataPagesWise[item.pageNo] = [];
           }
@@ -81,7 +81,7 @@ export const DateContainer: React.FC<Props> = ({
       // console.log("Parsed Date (strict):", parsedDate);
   
       if (value) {
-        const formattedValue = value   ? moment(value, "YYYY-MM-DD").format("MM-DD-YYYY")   : "";
+        const formattedValue = value   ? moment(value, "YYYY-MM-DD").format("DD-MM-YYYY")   : "";
        console.log("formated",formattedValue);
   
         dispatch(
