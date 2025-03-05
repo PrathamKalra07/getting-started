@@ -14,6 +14,7 @@ const transformData = (inputData) => {
           fieldType: coordData.fieldType,
           eleId: coordData.eleId,
           value: coordData.value,
+          isRequired : coordData.isRequired,
           signatoryUUID: entry.signatoryUUID,
           signatoryName: entry.signatoryName,
         });

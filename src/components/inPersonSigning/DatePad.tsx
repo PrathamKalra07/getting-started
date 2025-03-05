@@ -34,6 +34,9 @@ export const DatePad = ({
     (state: RootState) => state.elementsNavigationHelper
   );
 
+  console.log("textInputValue Datepad", textInputValue);
+  
+
   return (
     <>
       <div
@@ -53,7 +56,7 @@ export const DatePad = ({
           placeholder="Enter Data Here..."
           style={{ height: height, width: width }}
           onChange={(e) => handleTextChange(e, textElementIndex)}
-          value={moment(textInputValue, "MM-DD-YYYY").format("YYYY-MM-DD")}
+          value={moment(textInputValue, "DD-MM-YYYY").format("YYYY-MM-DD")}
           type="date"
           // className="form-control"
           className={`${

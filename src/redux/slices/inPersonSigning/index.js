@@ -9,6 +9,7 @@ import inPersonDateReducer from "./dateReducer";
 import inPersonCheckboxReducer from "./checkboxReducer";
 import inPersonCoordinatesReducer from "./coordinatesReducer";
 import inPersonElementsNavigationHelperReducer from "./elementsNavigationHelperReducer";
+import allFinalDataReducer from "./allFinalDataReducer";
 import inPersonBasicInfoReducer from "./basicInfoReducer";
 
 const rootReducer = combineReducers({
@@ -22,5 +23,6 @@ const rootReducer = combineReducers({
   inPersonCoordinatesList: inPersonCoordinatesReducer,
   inPersonElementsNavigationHelper: inPersonElementsNavigationHelperReducer,
   inPersonBasicInfoData: inPersonBasicInfoReducer,
+  allFinalDataReducer: allFinalDataReducer
 });
 export default rootReducer;

@@ -20,6 +20,8 @@ export const coordinatesSlice = createSlice({
     },
     setSingatoryList: (state, action) => {
       const { signatoryList } = action.payload;
+      console.log('signatory List ' + JSON.stringify(signatoryList));
+      
       state.signatoryList = signatoryList;
     },
     updateSignatorySignatureValue: (state, action) => {

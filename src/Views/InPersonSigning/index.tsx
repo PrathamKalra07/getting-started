@@ -1,4 +1,5 @@
 import { useState, useLayoutEffect, useEffect, useRef } from "react";
+import _ from "lodash";
 import { AxiosResponse } from "axios";
 import "semantic-ui-css/semantic.min.css";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -29,7 +30,7 @@ import {
 import { setUserData } from "redux/slices/externalUserReducer";
 import { setAllPreviousSignatures } from "redux/slices/inPersonSigning/signatureReducer";
 import Loading from "components/Common/Loading";
-
+import { setTotalNoOfFields, setCompletedNoOfFields } from "redux/slices/inPersonSigning/allFinalDataReducer";
 //
 // import { setTotalNoOfFields } from "redux/slices/inPersonSigning/allFinalDataReducer";
 import {
@@ -48,6 +49,7 @@ import { API_ROUTES } from "helpers/constants/apis";
 import { getRequest, postRequest } from "helpers/axios";
 //
 import { RootState } from "redux/store";
+import moment from "moment";
 
 const InPersonSigningPage = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
@@ -81,6 +83,9 @@ const InPersonSigningPage = () => {
     (state: RootState) =>
       state.inPerson.inPersonCoordinatesList.allCoordinateData
   );
+
+  console.log("allCoordinateDataWithCordinates: " + JSON.stringify(allCoordinateDataWithCordinates));
+  
 
   const activeSignatoriesCoordinateData = useSelector(
     (state: RootState) =>
@@ -209,6 +214,8 @@ const InPersonSigningPage = () => {
     }
   };
 
+ 
+// 
   // ******************** //
   //      USE EFFECT      //
   // ******************** //
@@ -324,7 +331,7 @@ const InPersonSigningPage = () => {
   }, [currentPage]);
 
   // here x value change container direction !!!!!!!!!!
-
+  const finalData: Array<any> = [];
   const sortData = (originalData) => {
     const sortedCoordinateData: any = [
       ...(new Set(
@@ -334,7 +341,7 @@ const InPersonSigningPage = () => {
       ) as any),
     ];
 
-    const finalData: Array<any> = [];
+    
 
     sortedCoordinateData.map((currentPageNo: number) => {
       const data = originalData.filter(
@@ -347,8 +354,13 @@ const InPersonSigningPage = () => {
       finalData.push(...t);
     });
 
+    console.log("finalData: " + JSON.stringify(finalData));
+    
+
     return finalData;
   };
+
+
 
   const fetchingCordinates = async (
     uuid: string,
@@ -364,8 +376,125 @@ const InPersonSigningPage = () => {
       );
 
       console.log("@@@ responseData: " + JSON.stringify(responseData));
-
+      console.log("@@@ responseData length: " + JSON.stringify(responseData.length));
+      
       dispatch(setFullData({ data: responseData }));
+
+      let coord = _.cloneDeep(responseData.coord[0].coordData);;
+      console.log('coordd data' + JSON.stringify(coord));
+      const recordData = responseData.recordData;
+      console.log('record data' + JSON.stringify(recordData));
+      
+      console.log("Is coord frozen?", Object.isFrozen(coord));
+      console.log("Is coordData frozen?", Object.isFrozen(responseData.coord[0].coordData));
+
+
+      let completedFieldCount = 0;
+      let totalRequiredFields = 0;
+
+
+      // if(coord && coord.length > 0){
+      //   coord.forEach(element => {
+      //     if(element.isRequired){
+      //       totalRequiredFields++;
+
+      //       if(Object.keys(recordData).length > 0){
+      //         coord.forEach(element => {
+      //           if(element.isUpdateFromSalesforce && element.mappingField && element.mappingField !== ""){
+      //             if(recordData.hasOwnProperty(element.mappingField) && recordData[element.mappingField] != null){
+      //               if(element.fieldType !== 'Checkbox' && element.value !== ''){
+      //                 console.log('before completedFieldCount increament: ',completedFieldCount, element.value);
+                      
+      //                 completedFieldCount += 1;
+
+      //                 console.log('after completedFieldCount increament: ',completedFieldCount, element.value);
+      //               }
+      //             }
+      //             element.value = element.fieldType === 'Date' ? moment(recordData[element.mappingField]).format('YYYY-MM-DD') : recordData[element.mappingField];
+      //           }
+      //           else{
+      //             element.value = element.fieldType === 'Checkbox' ? false : '';
+      //           }
+      //         });
+      //       }
+      //     }
+      //   });
+      // }
+
+      coord.forEach(element => {
+        if(element.isRequired){
+          totalRequiredFields++;
+        }
+      });
+
+      if(coord && coord.length>0) {
+        coord.map((item) => {
+          // console.log('coord item value ' + JSON.stringify(item.value));
+          if(item.value && item.fieldType !== 'Checkbox'){
+            // console.log('Before completedFieldCount increament: ',completedFieldCount, item.value);  
+            completedFieldCount += 1;
+            console.log('After completedFieldCount increament: ',completedFieldCount, item.value);  
+          }     
+          // if(item.fieldType === "Date"){
+          //   item.value = moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY");
+          //   console.log('item value Date ',item.value);
+                  
+          //   // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+          // }   
+          // if(item.value === ''){
+          //   completedFieldCount -= 1;
+          // }  
+         })
+      }
+
+      // if (Object.keys(recordData).length > 0) {
+      //         console.log('recordData after if',recordData);
+              
+      //         coord = coord.map((item) => {
+      //           // if (item.value !== "") {
+      //           //   completedFieldCount += 1;
+      //           // }
+      //           if (
+      //             item.isUpdateFromSalesforce &&
+      //             item.mappingField &&
+      //             item.mappingField !== ""
+      //           ) {
+      //             if (
+      //               recordData.hasOwnProperty(item.mappingField) &&
+      //               recordData[item.mappingField] != null
+      //             ) {
+      //               // if(item.fieldType !== "Checkbox") {
+      //               //   completedFieldCount += 1;
+      //               // }
+      //               item.value =
+      //                 item.fieldType === "Date"
+      //                   ? moment(recordData[item.mappingField], "YYYY-MM-DD").format(
+      //                       "MM-DD-YYYY"
+      //                     )
+      //                   : recordData[item.mappingField];
+      //             } else {
+      //               item.value = item.fieldType === "Checkbox" ? false : "";
+      //             }
+      //           } 
+      //           else if (item.fieldType === "Date") {
+      //             item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+      //             console.log('item value',item.value);
+                  
+      //             // completedFieldCount += 1;
+      //           }
+      //           return item;
+      //         });
+      
+      //         console.log(coord);
+      //       }
+
+        
+      console.log('Total Required Fields: ',totalRequiredFields);
+      console.log('Completed Field Count: ',completedFieldCount);
+      
+      
+      console.log('Before if');
+      
 
       let tempSignatories: { label: string; value: string; coordData: [] }[] =
         [];
@@ -388,10 +517,8 @@ const InPersonSigningPage = () => {
           signatoryUUID: ele.signatoryUUID,
           salesforce_org_id: ele.salesforce_org_id,
           value: ele.value,
-          totalNoOfFields: ele.coordData.filter(
-            (coordinate) => coordinate.fieldType !== "Checkbox"
-          ).length,
-          completedNoOfFields: 0,
+          totalNoOfFields: totalRequiredFields,
+          completedNoOfFields: completedFieldCount,
         });
       });
       console.log(signatoryList);
@@ -423,11 +550,15 @@ const InPersonSigningPage = () => {
           salesforceOrgId: salesforceOrgId
         })
       );
+
+      
       await fetchingUsersResources(signatoryUUID as string);
       const coordList = transformData(responseData);
       console.log("@@@ coordList",coordList);
       dispatch(setCoordinateData({ allCoordinateData: coordList }));
       const finalData = sortData(firstSignatoryData);
+      dispatch(setTotalNoOfFields({ allCoordinateData: finalData }));
+      dispatch(setCompletedNoOfFields({ completedNoOfFields: completedFieldCount }));
       dispatch(
         setActiveSignatoriesCoordinateData({
           activeSignatoriesCoordinateData: finalData,
@@ -437,7 +568,7 @@ const InPersonSigningPage = () => {
       trackDocumentViewed(uuid_template_instance, signatoryUUID);
       setIsFetchingCordinatesData(false);
     } catch (err: any) {
-      // console.log(err);
+      console.log("error" + err);
       console.log(err.response);
 
       if (

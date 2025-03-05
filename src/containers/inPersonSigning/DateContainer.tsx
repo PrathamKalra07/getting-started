@@ -70,20 +70,20 @@ export const DateContainer: React.FC<Props> = ({
     try {
       const value = e.target.value;
 
-      const formatValue = value
-        ? moment(value, "YYYY-MM-DD").format("DD-MM-YYYY")
-        : "";
+      // const formatValue = value
+      //   ? moment(value, "YYYY-MM-DD").format("DD-MM-YYYY")
+      //   : "";
 
       console.log(
         "@@@ DATE CONTAINER targetElementIndex...." + targetElementIndex
       );
-      console.log("@@@ DATE CONTAINER formatValue...." + formatValue);
+      console.log("@@@ DATE CONTAINER formatValue...." + value);
       console.log('@@@ state.allCoordinateData::'+allCordinatesData);
 
       dispatch(
         changeDateData({
           elementIndex: targetElementIndex,
-          textValue: formatValue,
+          textValue: value,
           currentPageNo: currentPageNo,
           reduxState,
         })
@@ -92,7 +92,7 @@ export const DateContainer: React.FC<Props> = ({
         updateCoordinateData({
           signatoryUUID: activeSignatory.value,
           eleId: targetElementIndex,
-          newValue: formatValue,
+          newValue: value,
         })
       );
     } catch (err) {
@@ -104,12 +104,12 @@ export const DateContainer: React.FC<Props> = ({
     <>
       {allDateElementDataSelector
         ? allDateElementDataSelector.map((item: any, i: number) => {
-          const formattedValue = item.value   ? moment(item.value, "DD-MM-YYYY").format("MM-DD-YYYY")   : "";
+          const formattedValue = item.value   ? moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY")   : "";
             return (
               <DatePad
                 key={i}
                 {...item}
-                value={formattedValue || ""}  
+                value={formattedValue}  
                 handleTextChange={handleTextChange}
                 textElementIndex={item.id}
               />
