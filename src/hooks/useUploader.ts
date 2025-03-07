@@ -67,7 +67,7 @@ export const useUploader = ({
       return;
     }
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}&tiUUID=${uuidTemplateInstance}`,
+      `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`,
       {
         method: "GET",
         headers: {
