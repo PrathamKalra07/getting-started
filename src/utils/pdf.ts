@@ -6,6 +6,20 @@ import { fetchIpInfo } from "./fetchIpInfo";
 
 
 export async function Save(pdfFile: File, tempState: any) {
+
+  const handleDownloadPdf = () => {
+    try {
+      const a = document.createElement("a");
+      a.href = `https://ew-signpad.netlify.app/fetchPdfWithCoordinates?uuid=${basicInfoData.uuid}&uuid_template_instance=${basicInfoData.uuidTemplateInstance}&isDownload=true`;
+      a.download = "document.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   console.log('SAVE FUNTION CALLED.....pdf.js....');
   
   const PDFLib = await getAsset("PDFLib");
@@ -121,6 +135,9 @@ export async function Save(pdfFile: File, tempState: any) {
     }
   }
 
+  console.log('@@@ pageWiseAllData::'+JSON.stringify(pageWiseAllData));
+  
+
   try {
     //
 
@@ -179,6 +196,7 @@ export async function Save(pdfFile: File, tempState: any) {
      >
        Preview Document
      </a>
+     <button class="preview" onclick="(${handleDownloadPdf.toString()})()">Download Document</button>
       </div>
         <div class="img-container">
           <img src="/thankyou.png" alt="Thank You Illustration" class="img-size"/>
