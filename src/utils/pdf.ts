@@ -95,6 +95,8 @@ export async function Save(pdfFile: File, tempState: any) {
       pageWiseAllData[i].push(
         ...element.map((item: any) => ({
           id: item.coordinateId,
+          height : item.height,
+          width : item.width,
           value: item.value,
         }))
       );

@@ -53,10 +53,11 @@ export const TextPad = ({
         {/* signatureData */}
 
         <span style={{ position: "relative" }}>
-          <input
-            maxLength={width / 7}
+          <textarea
+            // maxLength={width / 7}
+            maxLength={(width*height)/200}
             placeholder="Click To Enter Text Here..."
-            style={{ height: height, width: width }}
+            style={{ height: height, width: width ,resize:'none'}}
             onClick={(e: any) => {
               dispatch(setActiveElement({ coordinateId, y, x }));
 

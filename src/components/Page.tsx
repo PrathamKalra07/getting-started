@@ -73,7 +73,7 @@ export const Page = ({
   return (
     <div style={{ position: "relative" }} className="pdf-viewer-container">
       <TransformWrapper
-        maxScale={3}
+        maxScale={2.5}
         initialScale={1}
         disabled={deviceWidth <= 600}
         centerZoomedOut
