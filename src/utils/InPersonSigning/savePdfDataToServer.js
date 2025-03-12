@@ -7,6 +7,19 @@ import { API_ROUTES } from "helpers/constants/apis";
 let uuid;
 let uuidTemplateInstance;
 const generateData = (tempState) => {
+
+  const handleDownloadPdf = () => {
+    try {
+      const a = document.createElement("a");
+      a.href = `https://ew-signpad.netlify.app/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}&isDownload=true`;
+      a.download = "document.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.log(err);
+    }
+  }; 
   uuid = tempState.basicInfoData.uuid;
   uuidTemplateInstance = tempState.basicInfoData.uuidTemplateInstance;
   console.log("@@@ tempState: " + JSON.stringify(tempState));
@@ -88,6 +101,7 @@ const savePdfDataToServer = async (tempState, tiUUID) => {
    >
      Preview Document
    </a>
+
     </div>
       <div class="img-container">
         <img src="/thankyou.png" alt="Thank You Illustration" class="img-size"/>
@@ -118,6 +132,8 @@ const savePdfDataToServer = async (tempState, tiUUID) => {
   </div>`;
     localStorage.clear();
   } catch (error) {
+    console.log('errrrr ' + error);
+    
     console.log("Failed to save PDF.");
     const thankYouContainer = document.getElementById("thankyou-container");
     thankYouContainer.innerHTML = "";

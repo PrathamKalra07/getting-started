@@ -16,8 +16,6 @@ interface Props {
   textElementIndex: number;
   handleTextChange: Function;
   coordinateId: number;
-
-  //
   isRequired: boolean;
 }
 
@@ -33,6 +31,9 @@ export const DatePad = ({
   isRequired,
 }: Props) => {
   const dispatch = useDispatch();
+
+  console.log("textInputValue", textInputValue);
+  
 
   const elementsNavigationHelperState = useSelector(
     (state: RootState) => state.elementsNavigationHelper
@@ -58,7 +59,7 @@ export const DatePad = ({
             placeholder="Enter Data Here..."
             style={{ height: height, width: width }}
             onChange={(e) => handleTextChange(e, textElementIndex)}
-            value={moment(textInputValue, "MM-DD-YYYY").format("YYYY-MM-DD")}
+            value={moment(textInputValue, "DD-MM-YYYY").format("YYYY-MM-DD")}
             type="date"
             // className="form-control"
             className={`${

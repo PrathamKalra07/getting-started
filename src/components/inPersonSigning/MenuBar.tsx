@@ -43,15 +43,25 @@ export const MenuBar: React.FC<Props> = ({
   const inPersonCoordinatesList = useSelector(
     (state: RootState) => state.inPerson.inPersonCoordinatesList
   );
+
+  console.log('inperson coordinate lkist' + JSON.stringify(inPersonCoordinatesList));
+  
   // const trackerData = useSelector((state: any) => state.inPersonCoordinatesList.signatoryList.find(signatory => signatory.signatoryUUID === activeSignatory.value));
   const basicInfoData = useSelector(
     (state: RootState) => state.inPerson.inPersonBasicInfoData
   );
-  console.log("inPerson:", basicInfoData);
+  console.log("inPerson basicInfoData", basicInfoData);
 
 
   const inPerson = useSelector((state: RootState) => state.inPerson);
   console.log("inPerson:", inPerson);
+
+  const trackerDataNew = useSelector(
+    (state: RootState) => state.allFinalDataReducer
+  );
+
+  console.log('trackerDataNew' + JSON.stringify(trackerDataNew));
+  
 
   let totalNoOfFields = 0;
   let completedNoOfFields = 0;
@@ -59,6 +69,9 @@ export const MenuBar: React.FC<Props> = ({
     const trackerData: any = inPersonCoordinatesList.signatoryList.find(
       (signatory: any) => signatory.signatoryUUID === activeSignatory.value
     );
+
+    console.log('inperson tracker data' + JSON.stringify(trackerData));
+    
     totalNoOfFields = trackerData.totalNoOfFields;
     completedNoOfFields = trackerData.completedNoOfFields;
   }
@@ -162,8 +175,8 @@ export const MenuBar: React.FC<Props> = ({
           <div className="custom-progressbar-container">
 
             <ProgressBar
-              completed={completedNoOfFields}
-              maxCompleted={totalNoOfFields}
+              completed={trackerDataNew.completedNoOfFields}
+              maxCompleted={trackerDataNew.totalNoOfFields}
               isLabelVisible={false}
               height="5px"
               bgColor="#ece5c7"
@@ -173,7 +186,7 @@ export const MenuBar: React.FC<Props> = ({
               className="text-center mb-1"
               style={{ color: "rgba(255,255,255,0.7)" }}
             >
-              {completedNoOfFields} of {totalNoOfFields} required fields
+              {trackerDataNew.completedNoOfFields} of {trackerDataNew.totalNoOfFields} required fields
               completed
             </div>
 

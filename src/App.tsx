@@ -492,6 +492,12 @@ const App: React.FC = () => {
 
       let coord = responseData.coord;
       const recordData = responseData.recordData;
+
+      console.log('record data' + JSON.stringify(recordData));
+      console.log('coord data' + JSON.stringify(coord));
+      console.log('coord data length' + coord.length);
+      
+      
       
       if(coord && coord.length>0) {
         const salesforceOrgId = coord[0].salesforce_org_id;
@@ -499,7 +505,26 @@ const App: React.FC = () => {
       }
 
       let completedFieldCount = 0;
+      console.log('recordData before if',recordData);
+
+      if(coord && coord.length>0) {
+        coord.map((item) => {
+          console.log('coord item value ' + JSON.stringify(item.value));
+          if(item.value){
+            completedFieldCount += 1;
+          }     
+          if(item.fieldType === "Date"){
+            item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+            console.log('item value Date ',item.value);
+            
+            // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+          }     
+        })
+      }
+      
       if (Object.keys(recordData).length > 0) {
+        console.log('recordData after if',recordData);
+        
         coord = coord.map((item) => {
           // if (item.value !== "") {
           //   completedFieldCount += 1;
@@ -526,9 +551,12 @@ const App: React.FC = () => {
               item.value = item.fieldType === "Checkbox" ? false : "";
             }
           } 
-          // else if (item.fieldType === "Date") {
-          //   item.value = moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY");
-          // }
+          else if (item.fieldType === "Date") {
+            item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+            console.log('item value',item.value);
+            
+            // completedFieldCount += 1;
+          }
           return item;
         });
 

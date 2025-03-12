@@ -15,7 +15,7 @@ import BounceLoader from "react-spinners/BounceLoader";
 import { createTextSignature } from "utils/textSignature";
 
 //
-import { setAllPreviousSignatures } from "redux/slices/signatureReducer";
+import { setAllPreviousSignatures, setSignaturePathWithEncoddedImg } from "redux/slices/signatureReducer";
 import trimCanvas from "utils/module/trimCanvasModule";
 import { SignatureObject } from "types";
 import { updateSignatorySignatureValue } from "redux/slices/inPersonSigning/coordinatesReducer";
@@ -64,6 +64,9 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
     (state: RootState) => state.inPerson.inPersonSignatureList.allSignatureData
   );
 
+  console.log('all signatory List' + JSON.stringify(allSignatureList));
+  
+
   const dispatch = useDispatch();
 
   var keyEventTimeoutStamp: any;
@@ -101,6 +104,16 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
 
   const handleDone = async () => {
     const encodedImgData = allPreviousSignatures[activeSignatureIndex]!.data;
+
+    dispatch(
+      setSignaturePathWithEncoddedImg({
+        path: "",
+        encodedImgData: encodedImgData,
+        reduxState,
+        textValue: "",
+        isSignature: true,
+      })
+    )
 
     dispatch(
       updateSignatorySignatureValue({
@@ -173,6 +186,16 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
             newValue: "",
           })
         );
+
+        dispatch(
+          setSignaturePathWithEncoddedImg({
+            path: "",
+            encodedImgData: "",
+            reduxState,
+            textValue: "",
+            isSignature: true,
+          })
+        )
       }
     } catch (err) {
       console.log(err);
@@ -194,6 +217,16 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
         }
       );
 
+       dispatch(
+              setSignaturePathWithEncoddedImg({
+                path: "",
+                encodedImgData: signatureDataBase64,
+                reduxState,
+                textValue: "",
+                isSignature: true,
+              })
+            );
+
       dispatch(
         updateSignatorySignatureValue({
           signatoryUUID: activeSignatory.value,
@@ -212,6 +245,15 @@ export const DrawingModal = ({ open, dismiss }: Props) => {
   const handleCancel = async () => {
     try {
       if (allPreviousSignatures.length == 0) {
+         dispatch(
+                setSignaturePathWithEncoddedImg({
+                  path: "",
+                  encodedImgData: "",
+                  reduxState,
+                  textValue: "",
+                  isSignature: true,
+                })
+        );
         dispatch(
           updateSignatorySignatureValue({
             signatoryUUID: activeSignatory.value,

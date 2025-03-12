@@ -1,3 +1,7 @@
+body {
+  background-color: #dedede;
+}
+
 .pdf-viewer-div {
   margin-top: 100px !important;
 }
@@ -12,7 +16,7 @@
   position: absolute;
   z-index: 3;
   padding: 5px;
-  top: 10px;
+  top: -37px;
   /* left: -95px; */
   text-align: center;
   border-radius: 3px;
