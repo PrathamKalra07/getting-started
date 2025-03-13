@@ -928,7 +928,7 @@ console.log("isOtpVerificationDone",isOtpVerificationDone);
                   isPdfLoaded={!!file}
                   setIsAuditHistoryShown={setIsAuditHistoryShown}
                 />
-                <div className="pdf-viewer-div">
+                <div style={{overflow:'auto'}} className="pdf-viewer-div">
                   {!file || isFetchingCordinatesData ? (
                     <Loading />
                   ) : (

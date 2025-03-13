@@ -22,7 +22,7 @@
 
 .page-div {
   border: 1px solid #c4c4c4;
-  overflow-x: scroll;
+  overflow : auto;
   max-width: 100%;
   /* position: relative; */
 }
@@ -49,10 +49,24 @@
     margin-top: 6px !important;
   }
   .page-div{
-    max-width: 85%;
+    /* width: 90vw; */
+    overflow: hidden;
   }
   .page-div-signed{
-    max-width: 72%;
+    /* max-width: 72%; */
+    overflow: hidden;
+    canvas{
+      height: auto !important;
+      width: 90vw !important;
+    }
+  }
+  .print-pdf-main-container{
+    overflow:hidden;
+    max-width: 100%;
+    canvas{
+      width: 90vw !important;
+      height: auto !important;
+    }
   }
 
   /* .page-section{
@@ -64,10 +78,16 @@
 /* Small Devices, Tablets */
 @media only screen and (max-width: 480px) {
   .page-div{
-    max-width: 72%;
+    /* max-width: 72%; */
+    overflow: hidden;
   }
   .page-div-signed{
-    max-width: 73%;
+    /* max-width: 72%; */
+    overflow: hidden;
+    canvas{
+      height: auto !important;
+      width: 90vw !important;
+    }
   }
 }
 
@@ -115,8 +135,12 @@
   }
 
   .print-pdf-main-container{
-    overflow-x: scroll;
+    overflow:hidden;
     max-width: 100%;
+    canvas{
+      width: 90vw !important;
+      height: auto !important;
+    }
   }
 }
 /*  */
@@ -129,8 +153,14 @@
 /*  */
 .print-pdf-main-container {
   max-height: 100%;
+  /* width: 90vw; */
   overflow-y: scroll;
+  overflow-x: hidden;
   /* overflow-x: scroll; */
+  /* canvas{
+    width: 90vw !important;
+    height: auto !important;
+  } */
 }
 
 /*  */
