@@ -80,7 +80,7 @@ export const Page = ({
     <>
                 <div
               ref={signatureIndicatorRef}
-              className="signature-indicator"
+              // className="signature-indicator"
               onClick={(e) => {
                 if (isStartShown) {
                   setIsStartShown(false);
@@ -89,11 +89,12 @@ export const Page = ({
               }}
             >
               {isStartShown ? (
-                `Start`
+                <div className="signature-indicator">
+
+                  Start
+                </div>
               ) : (
-                <span>
-                  <i className="fa-solid fa-circle-arrow-down"></i> Next
-                </span>
+                <div className="next-hidden"></div>
               )}
             </div>
     <div style={{ position: "relative",overflow:"hidden" }} className="pdf-viewer-container">
@@ -141,6 +142,17 @@ export const Page = ({
               isFetchingCordinatesData={isFetchingCordinatesData}
             />
 
+{!isStartShown && (
+                <div
+                  ref={signatureIndicatorRef}
+                  className="signature-indicator-next"
+                  onClick={(e) => handleStartAndScrollElement(e)}
+                >
+                  <span>
+                    <i className="fa-solid fa-circle-arrow-down"></i> Next
+                  </span>
+                </div>
+              )}
 
           </div>
         </TransformComponent>

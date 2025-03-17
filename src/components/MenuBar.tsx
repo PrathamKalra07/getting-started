@@ -58,6 +58,9 @@ export const MenuBar: React.FC<Props> = ({
   const trackerData = useSelector(
     (state: RootState) => state.allFinalDataReducer
   );
+
+  console.log("trackerData", trackerData);
+  
   const basicInfoData = useSelector((state: RootState) => state.basicInfoData);
   
   const textList = useSelector((state: RootState) => state.textList);
@@ -189,7 +192,7 @@ export const MenuBar: React.FC<Props> = ({
             />
             <div
               className="text-center mb-1"
-              style={{ color: "rgba(255,255,255,0.7)" }}
+              style={{ color: "#1d1c1cb3" }}
             >
               {trackerData.completedNoOfFields} of {trackerData.totalNoOfFields}{" "}
               required fields completed
@@ -207,7 +210,7 @@ export const MenuBar: React.FC<Props> = ({
                 // onClick={savePdf}
                 onClick={() => setIsFinishAlertShown(true)}
               >
-                Finish
+                Submit Document
               </button>
 
               <Dropdown
@@ -217,7 +220,7 @@ export const MenuBar: React.FC<Props> = ({
               >
                 <DropdownToggle
                   caret
-                  style={{ backgroundColor: "#cdc2ae" }}
+                  style={{ backgroundColor: "#354259", color: "white" }}
                   color="black"
                   className="fw-bold"
                 >
@@ -294,12 +297,7 @@ export const MenuBar: React.FC<Props> = ({
                   className="x-small font-weight-normal mx-2"
                   htmlFor="terms"
                 >
-                  By clicking this checkbox and the Sign Document button, I
-                  agree that this mark will be the electronic representation of
-                  my signature for the electronic document. I also understand
-                  that recipients of electronic documents I sign will be able to
-                  see my signing details, including but not restricted to my
-                  Email ID/Phone Number and IP address.
+                By clicking this checkbox, I agree that this mark will serve as my signature for the document. I also understand that recipients of documents I sign will be able to see my signing details, including but not limited to my Email ID, Phone Number.
                 </label>
               </div>
             </div>
@@ -542,6 +540,7 @@ const PdfViewer = ({
       // size={"xl"}
       fullscreen
     >
+      
       {/* <ModalHeader>Total Pages :- {numPages === 0 ? "" : numPages}</ModalHeader> */}
       <ModalBody>
         <div

@@ -101,6 +101,8 @@ const savePdfDataToServer = async (tempState, tiUUID) => {
    >
      Preview Document
    </a>
+    <a class="preview" id="downloadDocument" href="#">Download Document</a>
+
 
     </div>
       <div class="img-container">
@@ -130,6 +132,36 @@ const savePdfDataToServer = async (tempState, tiUUID) => {
       </div>
     </div>
   </div>`;
+  document.getElementById("downloadDocument")?.addEventListener("click", async function (event) {
+    event.preventDefault(); // Prevent default anchor action
+
+    const pdfUrl = `https://ewsign.eruditeworks.com/EwSignApi/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}&isDownload=true`;
+
+    try {
+        const response = await axios.get(pdfUrl, {
+            responseType: 'blob' // Get the response as a binary blob
+        });
+
+        // Create a Blob URL
+        const blob = new Blob([response.data], { type: "application/pdf" });
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // Create a temporary download link
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = "Signed_Document.pdf"; // Set the filename
+        document.body.appendChild(a);
+        a.click(); // Trigger download
+        document.body.removeChild(a); // Remove from the DOM
+
+        // Free up memory
+        window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+        console.error("Failed to download PDF:", error);
+        alert("Error downloading the document. Please try again.");
+    }
+});
+
     localStorage.clear();
   } catch (error) {
     console.log('errrrr ' + error);

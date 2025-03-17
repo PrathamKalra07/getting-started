@@ -83,6 +83,26 @@ export const Page = ({
   // console.log("height => ", height);
   console.log("IN PERSON Signing Page....");
   return (
+    <>
+    <div
+    ref={signatureIndicatorRef}
+    // className="signature-indicator"
+    onClick={(e) => {
+      if (isStartShown) {
+        setIsStartShown(false);
+      }
+      handleStartAndScrollElement(e);
+    }}
+  >
+    {isStartShown ? (
+      <div className="signature-indicator">
+
+      Start
+    </div>
+    ) : (
+      <div className="next-hidden"></div>
+    )}
+  </div>
     <div style={{ position: "relative" }} className="pdf-viewer-container">
       <TransformWrapper
         maxScale={3}
@@ -127,25 +147,18 @@ export const Page = ({
               page={page}
               isFetchingCordinatesData={isFetchingCordinatesData}
             />
-
-            <div
-              ref={signatureIndicatorRef}
-              className="signature-indicator"
-              onClick={(e) => {
-                if (isStartShown) {
-                  setIsStartShown(false);
-                }
-                handleStartAndScrollElement(e);
-              }}
-            >
-              {isStartShown ? (
-                `Start`
-              ) : (
-                <span>
-                  <i className="fa-solid fa-circle-arrow-down"></i> Next
-                </span>
+        {!isStartShown && (
+                <div
+                  ref={signatureIndicatorRef}
+                  className="signature-indicator-next"
+                  onClick={(e) => handleStartAndScrollElement(e)}
+                >
+                  <span>
+                    <i className="fa-solid fa-circle-arrow-down"></i> Next
+                  </span>
+                </div>
               )}
-            </div>
+
           </div>
         </TransformComponent>
 
@@ -161,5 +174,6 @@ export const Page = ({
         </React.Fragment>
       </TransformWrapper>
     </div>
+    </>
   );
 };
