@@ -45,6 +45,7 @@ export const MenuBar: React.FC<Props> = ({
   //
   const [isFinishAlertShown, setIsFinishAlertShown] = useState(false);
   const [isAgreeCheckBoxChecked, setIsAgreeCheckBoxChecked] = useState(false);
+  const [isIncompleteFieldsAlertShown, setIsIncompleteFieldsAlertShown] = useState(false);
 
   //
   const [commentText, setCommentText] = useState("");
@@ -63,7 +64,8 @@ export const MenuBar: React.FC<Props> = ({
     if (trackerData.completedNoOfFields === trackerData.totalNoOfFields) {
       setIsFinishAlertShown(true);
     } else {
-      alert("All fields are required!");
+      // alert("All fields are required!");
+      setIsIncompleteFieldsAlertShown(true);
     }
   };
 
@@ -114,6 +116,7 @@ export const MenuBar: React.FC<Props> = ({
   const closeCurrentModal = () => {
     setIsRejectMenuOpen(false);
     setIsFinishAlertShown(false);
+    setIsIncompleteFieldsAlertShown(false);
   };
 
   const handleViewPdf = async () => {
@@ -353,6 +356,33 @@ export const MenuBar: React.FC<Props> = ({
               !isAgreeCheckBoxChecked ? "text-dark bg-secondary" : null
             }`}
             disabled={!isAgreeCheckBoxChecked}
+          >
+            Done
+          </button>
+        </ModalFooter>
+      </Modal>
+
+      <Modal
+      isOpen={isIncompleteFieldsAlertShown}
+      onClosed={closeCurrentModal}
+      centered
+      className="modal-container"
+      toggle={closeCurrentModal}
+      fade={false}
+      size={"lg"}
+      >
+        <ModalHeader>Incomplete Fields</ModalHeader>
+        <ModalBody>
+        <div>
+            <p>Please complete all required fields before submitting the document.</p>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+        <button
+            onClick={() => {
+              closeCurrentModal();
+            }}
+            className='btn custom-btn1 text-dark bg-secondary'
           >
             Done
           </button>

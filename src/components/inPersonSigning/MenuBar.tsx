@@ -32,6 +32,8 @@ export const MenuBar: React.FC<Props> = ({
   const [isFinishAlertShown, setIsFinishAlertShown] = useState(false);
   const [isAgreeCheckBoxChecked, setIsAgreeCheckBoxChecked] = useState(false);
   const [pdfLiveUrl, setPdfLiveUrl] = useState("");
+  const [isIncompleteFieldsAlertShown, setIsIncompleteFieldsAlertShown] = useState(false);
+  
   const [documentLiveUrl, setDocumentLiveUrl] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [brandLogo, setBrandLogo] = useState("");
@@ -62,6 +64,14 @@ export const MenuBar: React.FC<Props> = ({
 
   console.log('trackerDataNew' + JSON.stringify(trackerDataNew));
   
+  // const validateAllRequireFieds = () => {
+  //   if (completedNoOfFields === totalNoOfFields) {
+  //     setIsFinishAlertShown(true);
+  //   } else {
+  //     // alert("All fields are required!");
+  //     setIsIncompleteFieldsAlertShown(true);
+  //   }
+  // };
 
   let totalNoOfFields = 0;
   let completedNoOfFields = 0;
@@ -101,6 +111,7 @@ export const MenuBar: React.FC<Props> = ({
 
   const closeCurrentModal = () => {
     setIsFinishAlertShown(false);
+    // setIsIncompleteFieldsAlertShown(false);
   };
 
   const handleViewPdf = async () => {
@@ -329,6 +340,33 @@ export const MenuBar: React.FC<Props> = ({
           </button>
         </ModalFooter>
       </Modal>
+
+        <Modal
+            isOpen={isIncompleteFieldsAlertShown}
+            onClosed={closeCurrentModal}
+            centered
+            className="modal-container"
+            toggle={closeCurrentModal}
+            fade={false}
+            size={"lg"}
+            >
+              <ModalHeader>Incomplete Fields</ModalHeader>
+              <ModalBody>
+              <div>
+                  <p>Please complete all required fields before submitting the document.</p>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+              <button
+                  onClick={() => {
+                    closeCurrentModal();
+                  }}
+                  className='btn custom-btn1 text-dark bg-secondary'
+                >
+                  Done
+                </button>
+              </ModalFooter>
+            </Modal>
     </>
   );
 };
