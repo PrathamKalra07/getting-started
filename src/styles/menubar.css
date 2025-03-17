@@ -1,13 +1,14 @@
 .menubar-container {
-  background-color: var(--color4) !important;
+  background-color: white !important;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 4;
-  border-radius: 0px !important;
+  /* border-radius: 0px !important; */
   display: flex;
   justify-content: space-between;
+  border-bottom: 0.15rem #878479 solid;
 }
 
 .logo {
@@ -92,13 +93,14 @@
 }
 
 .submit-btn {
-  /* color: white !important; */
+  color: white !important;
   font-weight: 700 !important;
   /* margin-right: 15px !important; */
-  background-color: var(--color3) !important;
+  background-color: #354259 !important;
   margin-top: 5px !important;
   margin-bottom: 5px !important;
   border-radius: 2px;
+  
 }
 .submit-btn:hover {
   color: rgba(255, 255, 255, 0.852) !important;

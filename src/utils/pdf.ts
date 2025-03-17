@@ -7,19 +7,6 @@ import { fetchIpInfo } from "./fetchIpInfo";
 
 export async function Save(pdfFile: File, tempState: any) {
 
-  const handleDownloadPdf = () => {
-    try {
-      const a = document.createElement("a");
-      a.href = `https://ew-signpad.netlify.app/fetchPdfWithCoordinates?uuid=${basicInfoData.uuid}&uuid_template_instance=${basicInfoData.uuidTemplateInstance}&isDownload=true`;
-      a.download = "document.pdf";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   console.log('SAVE FUNTION CALLED.....pdf.js....');
   
   const PDFLib = await getAsset("PDFLib");
@@ -198,9 +185,10 @@ export async function Save(pdfFile: File, tempState: any) {
      >
        Preview Document
      </a>
-     <button class="preview" onclick="(${handleDownloadPdf.toString()})()">Download Document</button>
+    <a class="preview" id="downloadDocument" href="#">Download Document</a>
+
       </div>
-        <div class="img-container">
+        <div class="img-container">   
           <img src="/thankyou.png" alt="Thank You Illustration" class="img-size"/>
           <p class="congrats-text">
             Congratulations! You have successfully completed the signature.
@@ -228,8 +216,6 @@ export async function Save(pdfFile: File, tempState: any) {
       </div>
     </div>
     `;
-    
-  //   const thankYouContainer: HTMLElement = document.getElementById(
   //     "thankyou-container"
   //   ) as HTMLElement;
   //   thankYouContainer.innerHTML = `<div
@@ -270,6 +256,37 @@ export async function Save(pdfFile: File, tempState: any) {
   //     </span>
   //   </div>
   // </div>`;
+
+  document.getElementById("downloadDocument")?.addEventListener("click", async function (event) {
+    event.preventDefault(); // Prevent default anchor action
+
+    const pdfUrl = `https://ewsign.eruditeworks.com/EwSignApi/fetchPdfWithCoordinates?uuid=${basicInfoData.uuid}&uuid_template_instance=${basicInfoData.uuidTemplateInstance}&isDownload=true`;
+
+    try {
+        const response = await axios.get(pdfUrl, {
+            responseType: 'blob' // Get the response as a binary blob
+        });
+
+        // Create a Blob URL
+        const blob = new Blob([response.data], { type: "application/pdf" });
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // Create a temporary download link
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = "Signed_Document.pdf"; // Set the filename
+        document.body.appendChild(a);
+        a.click(); // Trigger download
+        document.body.removeChild(a); // Remove from the DOM
+
+        // Free up memory
+        window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+        console.error("Failed to download PDF:", error);
+        alert("Error downloading the document. Please try again.");
+    }
+});
+
     localStorage.clear();
   } catch (e) {
     console.log("Failed to save PDF.");
