@@ -59,13 +59,21 @@ export const MenuBar: React.FC<Props> = ({
     (state: RootState) => state.allFinalDataReducer
   );
 
+  const validateAllRequireFieds = () => {
+    if (trackerData.completedNoOfFields === trackerData.totalNoOfFields) {
+      setIsFinishAlertShown(true);
+    } else {
+      alert("All fields are required!");
+    }
+  };
+
   console.log("trackerData", trackerData);
-  
+
   const basicInfoData = useSelector((state: RootState) => state.basicInfoData);
-  
+
   const textList = useSelector((state: RootState) => state.textList);
   console.log("textList:", textList);
-  
+
   // useEffect(() => {
   //   if (basicInfoData) {
   //     const { uuid } = basicInfoData;
@@ -79,15 +87,17 @@ export const MenuBar: React.FC<Props> = ({
     if (basicInfoData) {
       console.log("basicInfo", basicInfoData);
       const { uuid, uuidTemplateInstance, salesforceOrgId } = basicInfoData;
-  
+
       // Set the URLs
       const newPdfLiveUrl = `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
       const newDocumentLiveUrl = `${process.env.REACT_APP_API_URL}/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
-      
+
       setPdfLiveUrl(newPdfLiveUrl);
       setDocumentLiveUrl(newDocumentLiveUrl);
-      setBrandLogo(`${process.env.REACT_APP_API_URL}/api/admin/branding/fetchBrandLogo?orgId=${salesforceOrgId}`);
-      
+      setBrandLogo(
+        `${process.env.REACT_APP_API_URL}/api/admin/branding/fetchBrandLogo?orgId=${salesforceOrgId}`
+      );
+
       // Log the new URLs
       console.log("PdfLiveUrl", newPdfLiveUrl);
       console.log("DocumentLiveUrl", newDocumentLiveUrl);
@@ -133,20 +143,20 @@ export const MenuBar: React.FC<Props> = ({
       console.log(err);
     }
   };
-  
+
   const handleViewDocument = async () => {
     try {
-      setIsDocumentViewerOpen(true); 
+      setIsDocumentViewerOpen(true);
     } catch (err) {
       console.log(err);
     }
   };
-  
+
   const handleDownloadDocument = () => {
     try {
       const a = document.createElement("a");
       a.href = `${documentLiveUrl}&isDownload=true`;
-      a.download = "document.pdf"; 
+      a.download = "document.pdf";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -154,8 +164,6 @@ export const MenuBar: React.FC<Props> = ({
       console.log(err);
     }
   };
-  
-  
 
   const options = [
     { label: "signer1", value: 1 },
@@ -172,13 +180,8 @@ export const MenuBar: React.FC<Props> = ({
             justifyContent: "center",
           }}
         >
-         
-            <img
-              src= {brandLogo}
-              className="logo"
-              alt="logo img"
-            />
-          
+          <img src={brandLogo} className="logo" alt="logo img" />
+
           <div className="custom-progressbar-container">
             {/*  */}
 
@@ -190,10 +193,7 @@ export const MenuBar: React.FC<Props> = ({
               bgColor="#ece5c7"
               baseBgColor="#878479"
             />
-            <div
-              className="text-center mb-1"
-              style={{ color: "#1d1c1cb3" }}
-            >
+            <div className="text-center mb-1" style={{ color: "#1d1c1cb3" }}>
               {trackerData.completedNoOfFields} of {trackerData.totalNoOfFields}{" "}
               required fields completed
             </div>
@@ -208,7 +208,7 @@ export const MenuBar: React.FC<Props> = ({
               <button
                 className="submit-btn btn"
                 // onClick={savePdf}
-                onClick={() => setIsFinishAlertShown(true)}
+                onClick={validateAllRequireFieds}
               >
                 Submit Document
               </button>
@@ -228,17 +228,49 @@ export const MenuBar: React.FC<Props> = ({
                 </DropdownToggle>
                 <DropdownMenu style={{ minWidth: 150 }}>
                   {/* <DropdownItem header>Header</DropdownItem> */}
-                  <DropdownItem onClick={() => setIsRejectMenuOpen(true)}>Reject</DropdownItem>
-                  <DropdownItem onClick={() => {handlePrintPdf();}}>Print</DropdownItem>
-                  <DropdownItem onClick={() => {setIsAuditHistoryShown(true);}}>View History</DropdownItem>
-                  <DropdownItem onClick={() => {window.open("https://www.eruditeworks.com/", "_blank");}}>Help & Support</DropdownItem>
+                  <DropdownItem onClick={() => setIsRejectMenuOpen(true)}>
+                    Reject
+                  </DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      handlePrintPdf();
+                    }}
+                  >
+                    Print
+                  </DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      setIsAuditHistoryShown(true);
+                    }}
+                  >
+                    View History
+                  </DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      window.open("https://www.eruditeworks.com/", "_blank");
+                    }}
+                  >
+                    Help & Support
+                  </DropdownItem>
                   {/* <DropdownItem text>Asign To Someone Else</DropdownItem> */}
                   {/* <DropdownItem disabled>Action (disabled)</DropdownItem> */}
                   <DropdownItem divider />
-                  <DropdownItem onClick={() => {handleViewPdf();}}>View Unsigned Document</DropdownItem>
-                  <DropdownItem onClick={() => handleDownloadPdf()}>Download Unsigned Document</DropdownItem>
-                  <DropdownItem onClick={handleViewDocument}>View Signed Document</DropdownItem> 
-                  <DropdownItem onClick={handleDownloadDocument}>Download Signed Document</DropdownItem> 
+                  <DropdownItem
+                    onClick={() => {
+                      handleViewPdf();
+                    }}
+                  >
+                    View Unsigned Document
+                  </DropdownItem>
+                  <DropdownItem onClick={() => handleDownloadPdf()}>
+                    Download Unsigned Document
+                  </DropdownItem>
+                  <DropdownItem onClick={handleViewDocument}>
+                    View Signed Document
+                  </DropdownItem>
+                  <DropdownItem onClick={handleDownloadDocument}>
+                    Download Signed Document
+                  </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
 
@@ -260,12 +292,12 @@ export const MenuBar: React.FC<Props> = ({
         pdfLiveUrl={pdfLiveUrl}
         handleDownloadPdf={handleDownloadPdf}
       />
-  <DocumentViewer
-  isDocumentViewerOpen={isDocumentViewerOpen} 
-  setIsDocumentViewerOpen={setIsDocumentViewerOpen} 
-  documentLiveUrl={documentLiveUrl} 
-  handleDownloadDocument={handleDownloadDocument}
-/>
+      <DocumentViewer
+        isDocumentViewerOpen={isDocumentViewerOpen}
+        setIsDocumentViewerOpen={setIsDocumentViewerOpen}
+        documentLiveUrl={documentLiveUrl}
+        handleDownloadDocument={handleDownloadDocument}
+      />
 
       {/*  */}
 
@@ -297,7 +329,11 @@ export const MenuBar: React.FC<Props> = ({
                   className="x-small font-weight-normal mx-2"
                   htmlFor="terms"
                 >
-                By clicking this checkbox, I agree that this mark will serve as my signature for the document. I also understand that recipients of documents I sign will be able to see my signing details, including but not limited to my Email ID, Phone Number.
+                  By clicking this checkbox, I agree that this mark will serve
+                  as my signature for the document. I also understand that
+                  recipients of documents I sign will be able to see my signing
+                  details, including but not limited to my Email ID, Phone
+                  Number.
                 </label>
               </div>
             </div>
@@ -380,7 +416,6 @@ export const MenuBar: React.FC<Props> = ({
   );
 };
 
-
 const DocumentViewer = ({
   isDocumentViewerOpen,
   setIsDocumentViewerOpen,
@@ -443,13 +478,14 @@ const DocumentViewer = ({
             <i className="fa-solid fa-print cursor-pointer"></i>
           </span>
         </div>
-        <div 
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "5px",
-          padding: "10px",
-        }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "5px",
+            padding: "10px",
+          }}
+        >
           <TransformWrapper
             maxScale={3}
             initialScale={1}
@@ -494,7 +530,6 @@ const DocumentViewer = ({
   );
 };
 
-
 const PdfViewer = ({
   isPdfViewerOpen,
   setIsPdfViewerOpen,
@@ -526,10 +561,7 @@ const PdfViewer = ({
     }
   };
 
-
-
   return (
-    
     <Modal
       isOpen={isPdfViewerOpen}
       onClosed={() => setIsPdfViewerOpen(false)}
@@ -540,7 +572,6 @@ const PdfViewer = ({
       // size={"xl"}
       fullscreen
     >
-      
       {/* <ModalHeader>Total Pages :- {numPages === 0 ? "" : numPages}</ModalHeader> */}
       <ModalBody>
         <div
@@ -592,30 +623,31 @@ const PdfViewer = ({
           >
             <TransformComponent>
               <Document
-          file={pdfLiveUrl}
-          onLoadSuccess={({ numPages }) => {
-            setNumPages(numPages);
-          }}
-          renderMode="canvas"
-          // style={{ overflowX: "scroll" }}
-              >
-          {[...Array(numPages)].map((_, index) => {
-            return (
-              <div key={index} 
-              className="page-div"
-              // className="m-0 p-0 mb-5 my-3"
-              >
-                <Page
-                pageNumber={index + 1}
-                className="page-section"
+                file={pdfLiveUrl}
+                onLoadSuccess={({ numPages }) => {
+                  setNumPages(numPages);
+                }}
+                renderMode="canvas"
                 // style={{ overflowX: "scroll" }}
-                />
-                <div style={{ textAlign: "right" }} className="fw-bold">
-            {index + 1} of {numPages}
-                </div>
-              </div>
-            );
-          })}
+              >
+                {[...Array(numPages)].map((_, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="page-div"
+                      // className="m-0 p-0 mb-5 my-3"
+                    >
+                      <Page
+                        pageNumber={index + 1}
+                        className="page-section"
+                        // style={{ overflowX: "scroll" }}
+                      />
+                      <div style={{ textAlign: "right" }} className="fw-bold">
+                        {index + 1} of {numPages}
+                      </div>
+                    </div>
+                  );
+                })}
               </Document>
             </TransformComponent>
           </TransformWrapper>

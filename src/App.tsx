@@ -4,7 +4,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { Container } from "semantic-ui-react";
-import {disableReactDevTools} from "@fvilers/disable-react-devtools"
+import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 
 //
 import { MenuBar } from "./components/MenuBar";
@@ -227,8 +227,8 @@ const App: React.FC = () => {
     const { coordinatesList, signatureList, textList, dateList, checkboxList } =
       currentReduxState as RootState;
 
-    console.log("DataList",dateList);
-    console.log("DataList",JSON.stringify(dateList));
+    console.log("DataList", dateList);
+    console.log("DataList", JSON.stringify(dateList));
     const signatureData = signatureList.allSignatureData;
     const textData = textList.allTextData;
     const dateData = dateList.allDateData;
@@ -381,7 +381,6 @@ const App: React.FC = () => {
     return () => {};
   }, [elementsNavigationData]);
 
-
   // useEffect(() => {
   //   disableReactDevTools();
   //   const handleKeyDown = (event: KeyboardEvent) => {
@@ -393,38 +392,37 @@ const App: React.FC = () => {
   //       event.preventDefault();
   //     }
   //   };
-  
+
   //   const handleContextMenu = (event: MouseEvent) => {
   //     event.preventDefault();
   //   };
-  
+
   //   const handleResize = () => {
   //     if (
-  //       window.outerWidth - window.innerWidth > 100 || 
-  //       window.outerHeight - window.innerHeight > 100 
+  //       window.outerWidth - window.innerWidth > 100 ||
+  //       window.outerHeight - window.innerHeight > 100
   //     ) {
-  //       // window.location.reload(); 
+  //       // window.location.reload();
   //     }
   //   };
-  
+
   //   window.addEventListener("keydown", handleKeyDown);
   //   window.addEventListener("contextmenu", handleContextMenu);
   //   window.addEventListener("resize", handleResize);
-  
+
   //   return () => {
   //     window.removeEventListener("keydown", handleKeyDown);
   //     window.removeEventListener("contextmenu", handleContextMenu);
   //     window.removeEventListener("resize", handleResize);
   //   };
   // }, []);
-  
 
   useEffect(() => {
     if (elementsNavigationData.activeElementCoordinateId > 0) {
       const indexNoList: Array<number> = [];
 
       const currentPageElements = allCoordinateDataWithCordinates.filter(
-        (item: any, index: number) => { 
+        (item: any, index: number) => {
           if (item.pageNo == pageIndex) {
             indexNoList.push(index);
 
@@ -493,38 +491,36 @@ const App: React.FC = () => {
       let coord = responseData.coord;
       const recordData = responseData.recordData;
 
-      console.log('record data' + JSON.stringify(recordData));
-      console.log('coord data' + JSON.stringify(coord));
-      console.log('coord data length' + coord.length);
-      
-      
-      
-      if(coord && coord.length>0) {
+      console.log("record data" + JSON.stringify(recordData));
+      console.log("coord data" + JSON.stringify(coord));
+      console.log("coord data length" + coord.length);
+
+      if (coord && coord.length > 0) {
         const salesforceOrgId = coord[0].salesforce_org_id;
         dispatch(setSalesforceOrgId({ salesforceOrgId }));
       }
 
       let completedFieldCount = 0;
-      console.log('recordData before if',recordData);
+      console.log("recordData before if", recordData);
 
-      if(coord && coord.length>0) {
+      if (coord && coord.length > 0) {
         coord.map((item) => {
-          console.log('coord item value ' + JSON.stringify(item.value));
-          if(item.value){
+          console.log("coord item value " + JSON.stringify(item.value));
+          if (item.value) {
             completedFieldCount += 1;
-          }     
-          if(item.fieldType === "Date"){
+          }
+          if (item.fieldType === "Date") {
             item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
-            console.log('item value Date ',item.value);
-            
+            console.log("item value Date ", item.value);
+
             // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
-          }     
-        })
+          }
+        });
       }
-      
+
       if (Object.keys(recordData).length > 0) {
-        console.log('recordData after if',recordData);
-        
+        console.log("recordData after if", recordData);
+
         coord = coord.map((item) => {
           // if (item.value !== "") {
           //   completedFieldCount += 1;
@@ -538,7 +534,7 @@ const App: React.FC = () => {
               recordData.hasOwnProperty(item.mappingField) &&
               recordData[item.mappingField] != null
             ) {
-              if(item.fieldType !== "Checkbox") {
+              if (item.fieldType !== "Checkbox") {
                 completedFieldCount += 1;
               }
               item.value =
@@ -550,11 +546,10 @@ const App: React.FC = () => {
             } else {
               item.value = item.fieldType === "Checkbox" ? false : "";
             }
-          } 
-          else if (item.fieldType === "Date") {
+          } else if (item.fieldType === "Date") {
             item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
-            console.log('item value',item.value);
-            
+            console.log("item value", item.value);
+
             // completedFieldCount += 1;
           }
           return item;
@@ -644,38 +639,37 @@ const App: React.FC = () => {
   //     // {{baseUrl}}/api/fetchCordinatesData
   //     console.log("signatory",signatoryUniqUUID);
   //     console.log("uuidTemplateInstance",uuidTemplateInstance);
-      
 
   //     const isOtpSent = localStorage.getItem("isOtpSent") ? true : false;
   //     const signatodyUUIDStorage = localStorage.getItem("signatoryUUID")
   //       ? localStorage.getItem("signatoryUUID")
   //       : "";
-      
+
   //     console.log("isOtpSent",isOtpSent);
   //     console.log("signatodyUUIDStorage",signatodyUUIDStorage);
-      
+
   //     const isOtpVerifyOffline = localStorage.getItem("isOtpVerifyOffline")
   //     ? true
   //     : false;
-      
+
   //     console.log("isOtpVerifyOffline",isOtpVerifyOffline);
 
   //     if (isOtpVerifyOffline && signatodyUUIDStorage === signatoryUniqUUID) {
   //       console.log("i am from app.tsx in if condition function body on line no 581");
   //       setIsOtpVerificationDone(true);
   //     }
-      
+
   //     console.log("isOtpSent",isOtpSent);
   //     console.log("isResendOtp",isResendOtp);
-      
+
   //     if (isOtpSent && signatodyUUIDStorage === signatoryUniqUUID) {
   //       console.log("i am from app.tsx in if condition function body on line no 588");
   //       const otpValue = localStorage.getItem("otpValue") || "";
   //       console.log("otpValue",otpValue);
   //       setOriginalOtpValue(otpValue);
   //       console.log("originalOtpValue",originalOtpValue);
-       
-  //     } 
+
+  //     }
   //     else if (!isOtpSent || isResendOtp != false || signatodyUUIDStorage !== signatoryUniqUUID)
   //       {
   //       localStorage.clear();
@@ -687,7 +681,7 @@ const App: React.FC = () => {
   //         uuid_signatory: signatoryUniqUUID,
   //         uuid_template_instance: uuidTemplateInstance,
   //       });
-        
+
   //       localStorage.setItem("isOtpSent", "true");
   //       localStorage.setItem("otpValue", responseData.otpValue);
   //       localStorage.setItem("signatoryUUID", signatoryUniqUUID);
@@ -697,7 +691,7 @@ const App: React.FC = () => {
   //     }
 
   //     await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
-  //   } catch (err: any) {  
+  //   } catch (err: any) {
   //     console.log(err);
   //     console.log(err.response);
   //     console.log("i am from app.tsx in catch block in sentotp body on line no 620");
@@ -736,39 +730,37 @@ const App: React.FC = () => {
   //   }
   // };
 
-
   const checkStatus = async (
     signatoryUniqUUID: string,
     uuidTemplateInstance: string
   ) => {
     try {
-      console.log("uuidTemplateInstance",uuidTemplateInstance);
-      console.log("signatoryUniqUUID",signatoryUniqUUID);
+      console.log("uuidTemplateInstance", uuidTemplateInstance);
+      console.log("signatoryUniqUUID", signatoryUniqUUID);
       const {
-            data: { data: responseData },
-          }: AxiosResponse = await postRequest(API_ROUTES.CHECKSTATUS, false, {
-            uuid_signatory: signatoryUniqUUID,
-            uuid_template_instance: uuidTemplateInstance,
-          });
-          console.log("calling track....",JSON.stringify(responseData));
+        data: { data: responseData },
+      }: AxiosResponse = await postRequest(API_ROUTES.CHECKSTATUS, false, {
+        uuid_signatory: signatoryUniqUUID,
+        uuid_template_instance: uuidTemplateInstance,
+      });
+      console.log("calling track....", JSON.stringify(responseData));
 
-          const expiryDate = responseData?.expiryDate;
-          if (expiryDate) {
-            const currentDate = new Date();
-            const expiryDateObj = new Date(expiryDate);
-      
-            if (currentDate > expiryDateObj) {
-              const msg: string = "Sorry, the document has expired.";
-              setUserErrorMsg(msg);
-              setIsAlreadySign(true);
-              localStorage.clear();
-              return;
-            }
-          }
-          
+      const expiryDate = responseData?.expiryDate;
+      if (expiryDate) {
+        const currentDate = new Date();
+        const expiryDateObj = new Date(expiryDate);
+
+        if (currentDate > expiryDateObj) {
+          const msg: string = "Sorry, the document has expired.";
+          setUserErrorMsg(msg);
+          setIsAlreadySign(true);
+          localStorage.clear();
+          return;
+        }
+      }
+
       await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
-    } catch (err: any) {   
-
+    } catch (err: any) {
       if (err.response.data.msg) {
         if (
           err.response.data.msg.toLowerCase() ==
@@ -777,6 +769,7 @@ const App: React.FC = () => {
           const msg: string = "Sorry You Had Already Done Your Work";
           setUserErrorMsg(msg);
           setIsAlreadySign(true);
+          // setIsAlreadySign(false);
         } else if (
           err.response.data.msg.toLowerCase() ==
           "Sorry Your Template Is Already Signed".toLowerCase()
@@ -798,21 +791,19 @@ const App: React.FC = () => {
         localStorage.clear();
       }
       console.log("i am from app.tsx above finally block on line no 654");
-      } finally {
+    } finally {
       setIsLoading(false);
     }
   };
-
-
 
   const trackDocumentViewed = async (
     uuidTemplateInstance: any,
     signatoryUniqUUID: any
   ) => {
     try {
-      console.log("inside trackDocumentViewed")
+      console.log("inside trackDocumentViewed");
       const locationData: any = await fetchIpInfo();
-      console.log("locationData::"+JSON.stringify(locationData));
+      console.log("locationData::" + JSON.stringify(locationData));
 
       const {
         data: { data: responseData },
@@ -825,36 +816,37 @@ const App: React.FC = () => {
           location: locationData,
         }
       );
-      console.log("Response",JSON.stringify(responseData));
+      console.log("Response", JSON.stringify(responseData));
     } catch (err) {
       console.log(err);
     }
   };
-  console.log("trackDocumentViewed outside function",JSON.stringify(trackDocumentViewed));
+  console.log(
+    "trackDocumentViewed outside function",
+    JSON.stringify(trackDocumentViewed)
+  );
 
   useEffect(() => {
     // if (isOtpVerificationDone) {
-      const fetchingAsync = async () => {
-        // console.log("done");
-        const uuid = searchParams.get("uuid");
-        const uuidTemplateInstance = searchParams.get("uuid_template_instance");
-        const uuidSignatory = searchParams.get("uuid_signatory");
+    const fetchingAsync = async () => {
+      // console.log("done");
+      const uuid = searchParams.get("uuid");
+      const uuidTemplateInstance = searchParams.get("uuid_template_instance");
+      const uuidSignatory = searchParams.get("uuid_signatory");
 
-        await fetchingUsersResources(uuidSignatory as string);
+      await fetchingUsersResources(uuidSignatory as string);
 
-        await fetchingCordinates(
-          uuidTemplateInstance as string,
-          uuidSignatory as string
-        );
-        await uploadPdf(uuid, uuidTemplateInstance);
-      };
-      fetchingAsync();
+      await fetchingCordinates(
+        uuidTemplateInstance as string,
+        uuidSignatory as string
+      );
+      await uploadPdf(uuid, uuidTemplateInstance);
+    };
+    fetchingAsync();
     // }
 
     return () => {};
   }, []);
-
-
 
   const fetchParamsAndFetchPdf = async () => {
     try {
@@ -896,7 +888,7 @@ const App: React.FC = () => {
       console.log(err);
     }
   };
-console.log("isOtpVerificationDone",isOtpVerificationDone);
+  console.log("isOtpVerificationDone", isOtpVerificationDone);
 
   useEffect(() => {
     fetchParamsAndFetchPdf();
@@ -913,134 +905,134 @@ console.log("isOtpVerificationDone",isOtpVerificationDone);
 
         {isLoading ? <Loading /> : null}
 
-        {isAlreadySign ? (
-          <AlreadySignedComponent
-            userErrorMsg={userErrorMsg}
-            setIsAuditHistoryShown={setIsAuditHistoryShown}
-          />
-        ) : 
-        (
-          <>
-                <MenuBar
-                  rejectSign={handleSignRejection}
-                  savePdf={handleSavePdf}
-                  savingPdfStatus={isSaving}
-                  isPdfLoaded={!!file}
-                  setIsAuditHistoryShown={setIsAuditHistoryShown}
-                />
-                <div style={{overflow:'auto'}} className="pdf-viewer-div">
-                  {!file || isFetchingCordinatesData ? (
-                    <Loading />
-                  ) : (
-                    <div className=" d-flex justify-content-center align-items-center overflow-x-scroll">
-                      <div className="inner-container">
-                        {currentPage && (
-                          <div className="border mb-5 position-relative">
-                            {" "}
-                            <div>
-                              {/*  */}
-                              <Page
-                                dimensions={dimensions}
-                                updateDimensions={setDimensions}
-                                page={currentPage}
-                                allPages={pages}
-                                goToPage={goToPage}
-                                isFetchingCordinatesData={
-                                  isFetchingCordinatesData
-                                }
-                                setDrawingModalOpen={setDrawingModalOpen}
-                                handleStartAndScrollElement={
-                                  handleStartAndScrollElement
-                                }
-                                signatureIndicatorRef={signatureIndicatorRef}
-                              />
+        {
+          isAlreadySign ? (
+            <AlreadySignedComponent
+              userErrorMsg={userErrorMsg}
+              setIsAuditHistoryShown={setIsAuditHistoryShown}
+            />
+          ) : (
+            <>
+              <MenuBar
+                rejectSign={handleSignRejection}
+                savePdf={handleSavePdf}
+                savingPdfStatus={isSaving}
+                isPdfLoaded={!!file}
+                setIsAuditHistoryShown={setIsAuditHistoryShown}
+              />
+              <div style={{ overflow: "auto" }} className="pdf-viewer-div">
+                {!file || isFetchingCordinatesData ? (
+                  <Loading />
+                ) : (
+                  <div className=" d-flex justify-content-center align-items-center overflow-x-scroll">
+                    <div className="inner-container">
+                      {currentPage && (
+                        <div className="border mb-5 position-relative">
+                          {" "}
+                          <div>
+                            {/*  */}
+                            <Page
+                              dimensions={dimensions}
+                              updateDimensions={setDimensions}
+                              page={currentPage}
+                              allPages={pages}
+                              goToPage={goToPage}
+                              isFetchingCordinatesData={
+                                isFetchingCordinatesData
+                              }
+                              setDrawingModalOpen={setDrawingModalOpen}
+                              handleStartAndScrollElement={
+                                handleStartAndScrollElement
+                              }
+                              signatureIndicatorRef={signatureIndicatorRef}
+                            />
 
-                              {/*  */}
-                            </div>
+                            {/*  */}
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
+              </div>
 
-                {drawingModalOpen ? (
-                  <DrawingModal
-                    open={drawingModalOpen}
-                    dismiss={() => setDrawingModalOpen(false)}
-                  />
-                ) : null}
-              </>
-        )
-        
-        // (
-        //   <>
-        //     {!isOtpVerificationDone ? (
-        //       <OtpModal
-        //         otp={otp}
-        //         setOtp={setOtp}
-        //         originalOtpValue={originalOtpValue}
-        //         setIsOtpVerificationDone={setIsOtpVerificationDone}
-        //         setIsResendOtp={setIsResendOtp}
-        //         setOriginalOtpValue={setOriginalOtpValue}
-        //       />
-        //     ) : 
-        //     (
-        //       <>
-        //         <MenuBar
-        //           rejectSign={handleSignRejection}
-        //           savePdf={handleSavePdf}
-        //           savingPdfStatus={isSaving}
-        //           isPdfLoaded={!!file}
-        //           setIsAuditHistoryShown={setIsAuditHistoryShown}
-        //         />
-        //         <div className="pdf-viewer-div">
-        //           {!file || isFetchingCordinatesData ? (
-        //             <Loading />
-        //           ) : (
-        //             <div className=" d-flex justify-content-center align-items-center overflow-x-scroll">
-        //               <div className="inner-container">
-        //                 {currentPage && (
-        //                   <div className="border mb-5 position-relative">
-        //                     {" "}
-        //                     <div>
-        //                       {/*  */}
-        //                       <Page
-        //                         dimensions={dimensions}
-        //                         updateDimensions={setDimensions}
-        //                         page={currentPage}
-        //                         allPages={pages}
-        //                         goToPage={goToPage}
-        //                         isFetchingCordinatesData={
-        //                           isFetchingCordinatesData
-        //                         }
-        //                         setDrawingModalOpen={setDrawingModalOpen}
-        //                         handleStartAndScrollElement={
-        //                           handleStartAndScrollElement
-        //                         }
-        //                         signatureIndicatorRef={signatureIndicatorRef}
-        //                       />
+              {drawingModalOpen ? (
+                <DrawingModal
+                  open={drawingModalOpen}
+                  dismiss={() => setDrawingModalOpen(false)}
+                />
+              ) : null}
+            </>
+          )
 
-        //                       {/*  */}
-        //                     </div>
-        //                   </div>
-        //                 )}
-        //               </div>
-        //             </div>
-        //           )}
-        //         </div>
+          // (
+          //   <>
+          //     {!isOtpVerificationDone ? (
+          //       <OtpModal
+          //         otp={otp}
+          //         setOtp={setOtp}
+          //         originalOtpValue={originalOtpValue}
+          //         setIsOtpVerificationDone={setIsOtpVerificationDone}
+          //         setIsResendOtp={setIsResendOtp}
+          //         setOriginalOtpValue={setOriginalOtpValue}
+          //       />
+          //     ) :
+          //     (
+          //       <>
+          //         <MenuBar
+          //           rejectSign={handleSignRejection}
+          //           savePdf={handleSavePdf}
+          //           savingPdfStatus={isSaving}
+          //           isPdfLoaded={!!file}
+          //           setIsAuditHistoryShown={setIsAuditHistoryShown}
+          //         />
+          //         <div className="pdf-viewer-div">
+          //           {!file || isFetchingCordinatesData ? (
+          //             <Loading />
+          //           ) : (
+          //             <div className=" d-flex justify-content-center align-items-center overflow-x-scroll">
+          //               <div className="inner-container">
+          //                 {currentPage && (
+          //                   <div className="border mb-5 position-relative">
+          //                     {" "}
+          //                     <div>
+          //                       {/*  */}
+          //                       <Page
+          //                         dimensions={dimensions}
+          //                         updateDimensions={setDimensions}
+          //                         page={currentPage}
+          //                         allPages={pages}
+          //                         goToPage={goToPage}
+          //                         isFetchingCordinatesData={
+          //                           isFetchingCordinatesData
+          //                         }
+          //                         setDrawingModalOpen={setDrawingModalOpen}
+          //                         handleStartAndScrollElement={
+          //                           handleStartAndScrollElement
+          //                         }
+          //                         signatureIndicatorRef={signatureIndicatorRef}
+          //                       />
 
-        //         {drawingModalOpen ? (
-        //           <DrawingModal
-        //             open={drawingModalOpen}
-        //             dismiss={() => setDrawingModalOpen(false)}
-        //           />
-        //         ) : null}
-        //       </>
-        //     )
-        //      } 
-        //   </>
-        // )
+          //                       {/*  */}
+          //                     </div>
+          //                   </div>
+          //                 )}
+          //               </div>
+          //             </div>
+          //           )}
+          //         </div>
+
+          //         {drawingModalOpen ? (
+          //           <DrawingModal
+          //             open={drawingModalOpen}
+          //             dismiss={() => setDrawingModalOpen(false)}
+          //           />
+          //         ) : null}
+          //       </>
+          //     )
+          //      }
+          //   </>
+          // )
         }
 
         {isAuditHistoryShown && (
