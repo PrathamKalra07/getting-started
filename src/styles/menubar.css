@@ -30,7 +30,7 @@
 .page-div-signed {
   border: 1px solid #c4c4c4;
   overflow-x: scroll;
-  max-width: 95%;
+  /* max-width: 95%; */
   /* position: relative; */
 }
 
@@ -54,6 +54,8 @@
   }
   .page-div-signed{
     /* max-width: 72%; */
+    width: 100%;
+    max-width: 100%;
     overflow: hidden;
     canvas{
       height: auto !important;
@@ -83,7 +85,12 @@
   }
   .page-div-signed{
     /* max-width: 72%; */
+    width: 100%;
+    max-width: 100%;
     overflow: hidden;
+    .fw-bold{
+      margin-right:10px !important;
+    }
     canvas{
       height: auto !important;
       width: 90vw !important;

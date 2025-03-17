@@ -474,7 +474,7 @@ const DocumentViewer = ({
                       pageNumber={index + 1}
                       className="page-section-signed"
                     />
-                    <div style={{ textAlign: "right" }} className="fw-bold">
+                    <div style={{ textAlign: "right", marginRight:"10px"}} className="fw-bold">
                       {index + 1} of {numPages}
                     </div>
                   </div>
