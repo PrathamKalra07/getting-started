@@ -64,6 +64,12 @@ export const Page = ({
       }
     };
 
+    const disableBodyScroll = () => {
+      document.body.style.position = "fixed";
+      document.body.style.width = "98%";
+    };
+
+    disableBodyScroll();
     renderPage(page);
   }, [page, updateDimensions]);
 
@@ -91,10 +97,10 @@ export const Page = ({
                 <div className="next-hidden"></div>
               )}
             </div>
-    <div style={{ position: "relative" }} className="pdf-viewer-container">
+    <div style={{ position: "relative",overflow:"hidden" }} className="pdf-viewer-container">
       <TransformWrapper
         maxScale={2.5}
-        initialScale={1}
+        initialScale={deviceWidth <600?0.6:1}
         disabled={deviceWidth <= 600}
         centerZoomedOut
         disablePadding

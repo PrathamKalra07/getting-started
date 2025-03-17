@@ -9,9 +9,14 @@
 /* Small Devices, Tablets */
 @media only screen and (max-width: 768px) {
   .pdf-viewer-container {
-    width: 100dvw;
+    width: 88vw;
+    height: 70vh;
+    overflow: hidden;
     /* overflow-y: auto; */
     /* overflow: auto; */
+  }
+  body{
+    overflow: hidden !important;
   }
 }
 
