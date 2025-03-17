@@ -17,6 +17,8 @@ interface Props {
   handleTextChange: Function;
   coordinateId: number;
   isRequired: boolean;
+  formattedValue: string;
+
 }
 
 export const DatePad = ({
@@ -39,6 +41,13 @@ export const DatePad = ({
     (state: RootState) => state.elementsNavigationHelper
   );
 
+  const formatDate = (date: string) => {
+    if (moment(date, "MM-DD-YYYY", true).isValid()) {
+      return moment(date, "MM-DD-YYYY").format("DD-MM-YYYY");
+    }
+    return date;
+  };
+
   return (
     <>
       <div
@@ -59,7 +68,10 @@ export const DatePad = ({
             placeholder="Enter Data Here..."
             style={{ height: height, width: width }}
             onChange={(e) => handleTextChange(e, textElementIndex)}
-            value={moment(textInputValue, "DD-MM-YYYY").format("YYYY-MM-DD")}
+            // value={moment(textInputValue, "DD-MM-YYYY").format("YYYY-MM-DD")}
+            value={moment(formatDate(textInputValue), "DD-MM-YYYY").format(
+              "YYYY-MM-DD"
+            )}
             type="date"
             // className="form-control"
             className={`${

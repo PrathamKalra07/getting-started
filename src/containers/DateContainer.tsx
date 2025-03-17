@@ -26,6 +26,8 @@ export const DateContainer: React.FC<Props> = ({
     (state: RootState) => state.coordinatesList.allCoordinateData
   );
 
+  console.log('redux state in date container' + reduxState);
+  
   const allDateElementDataSelector = useSelector(
     (state: RootState) => state.dateList.allDateData[currentPageNo]
   );
@@ -81,7 +83,7 @@ export const DateContainer: React.FC<Props> = ({
       // console.log("Parsed Date (strict):", parsedDate);
   
       if (value) {
-        const formattedValue = value   ? moment(value, "YYYY-MM-DD").format("DD-MM-YYYY")   : "";
+        const formattedValue = value   ? moment(value, "YYYY-MM-DD").format("MM-DD-YYYY")   : "";
        console.log("formated",formattedValue);
   
         dispatch(
