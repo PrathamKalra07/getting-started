@@ -71,6 +71,25 @@ export const Page = ({
   // console.log("height => ", height);
 
   return (
+    <>
+                <div
+              ref={signatureIndicatorRef}
+              className="signature-indicator"
+              onClick={(e) => {
+                if (isStartShown) {
+                  setIsStartShown(false);
+                }
+                handleStartAndScrollElement(e);
+              }}
+            >
+              {isStartShown ? (
+                `Start`
+              ) : (
+                <span>
+                  <i className="fa-solid fa-circle-arrow-down"></i> Next
+                </span>
+              )}
+            </div>
     <div style={{ position: "relative" }} className="pdf-viewer-container">
       <TransformWrapper
         maxScale={2.5}
@@ -116,24 +135,7 @@ export const Page = ({
               isFetchingCordinatesData={isFetchingCordinatesData}
             />
 
-            <div
-              ref={signatureIndicatorRef}
-              className="signature-indicator"
-              onClick={(e) => {
-                if (isStartShown) {
-                  setIsStartShown(false);
-                }
-                handleStartAndScrollElement(e);
-              }}
-            >
-              {isStartShown ? (
-                `Start`
-              ) : (
-                <span>
-                  <i className="fa-solid fa-circle-arrow-down"></i> Next
-                </span>
-              )}
-            </div>
+
           </div>
         </TransformComponent>
 
@@ -149,5 +151,6 @@ export const Page = ({
         </React.Fragment>
       </TransformWrapper>
     </div>
+    </>
   );
 };
