@@ -11,9 +11,9 @@
   .pdf-viewer-container {
     width: 88vw;
     height: 70vh;
-    overflow: hidden;
-    /* overflow-y: auto; */
-    /* overflow: auto; */
+    /* overflow: hidden; */
+    overflow-y: auto;
+    /* overflow-x: auto; */
   }
   body{
     overflow: hidden !important;
@@ -28,7 +28,8 @@
 @media only screen and (max-width: 1200px) {
 }
 
-/* .pdf-viewer-container {
-    width: 96vw;
+.pdf-viewer-container {
+    /* width: 96vw; */
     overflow-y: auto;
-  } */
+  }
+

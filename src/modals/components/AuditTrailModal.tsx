@@ -266,9 +266,9 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
               Audit Trail History
             </h4>
           </ModalHeader>
-          <ModalBody className="container " id="audit-trail-main-body">
+          <ModalBody id="audit-trail-main-body" >
             {auditTrailData.length > 0 ? (
-              <div className=" mt-2">
+              <div className="mt-2" >
                 <div className="d-flex justify-content-between  mb-4 mx-2">
                   <div className="d-flex flex-column gap-sm-2  flex-md-row gap-md-3 flex-lg-row gap-lg-5 ">
                     <div>
@@ -352,8 +352,8 @@ export const AuditTrailModal = ({ setIsAuditHistoryShown }: Props) => {
                       </th>
                       <th>Status</th>
                       <th>IP Address</th>
-                      <th style={{ minWidth: "150px" }}>Recipient</th>
-                      <th style={{ minWidth: "300px" }}>Message</th>
+                      <th>Recipient</th>
+                      <th>Message</th>
                     </tr>
                   </thead>
                   <tbody>

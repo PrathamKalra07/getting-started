@@ -361,7 +361,8 @@ export const MenuBar: React.FC<Props> = ({
                   onClick={() => {
                     closeCurrentModal();
                   }}
-                  className='btn custom-btn1 text-dark bg-secondary'
+                  className='btn custom-btn1'
+                  style={{ backgroundColor: '#364259'}}
                 >
                   Done
                 </button>

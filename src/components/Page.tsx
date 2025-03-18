@@ -64,12 +64,12 @@ export const Page = ({
       }
     };
 
-    const disableBodyScroll = () => {
-      document.body.style.position = "fixed";
-      document.body.style.width = "98%";
-    };
+    // const disableBodyScroll = () => {
+    //   document.body.style.position = "fixed";
+    //   document.body.style.width = "98%";
+    // };
 
-    disableBodyScroll();
+    // disableBodyScroll();
     renderPage(page);
   }, [page, updateDimensions]);
 
