@@ -235,7 +235,7 @@ const InPersonSigningPage = () => {
         signatureIndicatorRef.current.style.left = `${x}px`;
 
         // scroll inner div
-        document.getElementsByClassName("pdf-viewer-container")[0].scrollLeft =
+        document.getElementsByClassName("pdf-viewer-container-inperson")[0].scrollLeft =
           x - 20;
       }
     }
