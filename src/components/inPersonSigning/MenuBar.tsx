@@ -32,7 +32,7 @@ export const MenuBar: React.FC<Props> = ({
   const [isFinishAlertShown, setIsFinishAlertShown] = useState(false);
   const [isAgreeCheckBoxChecked, setIsAgreeCheckBoxChecked] = useState(false);
   const [pdfLiveUrl, setPdfLiveUrl] = useState("");
-  const [isIncompleteFieldsAlertShown, setIsIncompleteFieldsAlertShown] = useState(false);
+  // const [isIncompleteFieldsAlertShown, setIsIncompleteFieldsAlertShown] = useState(false);
   
   const [documentLiveUrl, setDocumentLiveUrl] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -341,7 +341,7 @@ export const MenuBar: React.FC<Props> = ({
         </ModalFooter>
       </Modal>
 
-        <Modal
+        {/* <Modal
             isOpen={isIncompleteFieldsAlertShown}
             onClosed={closeCurrentModal}
             centered
@@ -367,7 +367,7 @@ export const MenuBar: React.FC<Props> = ({
                   Done
                 </button>
               </ModalFooter>
-            </Modal>
+            </Modal> */}
     </>
   );
 };
