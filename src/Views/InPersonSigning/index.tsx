@@ -50,6 +50,7 @@ import { getRequest, postRequest } from "helpers/axios";
 //
 import { RootState } from "redux/store";
 import moment from "moment";
+import { FetchAllElementsStatus } from "utils/InPersonSigning/FetchAllElementStatus";
 
 const InPersonSigningPage = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
@@ -69,6 +70,8 @@ const InPersonSigningPage = () => {
   // const [isStartNeeded, setIsStartNeeded] = useState<boolean>(true);
 
   const signatureIndicatorRef = useRef<any>(null);
+
+  
   const currentReduxState = useSelector((state) => state);
 
   const fullData = useSelector(
@@ -361,7 +364,7 @@ const InPersonSigningPage = () => {
   };
 
 
-
+  
   const fetchingCordinates = async (
     uuid: string,
     uuid_template_instance: string
@@ -427,25 +430,35 @@ const InPersonSigningPage = () => {
         }
       });
 
-      if(coord && coord.length>0) {
-        coord.map((item) => {
-          // console.log('coord item value ' + JSON.stringify(item.value));
-          if(item.value && item.fieldType !== 'Checkbox'){
+      if(coord && coord.length > 0){
+        coord.forEach(element => {
+          if(element.value && element.fieldType !== 'Checkbox'){
             // console.log('Before completedFieldCount increament: ',completedFieldCount, item.value);  
             completedFieldCount += 1;
-            console.log('After completedFieldCount increament: ',completedFieldCount, item.value);  
-          }     
-          // if(item.fieldType === "Date"){
-          //   item.value = moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY");
-          //   console.log('item value Date ',item.value);
-                  
-          //   // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
-          // }   
-          // if(item.value === ''){
-          //   completedFieldCount -= 1;
-          // }  
-         })
+            console.log('After completedFieldCount increament: ',completedFieldCount, element.value);  
+          }   
+        });
       }
+
+      // if(coord && coord.length>0) {
+      //   coord.foreach((item) => {
+      //     // console.log('coord item value ' + JSON.stringify(item.value));
+      //     if(item.value && item.fieldType !== 'Checkbox'){
+      //       // console.log('Before completedFieldCount increament: ',completedFieldCount, item.value);  
+      //       completedFieldCount += 1;
+      //       console.log('After completedFieldCount increament: ',completedFieldCount, item.value);  
+      //     }     
+      //     // if(item.fieldType === "Date"){
+      //     //   item.value = moment(item.value, "YYYY-MM-DD").format("MM-DD-YYYY");
+      //     //   console.log('item value Date ',item.value);
+                  
+      //     //   // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+      //     // }   
+      //     // if(item.value === ''){
+      //     //   completedFieldCount -= 1;
+      //     // }  
+      //    })
+      // }
 
       // if (Object.keys(recordData).length > 0) {
       //         console.log('recordData after if',recordData);
@@ -506,7 +519,18 @@ const InPersonSigningPage = () => {
         totalNoOfFields: number;
         completedNoOfFields: number;
       }[] = [];
+      console.log('outside current redux state');
+      
       responseData.coord.forEach((ele) => {
+        console.log('inside current redux state');
+        const { listOfCompletedElements } = FetchAllElementsStatus({ reduxState: currentReduxState });
+        console.log('current redux state' + JSON.stringify(currentReduxState));
+        console.log('list of completed element in index.tsx' + listOfCompletedElements);
+        console.log('list of completed element in index.tsx length' + listOfCompletedElements.length);
+        
+        completedFieldCount += listOfCompletedElements.length;
+        console.log('completed Field Count when added length' + completedFieldCount);
+        
         tempSignatories.push({
           label: ele.signatoryName,
           value: ele.signatoryUUID,

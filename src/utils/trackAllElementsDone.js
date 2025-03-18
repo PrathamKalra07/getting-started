@@ -8,10 +8,15 @@ const FetchAllElementsStatus = (allPayload) => {
   } = allPayload.reduxState;
   const totalPages = allCoordinateData[allCoordinateData.length - 1].pageNo;
 
+  console.log("allPayload", allPayload);
+  
+
   // var totalDoneElements = 0;
   const listOfCompletedElements = [];
 
   for (let i = 0; i <= totalPages; i++) {
+    console.log("textData", textData);
+    
     textData[i] &&
       textData[i].map((item) => {
         if (item.isRequired) {
