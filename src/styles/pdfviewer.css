@@ -2,6 +2,14 @@
 /* @media only screen and (min-width: 320px) {
 } */
 
+.pdf-viewer-container {
+  margin-top: 25px !important;
+}
+
+.pdf-viewer-container-inperson {
+  margin-top: -19px !important;
+}
+
 /* Extra Small Devices, Phones and tables same */
 @media only screen and (max-width: 480px) {
 }
