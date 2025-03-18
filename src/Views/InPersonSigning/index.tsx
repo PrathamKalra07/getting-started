@@ -720,7 +720,7 @@ const InPersonSigningPage = () => {
                 isPdfLoaded={!!file}
                 setIsAuditHistoryShown={setIsAuditHistoryShown}
               />
-              <div className="pdf-viewer-div">
+              <div className="pdf-viewer-div-inperson">
                 {!file || isFetchingCordinatesData ? (
                   <Loading />
                 ) : (

@@ -95,7 +95,7 @@ export const Page = ({
     }}
   >
     {isStartShown ? (
-      <div className="signature-indicator">
+      <div className="signature-indicator-inperson">
 
       Start
     </div>
@@ -103,7 +103,7 @@ export const Page = ({
       <div className="next-hidden"></div>
     )}
   </div>
-    <div style={{ position: "relative" }} className="pdf-viewer-container">
+    <div style={{ position: "relative" }} className="pdf-viewer-container-inperson">
       <TransformWrapper
         maxScale={3}
         initialScale={1}
