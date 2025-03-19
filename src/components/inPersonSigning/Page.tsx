@@ -11,6 +11,7 @@ import { Dimensions } from "types";
 import { useSelector } from "react-redux";
 //
 import { RootState } from "redux/store";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 interface Props {
   page: any;
@@ -40,6 +41,11 @@ export const Page = ({
   const [height, setHeight] = useState((dimensions && dimensions.height) || 0);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [isStartShown, setIsStartShown] = useState(true);
+    const [showPopup, setShowPopup] = useState(false);
+  
+    const allTextData = useSelector((state: RootState) => state.textList.allTextData);
+    const allDateData = useSelector((state: RootState) => state.dateList.allDateData);
+    const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
   const activeSignatory = useSelector(
     (state: RootState) => state.inPerson.inPersonActiveSignatory.activeSignatory
   );
@@ -79,11 +85,67 @@ export const Page = ({
     renderPage(page);
   }, [page, updateDimensions]);
 
+  const handleNextClick = () => {
+    const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
+    if (allRequiredFieldsFilled) {
+      console.log('logggggg' + showPopup);
+      
+      setShowPopup(true);
+    } else {
+      handleStartAndScrollElement();
+    }
+  };
+
+  const checkAllRequiredFieldsFilled = () => {
+    const requiredTextFieldsFilled = Object.values(allTextData).every(pageData =>
+      (pageData as any[]).every(field => !field.isRequired || field.value)
+    );
+    const requiredDateFieldsFilled = Object.values(allDateData).every(pageData =>
+      (pageData as any[]).every(field => !field.isRequired || field.value !== 'Invalid date')
+    );
+    // const requiredCheckboxFieldsFilled = Object.values(allCheckboxData).every(pageData =>
+    //   (pageData as any[]).every(field => !field.isRequired || field.value)
+    // );
+
+    console.log('requiredTextFieldsFilled' + requiredTextFieldsFilled);
+    console.log('requiredDateFieldsFilled' + requiredDateFieldsFilled);
+    
+
+    // return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredCheckboxFieldsFilled;
+    return requiredTextFieldsFilled && requiredDateFieldsFilled;
+  };
+
   // console.log("width => ", width);
   // console.log("height => ", height);
   console.log("IN PERSON Signing Page....");
   return (
     <>
+     <Modal
+        isOpen={showPopup}
+        onClosed={() => setShowPopup(false)}
+        centered
+        className="modal-container"
+        toggle={() => setShowPopup(false)}
+        fade={false}
+        size={"large"}
+      >
+        {/* <ModalHeader>All Required Fields Filled</ModalHeader> */}
+        <ModalBody>
+          <div>
+            <p>All required fields are filled.</p>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            onClick={() => {
+              setShowPopup(false);
+            }}
+            className='btn custom-btn1 text-dark bg-secondary'
+          >
+            Close
+          </button>
+        </ModalFooter>
+      </Modal>
     <div
     ref={signatureIndicatorRef}
     // className="signature-indicator"
@@ -151,7 +213,7 @@ export const Page = ({
                 <div
                   ref={signatureIndicatorRef}
                   className="signature-indicator-next"
-                  onClick={(e) => handleStartAndScrollElement(e)}
+                  onClick={handleNextClick}
                 >
                   <span>
                     <i className="fa-solid fa-circle-arrow-down"></i> Next
