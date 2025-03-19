@@ -43,13 +43,14 @@ export const Page = ({
   const [isStartShown, setIsStartShown] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
   
-    const allTextData = useSelector((state: RootState) => state.textList.allTextData);
-    const allDateData = useSelector((state: RootState) => state.dateList.allDateData);
-    const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
+    const allTextData = useSelector((state: RootState) => state.inPerson.inPersonTextList.allTextData);
+    const allDateData = useSelector((state: RootState) => state.inPerson.inPersonDateList.allDateData);
+    // const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
   const activeSignatory = useSelector(
     (state: RootState) => state.inPerson.inPersonActiveSignatory.activeSignatory
   );
 
+  const allSignatureData = useSelector((state: RootState) => state.inPerson.inPersonSignatureList)
   useEffect(() => {
     setIsStartShown(true);
     signatureIndicatorRef.current.style.top = `10px`;
@@ -87,6 +88,8 @@ export const Page = ({
 
   const handleNextClick = () => {
     const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
+    console.log('signature data encoded ' + JSON.stringify(allSignatureData.encodedImgData));
+    
     if (allRequiredFieldsFilled) {
       console.log('logggggg' + showPopup);
       
@@ -98,11 +101,21 @@ export const Page = ({
 
   const checkAllRequiredFieldsFilled = () => {
     const requiredTextFieldsFilled = Object.values(allTextData).every(pageData =>
-      (pageData as any[]).every(field => !field.isRequired || field.value)
+      (pageData as any[]).every(field => {
+        console.log('Text Field:', field);
+        return !field.isRequired || field.value;
+      })
     );
     const requiredDateFieldsFilled = Object.values(allDateData).every(pageData =>
       (pageData as any[]).every(field => !field.isRequired || field.value !== 'Invalid date')
     );
+
+    let requiredSignatureFieldsFilled = false;
+    if(allSignatureData.encodedImgData !== ""){
+      requiredSignatureFieldsFilled = true;
+    }
+
+    // const requiredSignatureFieldsFilled = Object.values(allSignatureData)
     // const requiredCheckboxFieldsFilled = Object.values(allCheckboxData).every(pageData =>
     //   (pageData as any[]).every(field => !field.isRequired || field.value)
     // );
@@ -112,7 +125,7 @@ export const Page = ({
     
 
     // return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredCheckboxFieldsFilled;
-    return requiredTextFieldsFilled && requiredDateFieldsFilled;
+    return requiredSignatureFieldsFilled && requiredDateFieldsFilled && requiredTextFieldsFilled;
   };
 
   // console.log("width => ", width);

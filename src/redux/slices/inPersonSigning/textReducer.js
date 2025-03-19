@@ -9,17 +9,25 @@ export const textSlice = createSlice({
     setTextData: (state, action) => {
       const { allTextData } = action.payload;
       state.allTextData = allTextData;
+      console.log('@@@ setTextData: '+ JSON.stringify(allTextData));
+      console.log('@@@ state.allTextData: '+ JSON.stringify(state.allTextData));
+      
+      
     },
     changeTextData: (state, action) => {
-      const { elementIndex, value, currentPageNo } = action.payload;
+      const { elementIndex, textValue, currentPageNo } = action.payload;
+      console.log('change text' + JSON.stringify(action.payload));
+      
       const tempData = current(state.allTextData)[currentPageNo];
 
       console.log('@@@ changeTextData: '+ JSON.stringify(tempData));
       state.allTextData[currentPageNo] = tempData.map((item) => {
         if (elementIndex === item.id) {
+          console.log('value in text ' + textValue);
+          
           return {
             ...item,
-            value: value,
+            value: textValue,
           };
         }
         return item;

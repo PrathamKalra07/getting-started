@@ -46,6 +46,7 @@ export const Page = ({
   const allTextData = useSelector((state: RootState) => state.textList.allTextData);
   const allDateData = useSelector((state: RootState) => state.dateList.allDateData);
   const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
+  const allSignatureData = useSelector((state: RootState) => state.signatureList);
 
   useEffect(() => {
     const renderPage = async (p: Promise<any>) => {
@@ -101,6 +102,12 @@ export const Page = ({
     const requiredDateFieldsFilled = Object.values(allDateData).every(pageData =>
       (pageData as any[]).every(field => !field.isRequired || field.value !== 'Invalid date')
     );
+
+    let requiredSignatureFieldsFilled = false;
+    if(allSignatureData.encodedImgData !== ""){
+      requiredSignatureFieldsFilled = true;
+    }
+
     // const requiredCheckboxFieldsFilled = Object.values(allCheckboxData).every(pageData =>
     //   (pageData as any[]).every(field => !field.isRequired || field.value)
     // );
@@ -110,7 +117,7 @@ export const Page = ({
     
 
     // return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredCheckboxFieldsFilled;
-    return requiredTextFieldsFilled && requiredDateFieldsFilled;
+    return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled;
   };
   // console.log("width => ", width);
   // console.log("height => ", height);
