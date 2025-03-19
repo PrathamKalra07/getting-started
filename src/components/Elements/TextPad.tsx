@@ -55,9 +55,10 @@ export const TextPad = ({
         <span style={{ position: "relative" }}>
           <textarea
             // maxLength={width / 7}
-            maxLength={(width*height)/200}
+            maxLength={Math.floor(((width - 4) / 7) * ((height - 4) / 19))}  //{((width*height)/200)+(width/height)*5}
+            key={coordinateId}
             placeholder="Click To Enter Text Here..."
-            style={{ height: height, width: width ,resize:'none'}}
+            style={{ height: height, width: width ,resize:'none',overflow:"none"}}
             onClick={(e: any) => {
               dispatch(setActiveElement({ coordinateId, y, x }));
 
@@ -66,6 +67,8 @@ export const TextPad = ({
             onChange={(e) => {
               handleTextChange(e, textElementIndex);
             }}
+            onMouseDown={(e) => e.stopPropagation()}
+
             value={textInputValue}
             className={`
             ${
