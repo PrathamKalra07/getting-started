@@ -119,8 +119,15 @@ const savePdfDataToServer = async (tempState, tiUUID) => {
         <div class="footer-child">
           <span>
             This document has been signed via </span>
-            <a href="https://www.eruditeworks.com/ew-sign/demo/"
-            class="span-one">EWSIGN.</a>
+              <a
+                href="https://www.eruditeworks.com/ew-sign/demo/"
+                className="span-one">
+                <img 
+                  width="80px"
+                  alt="ew_sign_small_logo.png"
+                  src="/ew_sign_small_logo.png" 
+                />
+              </a>
         </div>
         <div class="footer-child">
           <span>Learn more about </span>
