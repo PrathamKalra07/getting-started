@@ -56,8 +56,9 @@ export const TextPad = ({
           <textarea
             // maxLength={width / 7}
             maxLength={(width*height)/200}
+            key={coordinateId}
             placeholder="Click To Enter Text Here..."
-            style={{ height: height, width: width ,resize:'none'}}
+            style={{ height: height, width: width ,resize:'none',zIndex:'9999',pointerEvents:"auto"}}
             onClick={(e: any) => {
               dispatch(setActiveElement({ coordinateId, y, x }));
 
@@ -66,6 +67,8 @@ export const TextPad = ({
             onChange={(e) => {
               handleTextChange(e, textElementIndex);
             }}
+            onMouseDown={(e) => e.stopPropagation()}
+
             value={textInputValue}
             className={`
             ${
