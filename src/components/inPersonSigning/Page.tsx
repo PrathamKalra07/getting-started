@@ -41,13 +41,18 @@ export const Page = ({
   const [height, setHeight] = useState((dimensions && dimensions.height) || 0);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [isStartShown, setIsStartShown] = useState(true);
-    const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [fieldCounter, setFieldCounter] = useState(1);
   
     const allTextData = useSelector((state: RootState) => state.inPerson.inPersonTextList.allTextData);
     const allDateData = useSelector((state: RootState) => state.inPerson.inPersonDateList.allDateData);
     // const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
   const activeSignatory = useSelector(
     (state: RootState) => state.inPerson.inPersonActiveSignatory.activeSignatory
+  );
+
+  const inPersonCoordinatesList = useSelector(
+    (state: RootState) => state.inPerson.inPersonCoordinatesList.activeSignatoriesCoordinateData
   );
 
   const allSignatureData = useSelector((state: RootState) => state.inPerson.inPersonSignatureList)
@@ -87,15 +92,23 @@ export const Page = ({
   }, [page, updateDimensions]);
 
   const handleNextClick = () => {
-    const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
-    console.log('signature data encoded ' + JSON.stringify(allSignatureData.encodedImgData));
-    
-    if (allRequiredFieldsFilled) {
-      console.log('logggggg' + showPopup);
+    if (fieldCounter === inPersonCoordinatesList.length) {
+      console.log('in person coordinates data length ' + inPersonCoordinatesList.length);
+      const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
+      console.log('signature data encoded ' + JSON.stringify(allSignatureData.encodedImgData));
       
-      setShowPopup(true);
-    } else {
+      if (allRequiredFieldsFilled) {
+        console.log('logggggg' + showPopup);
+        
+        setShowPopup(true);
+      } else {
+        handleStartAndScrollElement();
+      }
+    }else {
       handleStartAndScrollElement();
+      console.log('field counter' + fieldCounter);
+      
+      setFieldCounter(fieldCounter => fieldCounter + 1);
     }
   };
 

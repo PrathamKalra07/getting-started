@@ -42,11 +42,13 @@ export const Page = ({
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [isStartShown, setIsStartShown] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
+  const [fieldCounter, setFieldCounter] = useState(1);
 
   const allTextData = useSelector((state: RootState) => state.textList.allTextData);
   const allDateData = useSelector((state: RootState) => state.dateList.allDateData);
   const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
   const allSignatureData = useSelector((state: RootState) => state.signatureList);
+  const allCoordinatesData = useSelector((state: RootState) => state.coordinatesList);
 
   useEffect(() => {
     const renderPage = async (p: Promise<any>) => {
@@ -85,17 +87,27 @@ export const Page = ({
 
 
   const handleNextClick = () => {
-    const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
-    if (allRequiredFieldsFilled) {
-      console.log('logggggg' + showPopup);
-      
-      setShowPopup(true);
+    const { allCoordinateData  } = allCoordinatesData;
+    console.log('coordinates data length ' + allCoordinateData.length);
+    if(fieldCounter === allCoordinateData.length){
+      const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
+      if (allRequiredFieldsFilled) {
+        console.log('logggggg' + showPopup);
+        
+        setShowPopup(true);
+      } else {
+        handleStartAndScrollElement();
+      }
     } else {
       handleStartAndScrollElement();
+      console.log('field counter' + fieldCounter);
+      
+      setFieldCounter(fieldCounter => fieldCounter + 1);
     }
   };
 
   const checkAllRequiredFieldsFilled = () => {
+    
     const requiredTextFieldsFilled = Object.values(allTextData).every(pageData =>
       (pageData as any[]).every(field => !field.isRequired || field.value)
     );
