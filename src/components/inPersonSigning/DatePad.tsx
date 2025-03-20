@@ -15,6 +15,8 @@ interface Props {
   value: string;
   textElementIndex: number;
   handleTextChange: Function;
+  editable:boolean;
+  isRequired:boolean;
   coordinateId: number;
 }
 
@@ -26,6 +28,8 @@ export const DatePad = ({
   value: textInputValue,
   textElementIndex,
   handleTextChange,
+  editable,
+  isRequired,
   coordinateId,
 }: Props) => {
   const dispatch = useDispatch();
@@ -39,6 +43,7 @@ export const DatePad = ({
 
   return (
     <>
+    {/*
       <div
         style={{
           // backgroundColor: "#ffe185",
@@ -73,6 +78,70 @@ export const DatePad = ({
           }}
         />
       </div>
+    */}
+    <div
+            style={{
+              // backgroundColor: "#ffe185",
+              position: "absolute",
+              height: height,
+              width: width,
+              top: y,
+              left: x,
+              right: 0,
+              bottom: 0,
+              borderRadius: 5,
+            }}
+          >
+            <div className={editable?"":"readonly-date-container"}>
+          
+            <span className={editable?"":"readonly-date"} style={{display:"none"}}>Cannot Edit</span>
+    
+            <span style={{ position: "relative" }}>
+              <input
+                placeholder="Enter Data Here..."
+                style={{ height: height, width: width }}
+                onChange={(e) => handleTextChange(e, textElementIndex)}
+                value={moment(textInputValue, "DD-MM-YYYY").format("YYYY-MM-DD")}
+                // value={moment(formatDate(textInputValue), "DD-MM-YYYY").format(
+                  // "YYYY-MM-DD"
+                // )}
+                type="date"
+                // className="form-control"
+                className={`${
+                  
+                  elementsNavigationHelperState.activeElementCoordinateId ===
+                  coordinateId
+                    ? "active-data-container-input-date"
+                    : (textInputValue
+                    ? "filled-data-container-input-date"
+                    : "empty-data-container-input-date")
+                }`}
+                onClick={(e: any) => {
+                  if(editable){
+                    e.currentTarget.showPicker();
+                    dispatch(setActiveElement({ coordinateId, y, x }));
+                  }else{
+                    e.preventDefault();
+                  }
+                }}
+              />
+              {isRequired && (
+                <span
+                  style={{
+                    position: "absolute",
+                    fontWeight: "bold",
+                    color: "#BB2525",
+                    fontSize: "1.2rem",
+                    top: "-10px",
+                    right: "-10px",
+                  }}
+                >
+                  *
+                </span>
+              )}
+            </span>
+          </div>
+          </div>
     </>
   );
 };

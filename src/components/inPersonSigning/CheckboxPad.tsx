@@ -14,6 +14,8 @@ interface Props {
   height: number;
   value: any;
   textElementIndex: number;
+  editable:boolean;
+  isRequired:boolean;
   handleTextChange: Function;
   coordinateId: number;
 }
@@ -25,6 +27,8 @@ export const CheckboxPad = ({
   height,
   value: textInputValue,
   textElementIndex,
+  editable,
+  isRequired,
   handleTextChange,
   coordinateId,
 }: Props) => {
@@ -36,7 +40,7 @@ export const CheckboxPad = ({
 
   return (
     <>
-      <div
+      {/* <div
         style={{
           // backgroundColor: "#ffe185",
           position: "absolute",
@@ -68,7 +72,64 @@ export const CheckboxPad = ({
           }
         `}
         />
-      </div>
+      </div> */}
+      <div
+              className="checkboxfields"
+              style={{
+                // backgroundColor: "#ffe185",
+                position: "absolute",
+                height: height,
+                width: width,
+                top: y,
+                left: x,
+                right: 0,
+                bottom: 0,
+                borderRadius: 5,
+              }}
+            >
+              <span style={{ position: "relative" }}>
+                {!editable && 
+                <span className="checkbox-readOnly" style={{position:"absolute",fontSize:'smaller',top:'10px',backgroundColor:'gray',color:'white',borderRadius:"5px",padding:'1px',width:'max-content'}}>Cannot Edit</span>
+                }
+                <input
+      
+                  style={editable?{}:{pointerEvents:'none'}}
+                  // style={{ height: height, width: width }}
+                  onChange={(e) => handleTextChange(e, textElementIndex)}
+                  type="checkbox"
+                  onClick={() => {
+                    dispatch(setActiveElement({ coordinateId, y, x }));
+                  }}
+                  checked={textInputValue}
+                  className={`form-check-input
+                ${
+                  elementsNavigationHelperState.activeElementCoordinateId ===
+                  coordinateId
+                    ? "active-data-container-input-checkbox"
+                    : textInputValue
+                    ? "filled-data-container-input-checkbox"
+                    : "empty-data-container-input-checkbox"
+                }
+              `}
+      
+                />
+      
+                {isRequired && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      fontWeight: "bold",
+                      color: "#BB2525",
+                      fontSize: "1.2rem",
+                      top: "-10px",
+                      right: "-10px",
+                    }}
+                  >
+                    *
+                  </span>
+                )}
+              </span>
+            </div>
     </>
   );
 };
