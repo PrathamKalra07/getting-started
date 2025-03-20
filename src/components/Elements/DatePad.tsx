@@ -13,6 +13,7 @@ interface Props {
   width: number;
   height: number;
   value: string;
+  editable:boolean;
   textElementIndex: number;
   handleTextChange: Function;
   coordinateId: number;
@@ -27,6 +28,7 @@ export const DatePad = ({
   width,
   height,
   value: textInputValue,
+  editable,
   textElementIndex,
   handleTextChange,
   coordinateId,
@@ -63,6 +65,10 @@ export const DatePad = ({
           borderRadius: 5,
         }}
       >
+        <div className={editable?"":"readonly-date-container"}>
+      
+        <span className={editable?"":"readonly-date"} style={{display:"none"}}>Cannot Edit</span>
+
         <span style={{ position: "relative" }}>
           <input
             placeholder="Enter Data Here..."
@@ -75,16 +81,21 @@ export const DatePad = ({
             type="date"
             // className="form-control"
             className={`${
+              
               elementsNavigationHelperState.activeElementCoordinateId ===
               coordinateId
                 ? "active-data-container-input-date"
-                : textInputValue
+                : (textInputValue
                 ? "filled-data-container-input-date"
-                : "empty-data-container-input-date"
+                : "empty-data-container-input-date")
             }`}
             onClick={(e: any) => {
-              e.currentTarget.showPicker();
-              dispatch(setActiveElement({ coordinateId, y, x }));
+              if(editable){
+                e.currentTarget.showPicker();
+                dispatch(setActiveElement({ coordinateId, y, x }));
+              }else{
+                e.preventDefault();
+              }
             }}
           />
           {isRequired && (
@@ -102,6 +113,7 @@ export const DatePad = ({
             </span>
           )}
         </span>
+      </div>
       </div>
     </>
   );

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Icon } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveElement } from "redux/slices/elementsNavigationHelperReducer";
 import { RootState } from "redux/store";
+import { useState } from "react";
 
 interface Props {
   x: number;
@@ -10,6 +11,7 @@ interface Props {
   width: number;
   height: number;
   value: string;
+  editable:boolean;
   textElementIndex: number;
   handleTextChange: Function;
   coordinateId: number;
@@ -23,6 +25,7 @@ export const TextPad = ({
   width,
   height,
   value: textInputValue,
+  editable,
   textElementIndex,
   handleTextChange,
   coordinateId,
@@ -33,7 +36,16 @@ export const TextPad = ({
   const elementsNavigationHelperState = useSelector(
     (state: RootState) => state.elementsNavigationHelper
   );
-
+  const [remainingText,setRemainingText]=useState(Number);
+  const [maxCharacters,setMaxCharacters]=useState(Number);
+  useEffect(()=>{
+    const setMaxChars=()=>{
+      let maxChar = Math.floor(((width - 4) / 7) * ((height - 4) / 19));
+      setMaxCharacters(maxChar);
+      setRemainingText(maxChar);
+    }
+    setMaxChars();
+  },[])
   return (
     <>
       <div
@@ -49,37 +61,59 @@ export const TextPad = ({
           borderRadius: 5,
         }}
         // onClick={addDrawing}
+        
       >
+        <div className={editable?"":"readonly-container-textarea"}>
+          <span className="cannot-edit" style={editable?{display:'none'}:{}} > Cannot Edit </span>
+        
         {/* signatureData */}
 
         <span style={{ position: "relative" }}>
+          {editable && 
+          <span style={{position:"absolute",top:'15px',right:"0px",zIndex:"99",backgroundColor:'gray',color:'white',borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
+            {remainingText} left
+          </span>
+          }
           <textarea
             // maxLength={width / 7}
-            maxLength={Math.floor(((width - 4) / 7) * ((height - 4) / 19))}  //{((width*height)/200)+(width/height)*5}
+            maxLength={maxCharacters}
             key={coordinateId}
             placeholder="Click To Enter Text Here..."
-            style={{ height: height, width: width ,resize:'none',overflow:"none"}}
+            style={editable?{ height: height, width: width ,resize:'none',overflow:"none"}:{height: height, width: width ,resize:'none',overflow:"none",pointerEvents:"none"}}
             onClick={(e: any) => {
-              dispatch(setActiveElement({ coordinateId, y, x }));
+              if(editable){
 
-              e.target.focus();
+                dispatch(setActiveElement({ coordinateId, y, x }));
+  
+                e.target.focus();
+              }else{
+                e.preventDefault();
+              }
             }}
             onChange={(e) => {
-              handleTextChange(e, textElementIndex);
+              if (editable) {
+                handleTextChange(e, textElementIndex);
+                setRemainingText(maxCharacters - e.target.value.length);
+              } else {
+                e.preventDefault(); // Prevent accidental deletion
+              }
             }}
             onMouseDown={(e) => e.stopPropagation()}
 
             value={textInputValue}
             className={`
             ${
+              editable?(
               elementsNavigationHelperState.activeElementCoordinateId ===
               coordinateId
                 ? "active-data-container-input-text"
                 : (textInputValue
                 ? "filled-data-container-input-text"
-                : "empty-data-container-input-text")
+                : "empty-data-container-input-text")):"readonly-data-container-input-text"
             }
           `}
+
+          readOnly={editable ? false : true}
           />
 
           {/* isRequired */}
@@ -98,6 +132,7 @@ export const TextPad = ({
             </span>
           )}
         </span>
+      </div>
       </div>
     </>
   );

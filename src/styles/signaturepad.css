@@ -53,7 +53,7 @@
 
 .empty-data-container-input-text {
   background-color: #354259 !important;
-  border-radius: 4px;
+  border-radius: 10px 10px 0 0;
   color: white;
 }
 .empty-data-container-input-text::placeholder {
@@ -67,18 +67,100 @@
   background-color: white;
   border: 3px solid #22a699;
   color: black;
-  border-radius: 4px;
+  border-radius: 10px;
+  
 }
 .filled-data-container-input-text:hover {
   background-color: #22a69988;
 }
+.readonly-container-textarea{
+  border-radius: 10px;
+  textarea{
+    background-color: white;
+  border: 1px solid #22a699;
+  color: black;
+  border-radius: 10px;
+  }
+  /* display: none; */
+  .cannot-edit{
+    display: none;
+  }
+}
+.readonly-container-textarea:hover{
+  .cannot-edit{
+    display: block;
+    position: absolute;
+    z-index: 999;
+    border-radius: 10px;
+    /* margin: auto; */
+    left: 0;
+    right: 0;
+    /* bottom: 0; */
+    top: 50%;
+    transform: translateY(-50%)
+    /* top: 0; */
+    
+  }
+  align-items: center;
+  text-align: center;
+  background-color: #22a699;
+  /* display: block; */
+  textarea{
+    opacity: 0;
+    
+  }
+  z-index: 99;
+}
+/* .readonly-date-container{
+  background-color: white;
+  border: 1px solid #22a699;
+  color: black;
+  border-radius: 10px;
+  
+} */
+.readonly-date-container:hover{
+  
+  .readonly-date{
+    display: block !important;
+    position: absolute;
+    z-index: 999;
+    border-radius: 10px;
+    /* margin: auto; */
+    left: 0;
+    right: 0;
+    /* bottom: 0; */
+    top: 50%;
+    transform: translateY(-50%)
+    /* top: 0; */
+    
+  }
+  align-items: center;
+  text-align: center;
+  background-color: #22a699;
+  /* display: block; */
+  border-radius: 10px;
 
+  input{
+    opacity: 0;
+    
+  }
+  z-index: 0;
+}
+
+.checkbox-readOnly{
+  display: none;
+}
+.checkboxfields:hover{
+  .checkbox-readOnly{
+    display: block;
+  }
+}
 .active-data-container-input-text {
   background-color: #22a699 !important;
   color: white !important;
   /* background-color: #fdff47;
   border: 3px solid black; */
-  border-radius: 5px;
+  border-radius: 10px 10px 0 0 ;
   font-weight: bold;
   border: none !important;
   outline: none !important;
@@ -95,7 +177,7 @@
 
 .empty-data-container-input-date {
   background-color: #354259 !important;
-  border-radius: 4px;
+  border-radius: 10px;
   color: white !important;
 }
 .empty-data-container-input-date::placeholder {
@@ -109,7 +191,7 @@
   background-color: white;
   border: 3px solid #22a699;
   color: black;
-  border-radius: 4px;
+  border-radius: 10px;
 }
 .filled-data-container-input-date:hover {
   background-color: #22a69988;
@@ -120,7 +202,7 @@
   color: white !important;
   /* background-color: #fdff47;
   border: 3px solid black; */
-  border-radius: 5px;
+  border-radius: 10px;
   font-weight: bold;
   border: none !important;
   outline: none !important;
@@ -137,7 +219,7 @@
 
 .empty-data-container-input-checkbox {
   background-color: #354259 !important;
-  border-radius: 4px;
+  border-radius: 10px 10px 0 0;
   color: white;
 }
 .empty-data-container-input-checkbox::placeholder {

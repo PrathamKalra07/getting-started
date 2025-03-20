@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 //
 import { setActiveElement } from "redux/slices/elementsNavigationHelperReducer";
 import { RootState } from "redux/store";
+import { NONE } from "utils/backupPrepareAssets/makeTextPDF";
 
 interface Props {
   x: number;
@@ -14,6 +15,7 @@ interface Props {
   height: number;
   value: any;
   textElementIndex: number;
+  editable:boolean;
   handleTextChange: Function;
   coordinateId: number;
   //
@@ -27,6 +29,7 @@ export const CheckboxPad = ({
   height,
   value: textInputValue,
   textElementIndex,
+  editable,
   handleTextChange,
   coordinateId,
   isRequired,
@@ -40,6 +43,7 @@ export const CheckboxPad = ({
   return (
     <>
       <div
+        className="checkboxfields"
         style={{
           // backgroundColor: "#ffe185",
           position: "absolute",
@@ -53,7 +57,12 @@ export const CheckboxPad = ({
         }}
       >
         <span style={{ position: "relative" }}>
+          {!editable && 
+          <span className="checkbox-readOnly" style={{position:"absolute",fontSize:'smaller',top:'10px',backgroundColor:'gray',color:'white',borderRadius:"5px",padding:'1px',width:'max-content'}}>Cannot Edit</span>
+          }
           <input
+
+            style={editable?{}:{pointerEvents:'none'}}
             // style={{ height: height, width: width }}
             onChange={(e) => handleTextChange(e, textElementIndex)}
             type="checkbox"
@@ -71,6 +80,7 @@ export const CheckboxPad = ({
               : "empty-data-container-input-checkbox"
           }
         `}
+
           />
 
           {isRequired && (
