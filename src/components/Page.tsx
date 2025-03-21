@@ -49,6 +49,8 @@ export const Page = ({
   const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
   const allSignatureData = useSelector((state: RootState) => state.signatureList);
   const allCoordinatesData = useSelector((state: RootState) => state.coordinatesList);
+    const [isAllRequiredFieldsFilled, setIsAllRequiredFieldsFilled] = useState(false);
+  const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
 
   useEffect(() => {
     const renderPage = async (p: Promise<any>) => {
@@ -84,6 +86,34 @@ export const Page = ({
     // disableBodyScroll();
     renderPage(page);
   }, [page, updateDimensions]);
+
+
+   const updateFieldStatus = () => {
+      const requiredTextFieldsFilled = Object.values(allTextData).every(pageData =>
+        (pageData as any[]).every(field => !field.isRequired || field.value)
+      );
+      const requiredDateFieldsFilled = Object.values(allDateData).every(pageData =>
+        (pageData as any[]).every(field => !field.isRequired || field.value !== 'Invalid date')
+      );
+      const requiredSignatureFieldsFilled = allSignatureData.encodedImgData !== "";
+    
+      const allTextFieldsFilled = Object.values(allTextData).every(pageData =>
+        (pageData as any[]).every(field => field.value)
+      );
+      const allDateFieldsFilled = Object.values(allDateData).every(pageData =>
+        (pageData as any[]).every(field => field.value !== 'Invalid date')
+      );
+    
+      const allFieldsFilled = requiredTextFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled &&
+                              allTextFieldsFilled && allDateFieldsFilled;
+    
+      setIsAllRequiredFieldsFilled(requiredTextFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled);
+      setIsAllFieldsFilled(allFieldsFilled);
+    };
+    
+    useEffect(() => {
+      updateFieldStatus();
+    }, [allTextData, allDateData, allSignatureData]);
 
 
   const handleNextClick = () => {
@@ -233,7 +263,7 @@ export const Page = ({
                   onClick={handleNextClick}
                 >
                   <span>
-                    <i className="fa-solid fa-circle-arrow-down"></i> Next
+                    <i className="fa-solid fa-circle-arrow-down"></i> {isAllFieldsFilled ? "Finish" : "Next"}
                   </span>
                 </div>
               )}
