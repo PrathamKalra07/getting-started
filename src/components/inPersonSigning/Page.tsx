@@ -43,6 +43,8 @@ export const Page = ({
   const [isStartShown, setIsStartShown] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const [fieldCounter, setFieldCounter] = useState(1);
+  const [isAllRequiredFieldsFilled, setIsAllRequiredFieldsFilled] = useState(false);
+const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
   
     const allTextData = useSelector((state: RootState) => state.inPerson.inPersonTextList.allTextData);
     const allDateData = useSelector((state: RootState) => state.inPerson.inPersonDateList.allDateData);
@@ -61,6 +63,7 @@ export const Page = ({
     signatureIndicatorRef.current.style.top = `10px`;
     signatureIndicatorRef.current.style.left = `0px`;
   }, [activeSignatory]);
+
 
   useEffect(() => {
     const renderPage = async (p: Promise<any>) => {
@@ -91,6 +94,34 @@ export const Page = ({
     renderPage(page);
   }, [page, updateDimensions]);
 
+  const updateFieldStatus = () => {
+    const requiredTextFieldsFilled = Object.values(allTextData).every(pageData =>
+      (pageData as any[]).every(field => !field.isRequired || field.value)
+    );
+    const requiredDateFieldsFilled = Object.values(allDateData).every(pageData =>
+      (pageData as any[]).every(field => !field.isRequired || field.value !== 'Invalid date')
+    );
+    const requiredSignatureFieldsFilled = allSignatureData.encodedImgData !== "";
+  
+    const allTextFieldsFilled = Object.values(allTextData).every(pageData =>
+      (pageData as any[]).every(field => field.value)
+    );
+    const allDateFieldsFilled = Object.values(allDateData).every(pageData =>
+      (pageData as any[]).every(field => field.value !== 'Invalid date')
+    );
+  
+    const allFieldsFilled = requiredTextFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled &&
+                            allTextFieldsFilled && allDateFieldsFilled;
+  
+    setIsAllRequiredFieldsFilled(requiredTextFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled);
+    setIsAllFieldsFilled(allFieldsFilled);
+  };
+  
+  useEffect(() => {
+    updateFieldStatus();
+  }, [allTextData, allDateData, allSignatureData]);
+  
+
   const handleNextClick = () => {
     if (fieldCounter === inPersonCoordinatesList.length) {
       console.log('in person coordinates data length ' + inPersonCoordinatesList.length);
@@ -110,6 +141,18 @@ export const Page = ({
       
       setFieldCounter(fieldCounter => fieldCounter + 1);
     }
+  };
+
+  const checkAllFieldsFilled = () => {
+    const allTextFieldsFilled = Object.values(allTextData).every(pageData =>
+      (pageData as any[]).every(field => field.value)
+    );
+    const allDateFieldsFilled = Object.values(allDateData).every(pageData =>
+      (pageData as any[]).every(field => field.value !== 'Invalid date')
+    );
+    const allSignatureFieldsFilled = allSignatureData.encodedImgData !== "";
+
+    return allTextFieldsFilled && allDateFieldsFilled && allSignatureFieldsFilled;
   };
 
   const checkAllRequiredFieldsFilled = () => {
@@ -240,9 +283,10 @@ export const Page = ({
                   ref={signatureIndicatorRef}
                   className="signature-indicator-next"
                   onClick={handleNextClick}
+                  
                 >
                   <span>
-                    <i className="fa-solid fa-circle-arrow-down"></i> Next
+                    <i className="fa-solid fa-circle-arrow-down"></i> {isAllFieldsFilled ? "Finish" : "Next"}
                   </span>
                 </div>
               )}
