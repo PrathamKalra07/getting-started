@@ -124,7 +124,7 @@ export const TextPad = ({
       
               <span style={{ position: "relative" }}>
                 {editable && 
-                <span style={{position:"absolute",top:'15px',right:"0px",zIndex:"99",backgroundColor:'gray',color:'white',borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
+                <span style={{position:"absolute",top:'15px',right:"0px",backgroundColor:'#1d5d9b',color:'white',zIndex:"1",borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
                   {remainingText} left
                 </span>
                 }
