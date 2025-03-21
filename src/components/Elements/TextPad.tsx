@@ -38,6 +38,8 @@ export const TextPad = ({
   );
   const [remainingText,setRemainingText]=useState(Number);
   const [maxCharacters,setMaxCharacters]=useState(Number);
+  const [isActive, setIsActive] = useState(false);
+
   useEffect(()=>{
     const setMaxChars=()=>{
       let maxChar = Math.floor(((width - 4) / 7) * ((height - 4) / 19));
@@ -60,6 +62,9 @@ export const TextPad = ({
           bottom: 0,
           borderRadius: 5,
         }}
+        // onFocus={()=>setIsActive(true)}
+        // onMouseEnter={()=>setIsActive(true)}
+        // onMouseLeave={()=>setIsActive(false)}
         // onClick={addDrawing}
         
       >
@@ -69,10 +74,10 @@ export const TextPad = ({
         {/* signatureData */}
 
         <span style={{ position: "relative" }}>
-          {editable && 
-          <span style={{position:"absolute",top:'15px',right:"0px",zIndex:"99",backgroundColor:'gray',color:'white',borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
-            {remainingText} left
-          </span>
+          {editable &&
+            <span style={isActive?{display:'none'}:{position:"absolute",top:'15px',right:"0px",backgroundColor:'#1d5d9b',color:'white',borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
+              {remainingText} left
+            </span>
           }
           <textarea
             // maxLength={width / 7}
