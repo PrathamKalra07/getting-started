@@ -1,3 +1,4 @@
+//-------------> C:\Users\shiva\Desktop\ew-sign-signpad\src\components\Page.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { PaginationContainer } from "containers/PaginationContainer";
 
@@ -8,6 +9,11 @@ import { CheckboxContainer } from "containers/CheckboxContainer";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Dimensions } from "types";
+import { useSelector } from "react-redux";
+import { RootState } from "redux/store";
+// import { Modal } from "semantic-ui-react";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import CommonPDFViewer from "./Common/CommonPDFviewer";
 
 interface Props {
   page: any;
@@ -37,6 +43,14 @@ export const Page = ({
   const [height, setHeight] = useState((dimensions && dimensions.height) || 0);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [isStartShown, setIsStartShown] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
+  const [pdfLiveUrl, setPdfLiveUrl] = useState("");
+
+  const allTextData = useSelector((state: RootState) => state.textList.allTextData);
+  const allDateData = useSelector((state: RootState) => state.dateList.allDateData);
+  const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
+  const basicInfoData = useSelector((state: RootState) => state.basicInfoData);
+  const scrollContainer = React.useRef(null);
 
   useEffect(() => {
     const renderPage = async (p: Promise<any>) => {
@@ -64,90 +78,118 @@ export const Page = ({
       }
     };
 
+    // const disableBodyScroll = () => {
+    //   document.body.style.position = "fixed";
+    //   document.body.style.width = "98%";
+    // };
+
+    // disableBodyScroll();
+
+    if (basicInfoData) {
+      const { uuid, uuidTemplateInstance } = basicInfoData;
+      const newPdfLiveUrl = `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
+      const newDocumentLiveUrl = `${process.env.REACT_APP_API_URL}/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
+
+      setPdfLiveUrl(newDocumentLiveUrl);
+    }
     renderPage(page);
   }, [page, updateDimensions]);
 
+
+  const handleNextClick = () => {
+    const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
+    if (allRequiredFieldsFilled) {
+      console.log('logggggg' + showPopup);
+      
+      setShowPopup(true);
+    } else {
+      handleStartAndScrollElement();
+    }
+  };
+
+  const checkAllRequiredFieldsFilled = () => {
+    const requiredTextFieldsFilled = Object.values(allTextData).every(pageData =>
+      (pageData as any[]).every(field => !field.isRequired || field.value)
+    );
+    const requiredDateFieldsFilled = Object.values(allDateData).every(pageData =>
+      (pageData as any[]).every(field => !field.isRequired || field.value !== 'Invalid date')
+    );
+    // const requiredCheckboxFieldsFilled = Object.values(allCheckboxData).every(pageData =>
+    //   (pageData as any[]).every(field => !field.isRequired || field.value)
+    // );
+
+    console.log('requiredTextFieldsFilled' + requiredTextFieldsFilled);
+    console.log('requiredDateFieldsFilled' + requiredDateFieldsFilled);
+    
+
+    // return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredCheckboxFieldsFilled;
+    return requiredTextFieldsFilled && requiredDateFieldsFilled;
+  };
   // console.log("width => ", width);
   // console.log("height => ", height);
 
   return (
-    <div style={{ position: "relative" }} className="pdf-viewer-container">
-      <TransformWrapper
-        maxScale={3}
-        initialScale={1}
-        disabled={deviceWidth <= 600}
-        centerZoomedOut
-        disablePadding
-        wheel={{ disabled: true }}
-        doubleClick={{ disabled: true }}
-        // // pinch={{ disabled: true }}
-        // // panning={{ disabled: true }}
+    <>
+    <Modal
+        isOpen={showPopup}
+        onClosed={() => setShowPopup(false)}
+        centered
+        className="modal-container"
+        toggle={() => setShowPopup(false)}
+        fade={false}
+        size={"large"}
       >
-        <TransformComponent>
+        {/* <ModalHeader>All Required Fields Filled</ModalHeader> */}
+        <ModalBody>
           <div>
-            <canvas
-              ref={canvasRef}
-              width={width}
-              height={height}
-              // width={595}
-              // height={840}
-              style={{
-                borderRadius: "5px",
-                boxShadow: "0 2px 5px gray",
-              }}
-            />
+            <p>All required fields are filled.</p>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            onClick={() => {
+              setShowPopup(false);
+            }}
+            className='btn custom-btn1 text-dark bg-secondary'
+          >
+            Close
+          </button>
+        </ModalFooter>
+      </Modal>
+      <div
+          ref={signatureIndicatorRef}
+          // className="signature-indicator"
+          onClick={(e) => {
+            if (isStartShown) {
+              setIsStartShown(false);
+            }
+            handleStartAndScrollElement(e);
+          }}
+        >
+          {isStartShown ? (
+            <div className="signature-indicator">
 
-            {/*  */}
-            <SignatureContainer
+              Start
+            </div>
+          ) : (
+            <div className="next-hidden"></div>
+          )}
+        </div>
+        {/* <TransformComponent > */}
+
+        <SignatureContainer
               page={page}
               addDrawing={() => setDrawingModalOpen(true)}
               isFetchingCordinatesData={isFetchingCordinatesData}
             />
-            <TextContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-            <DateContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-            <CheckboxContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
+          
+          <CommonPDFViewer pdfUrl ={pdfLiveUrl} /> 
 
-            <div
-              ref={signatureIndicatorRef}
-              className="signature-indicator"
-              onClick={(e) => {
-                if (isStartShown) {
-                  setIsStartShown(false);
-                }
-                handleStartAndScrollElement(e);
-              }}
-            >
-              {isStartShown ? (
-                `Start`
-              ) : (
-                <span>
-                  <i className="fa-solid fa-circle-arrow-down"></i> Next
-                </span>
-              )}
-            </div>
-          </div>
-        </TransformComponent>
+        {/* </TransformComponent>    */}
 
-        <React.Fragment>
-          {/* pagination start */}
-          <PaginationContainer
-            page={page}
-            allPages={allPages}
-            goToPage={goToPage}
-          />
-
-          {/* pagination end */}
-        </React.Fragment>
-      </TransformWrapper>
-    </div>
+    </>
   );
 };
+
+
+
