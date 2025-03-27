@@ -22,6 +22,7 @@ export async function Save(pdfFile: File, tempState: any) {
 
   try {
     pdfDoc = await PDFLib.PDFDocument.load(await readAsArrayBuffer(pdfFile));
+    console.log('@@@ pdfDoc::'+JSON.stringify(pdfDoc));
   } catch (e) {
     console.log("Failed to load PDF.");
     throw e;
@@ -67,10 +68,10 @@ export async function Save(pdfFile: File, tempState: any) {
   const textDataPagesWise = textList.allTextData;
   const dateDataPagesWise = dateList.allDateData;
   const checkboxDataPagesWise = checkboxList.allCheckboxData;
-
+  
   const totalPages = pdfDoc.getPages().length;
   const pageWiseAllData: any = {};
-
+  
   for (let i = 0; i < totalPages; i++) {
     if (!pageWiseAllData[i]) {
       pageWiseAllData[i] = [];
@@ -80,6 +81,7 @@ export async function Save(pdfFile: File, tempState: any) {
 
     if (signatureDataPagesWise[i]) {
       element = signatureDataPagesWise[i];
+      // console.log('@@@ signatureDataPagesWise::element::'+JSON.stringify(element));
 
       pageWiseAllData[i].push(
         ...element.map((item: any) => ({
@@ -88,8 +90,10 @@ export async function Save(pdfFile: File, tempState: any) {
         }))
       );
     }
+
     if (textDataPagesWise[i]) {
       element = textDataPagesWise[i];
+      // console.log('@@@ textDataPagesWise::element::'+JSON.stringify(element));
 
       pageWiseAllData[i].push(
         ...element.map((item: any) => ({
@@ -153,11 +157,11 @@ export async function Save(pdfFile: File, tempState: any) {
 
     console.log("@@@ bodyContent" + JSON.stringify(bodyContent));
 
-    const { data } = await axios.request({
-      url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
-      method: "POST",
-      data: bodyContent,
-    });
+    // const { data } = await axios.request({
+    //   url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
+    //   method: "POST",
+    //   data: bodyContent,
+    // });
 
     const thankYouContainer: HTMLElement = document.getElementById(
       "thankyou-container"

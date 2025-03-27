@@ -1,3 +1,4 @@
+//-------------> C:\Users\shiva\Desktop\ew-sign-signpad\src\components\Page.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { PaginationContainer } from "containers/PaginationContainer";
 
@@ -12,6 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
 // import { Modal } from "semantic-ui-react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import CommonPDFViewer from "./Common/CommonPDFviewer";
 
 interface Props {
   page: any;
@@ -43,6 +45,7 @@ export const Page = ({
   const [isStartShown, setIsStartShown] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const [fieldCounter, setFieldCounter] = useState(1);
+  const [pdfLiveUrl, setPdfLiveUrl] = useState("");
 
   const allTextData = useSelector((state: RootState) => state.textList.allTextData);
   const allDateData = useSelector((state: RootState) => state.dateList.allDateData);
@@ -51,6 +54,8 @@ export const Page = ({
   const allCoordinatesData = useSelector((state: RootState) => state.coordinatesList);
     const [isAllRequiredFieldsFilled, setIsAllRequiredFieldsFilled] = useState(false);
   const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
+  const basicInfoData = useSelector((state: RootState) => state.basicInfoData);
+  const scrollContainer = React.useRef(null);
 
   useEffect(() => {
     const renderPage = async (p: Promise<any>) => {
@@ -84,6 +89,14 @@ export const Page = ({
     // };
 
     // disableBodyScroll();
+
+    if (basicInfoData) {
+      const { uuid, uuidTemplateInstance } = basicInfoData;
+      const newPdfLiveUrl = `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
+      const newDocumentLiveUrl = `${process.env.REACT_APP_API_URL}/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
+
+      setPdfLiveUrl(newDocumentLiveUrl);
+    }
     renderPage(page);
   }, [page, updateDimensions]);
 
@@ -212,7 +225,7 @@ export const Page = ({
               )}
             </div>
     <div style={{ position: "relative",overflow:"hidden" }} className="pdf-viewer-container">
-      <TransformWrapper
+      <Modal
         maxScale={2.5}
         initialScale={deviceWidth <600?0.6:1}
         disabled={deviceWidth <= 600}
@@ -223,38 +236,51 @@ export const Page = ({
         // // pinch={{ disabled: true }}
         // // panning={{ disabled: true }}
       >
-        <TransformComponent>
+        {/* <ModalHeader>All Required Fields Filled</ModalHeader> */}
+        <ModalBody>
           <div>
-            <canvas
-              ref={canvasRef}
-              width={width}
-              height={height}
-              // width={595}
-              // height={840}
-              style={{
-                borderRadius: "5px",
-                boxShadow: "0 2px 5px gray",
-              }}
-            />
+            <p>All required fields are filled.</p>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            onClick={() => {
+              setShowPopup(false);
+            }}
+            className='btn custom-btn1 text-dark bg-secondary'
+          >
+            Close
+          </button>
+        </ModalFooter>
+      </Modal>
+      <div
+          ref={signatureIndicatorRef}
+          // className="signature-indicator"
+          onClick={(e) => {
+            if (isStartShown) {
+              setIsStartShown(false);
+            }
+            handleStartAndScrollElement(e);
+          }}
+        >
+          {isStartShown ? (
+            <div className="signature-indicator">
 
-            {/*  */}
-            <SignatureContainer
+              Start
+            </div>
+          ) : (
+            <div className="next-hidden"></div>
+          )}
+        </div>
+        {/* <TransformComponent > */}
+
+        <SignatureContainer
               page={page}
               addDrawing={() => setDrawingModalOpen(true)}
               isFetchingCordinatesData={isFetchingCordinatesData}
             />
-            <TextContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-            <DateContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-            <CheckboxContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
+          
+          <CommonPDFViewer pdfUrl ={pdfLiveUrl} /> 
 
 {!isStartShown && (
                 <div
@@ -269,8 +295,8 @@ export const Page = ({
               )}
 
           </div>
-        </TransformComponent>
-
+        {/* </TransformComponent> */}
+        <TransformWrapper>
         <React.Fragment>
           {/* pagination start */}
           <PaginationContainer
@@ -282,7 +308,10 @@ export const Page = ({
           {/* pagination end */}
         </React.Fragment>
       </TransformWrapper>
-    </div>
+    {/* </div> */}
     </>
   );
 };
+
+
+
