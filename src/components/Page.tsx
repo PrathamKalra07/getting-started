@@ -44,16 +44,17 @@ export const Page = ({
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [isStartShown, setIsStartShown] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
-  const [fieldCounter, setFieldCounter] = useState(1);
   const [pdfLiveUrl, setPdfLiveUrl] = useState("");
 
-  const allTextData = useSelector((state: RootState) => state.textList.allTextData);
-  const allDateData = useSelector((state: RootState) => state.dateList.allDateData);
-  const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
-  const allSignatureData = useSelector((state: RootState) => state.signatureList);
-  const allCoordinatesData = useSelector((state: RootState) => state.coordinatesList);
-    const [isAllRequiredFieldsFilled, setIsAllRequiredFieldsFilled] = useState(false);
-  const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
+  const allTextData = useSelector(
+    (state: RootState) => state.textList.allTextData
+  );
+  const allDateData = useSelector(
+    (state: RootState) => state.dateList.allDateData
+  );
+  const allCheckboxData = useSelector(
+    (state: RootState) => state.checkboxList.allCheckboxData
+  );
   const basicInfoData = useSelector((state: RootState) => state.basicInfoData);
   const scrollContainer = React.useRef(null);
 
@@ -100,86 +101,44 @@ export const Page = ({
     renderPage(page);
   }, [page, updateDimensions]);
 
-
-   const updateFieldStatus = () => {
-      const requiredTextFieldsFilled = Object.values(allTextData).every(pageData =>
-        (pageData as any[]).every(field => !field.isRequired || field.value)
-      );
-      const requiredDateFieldsFilled = Object.values(allDateData).every(pageData =>
-        (pageData as any[]).every(field => !field.isRequired || field.value !== 'Invalid date')
-      );
-      const requiredSignatureFieldsFilled = allSignatureData.encodedImgData !== "";
-    
-      const allTextFieldsFilled = Object.values(allTextData).every(pageData =>
-        (pageData as any[]).every(field => field.value)
-      );
-      const allDateFieldsFilled = Object.values(allDateData).every(pageData =>
-        (pageData as any[]).every(field => field.value !== 'Invalid date')
-      );
-    
-      const allFieldsFilled = requiredTextFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled &&
-                              allTextFieldsFilled && allDateFieldsFilled;
-    
-      setIsAllRequiredFieldsFilled(requiredTextFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled);
-      setIsAllFieldsFilled(allFieldsFilled);
-    };
-    
-    useEffect(() => {
-      updateFieldStatus();
-    }, [allTextData, allDateData, allSignatureData]);
-
-
   const handleNextClick = () => {
-    const { allCoordinateData  } = allCoordinatesData;
-    console.log('coordinates data length ' + allCoordinateData.length);
-    if(fieldCounter === allCoordinateData.length){
-      const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
-      if (allRequiredFieldsFilled) {
-        console.log('logggggg' + showPopup);
-        
-        setShowPopup(true);
-      } else {
-        handleStartAndScrollElement();
-      }
+    const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
+    if (allRequiredFieldsFilled) {
+      console.log("logggggg" + showPopup);
+
+      setShowPopup(true);
     } else {
       handleStartAndScrollElement();
-      console.log('field counter' + fieldCounter);
-      
-      setFieldCounter(fieldCounter => fieldCounter + 1);
     }
   };
 
   const checkAllRequiredFieldsFilled = () => {
-    
-    const requiredTextFieldsFilled = Object.values(allTextData).every(pageData =>
-      (pageData as any[]).every(field => !field.isRequired || field.value)
+    const requiredTextFieldsFilled = Object.values(allTextData).every(
+      (pageData) =>
+        (pageData as any[]).every((field) => !field.isRequired || field.value)
     );
-    const requiredDateFieldsFilled = Object.values(allDateData).every(pageData =>
-      (pageData as any[]).every(field => !field.isRequired || field.value !== 'Invalid date')
+    const requiredDateFieldsFilled = Object.values(allDateData).every(
+      (pageData) =>
+        (pageData as any[]).every(
+          (field) => !field.isRequired || field.value !== "Invalid date"
+        )
     );
-
-    let requiredSignatureFieldsFilled = false;
-    if(allSignatureData.encodedImgData !== ""){
-      requiredSignatureFieldsFilled = true;
-    }
-
     // const requiredCheckboxFieldsFilled = Object.values(allCheckboxData).every(pageData =>
     //   (pageData as any[]).every(field => !field.isRequired || field.value)
     // );
 
-    console.log('requiredTextFieldsFilled' + requiredTextFieldsFilled);
-    console.log('requiredDateFieldsFilled' + requiredDateFieldsFilled);
-    
+    console.log("requiredTextFieldsFilled" + requiredTextFieldsFilled);
+    console.log("requiredDateFieldsFilled" + requiredDateFieldsFilled);
 
     // return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredCheckboxFieldsFilled;
-    return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled;
+    return requiredTextFieldsFilled && requiredDateFieldsFilled;
   };
   // console.log("width => ", width);
   // console.log("height => ", height);
 
   return (
     <>
-    <Modal
+      <Modal
         isOpen={showPopup}
         onClosed={() => setShowPopup(false)}
         centered
@@ -199,119 +158,39 @@ export const Page = ({
             onClick={() => {
               setShowPopup(false);
             }}
-            className='btn custom-btn1 text-dark bg-secondary'
+            className="btn custom-btn1 text-dark bg-secondary"
           >
             Close
           </button>
         </ModalFooter>
       </Modal>
       <div
-              ref={signatureIndicatorRef}
-              // className="signature-indicator"
-              onClick={(e) => {
-                if (isStartShown) {
-                  setIsStartShown(false);
-                }
-                handleStartAndScrollElement(e);
-              }}
-            >
-              {isStartShown ? (
-                <div className="signature-indicator">
-
-                  Start
-                </div>
-              ) : (
-                <div className="next-hidden"></div>
-              )}
-            </div>
-    <div style={{ position: "relative",overflow:"hidden" }} className="pdf-viewer-container">
-      <Modal
-        maxScale={2.5}
-        initialScale={deviceWidth <600?0.6:1}
-        disabled={deviceWidth <= 600}
-        centerZoomedOut
-        disablePadding
-        wheel={{ disabled: true }}
-        doubleClick={{ disabled: true }}
-        // // pinch={{ disabled: true }}
-        // // panning={{ disabled: true }}
+        ref={signatureIndicatorRef}
+        // className="signature-indicator"
+        onClick={(e) => {
+          if (isStartShown) {
+            setIsStartShown(false);
+          }
+          handleStartAndScrollElement(e);
+        }}
       >
-        {/* <ModalHeader>All Required Fields Filled</ModalHeader> */}
-        <ModalBody>
-          <div>
-            <p>All required fields are filled.</p>
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <button
-            onClick={() => {
-              setShowPopup(false);
-            }}
-            className='btn custom-btn1 text-dark bg-secondary'
-          >
-            Close
-          </button>
-        </ModalFooter>
-      </Modal>
-      <div
-          ref={signatureIndicatorRef}
-          // className="signature-indicator"
-          onClick={(e) => {
-            if (isStartShown) {
-              setIsStartShown(false);
-            }
-            handleStartAndScrollElement(e);
-          }}
-        >
-          {isStartShown ? (
-            <div className="signature-indicator">
+        {isStartShown ? (
+          <div className="signature-indicator">Start</div>
+        ) : (
+          <div className="next-hidden"></div>
+        )}
+      </div>
+      {/* <TransformComponent > */}
 
-              Start
-            </div>
-          ) : (
-            <div className="next-hidden"></div>
-          )}
-        </div>
-        {/* <TransformComponent > */}
+      <SignatureContainer
+        page={page}
+        addDrawing={() => setDrawingModalOpen(true)}
+        isFetchingCordinatesData={isFetchingCordinatesData}
+      />
 
-        <SignatureContainer
-              page={page}
-              addDrawing={() => setDrawingModalOpen(true)}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-          
-          <CommonPDFViewer pdfUrl ={pdfLiveUrl} /> 
+      <CommonPDFViewer pdfUrl={pdfLiveUrl} />
 
-{!isStartShown && (
-                <div
-                  ref={signatureIndicatorRef}
-                  className="signature-indicator-next"
-                  onClick={handleNextClick}
-                >
-                  <span>
-                    <i className="fa-solid fa-circle-arrow-down"></i> {isAllFieldsFilled ? "Finish" : "Next"}
-                  </span>
-                </div>
-              )}
-
-          </div>
-        {/* </TransformComponent> */}
-        <TransformWrapper>
-        <React.Fragment>
-          {/* pagination start */}
-          <PaginationContainer
-            page={page}
-            allPages={allPages}
-            goToPage={goToPage}
-          />
-
-          {/* pagination end */}
-        </React.Fragment>
-      </TransformWrapper>
-    {/* </div> */}
+      {/* </TransformComponent>    */}
     </>
   );
 };
-
-
-
