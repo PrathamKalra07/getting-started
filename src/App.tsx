@@ -341,7 +341,7 @@ const App: React.FC = () => {
         });
       } else {
         window.scroll({
-          top: currentElementData.y - 50,
+          top: currentElementData.y,
           behavior: "smooth",
         });
       }
@@ -759,7 +759,7 @@ const App: React.FC = () => {
         }
       }
 
-      await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
+      // await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
     } catch (err: any) {
       if (err.response.data.msg) {
         if (
@@ -823,7 +823,7 @@ const App: React.FC = () => {
   };
   console.log(
     "trackDocumentViewed outside function",
-    JSON.stringify(trackDocumentViewed)
+    // JSON.stringify(trackDocumentViewed)
   );
 
   useEffect(() => {
