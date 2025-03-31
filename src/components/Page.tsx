@@ -16,7 +16,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 interface Props {
   page: any;
   dimensions?: Dimensions;
-  updateDimensions: ({ width, height }: Dimensions) => void;
+  updateDimensions: ({ width, height }: any) => void;
   allPages: any;
   goToPage: (pageNo: number) => void;
   isFetchingCordinatesData: any;
@@ -36,13 +36,14 @@ export const Page = ({
   handleStartAndScrollElement,
   signatureIndicatorRef,
 }: Props) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRefs = useRef<HTMLCanvasElement[]>([]);
   const [width, setWidth] = useState((dimensions && dimensions.width) || 0);
   const [height, setHeight] = useState((dimensions && dimensions.height) || 0);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [isStartShown, setIsStartShown] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const [fieldCounter, setFieldCounter] = useState(1);
+  const [visiblePages, setVisiblePages] = useState<number[]>([1]); // Start with Page 1
 
   const allTextData = useSelector((state: RootState) => state.textList.allTextData);
   const allDateData = useSelector((state: RootState) => state.dateList.allDateData);
@@ -52,40 +53,59 @@ export const Page = ({
     const [isAllRequiredFieldsFilled, setIsAllRequiredFieldsFilled] = useState(false);
   const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
 
-  useEffect(() => {
-    const renderPage = async (p: Promise<any>) => {
-      const _page = await p;
-      if (_page) {
-        const context = canvasRef.current?.getContext("2d");
-        const viewport = _page.getViewport({ scale: 1 });
 
-        setWidth(viewport.width);
-        setHeight(viewport.height);
 
-        if (context) {
-          await _page.render({
-            canvasContext: canvasRef.current?.getContext("2d"),
-            viewport,
-          }).promise;
+  const lastPageRef = useRef<HTMLDivElement | null>(null);
 
-          const newDimensions = {
-            width: viewport.width,
-            height: viewport.height,
-          };
-
-          updateDimensions(newDimensions as Dimensions);
-        }
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const lastEntry = entries[0];
+      if (lastEntry.isIntersecting) {
+        setVisiblePages((prevPages) => {
+          const nextPage = prevPages[prevPages.length - 1] + 1;
+          return nextPage <= allPages.length ? [...prevPages, nextPage] : prevPages;
+        });
+        
       }
-    };
+    },
+    { threshold: 0.5 } // Trigger when 50% of the last page is visible
+  );
 
-    // const disableBodyScroll = () => {
-    //   document.body.style.position = "fixed";
-    //   document.body.style.width = "98%";
-    // };
+  if (lastPageRef.current) {
+    observer.observe(lastPageRef.current);
+  }
 
-    // disableBodyScroll();
-    renderPage(page);
-  }, [page, updateDimensions]);
+  return () => observer.disconnect();
+}, [visiblePages, allPages]);
+
+
+useEffect(() => {
+  const renderPage = async (p: any, index: number) => {
+    if (!p) return;
+    const _page = await p;
+    const canvas = canvasRefs.current[index];
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    const viewport = _page.getViewport({ scale: 1 });
+
+    if (!viewport) return;
+    setWidth(viewport.width);
+    setHeight(viewport.height);
+
+    if (context) {
+      await _page.render({ canvasContext: context, viewport }).promise;
+      updateDimensions({ width: viewport.width, height: viewport.height });
+    }
+  };
+
+  visiblePages.forEach((pageNumber, index) => {
+    if (allPages[pageNumber - 1]) {
+      renderPage(allPages[pageNumber - 1], index);
+    }
+  });
+}, [visiblePages, allPages]);
+
 
 
    const updateFieldStatus = () => {
@@ -225,20 +245,42 @@ export const Page = ({
       >
         <TransformComponent>
           <div>
-            <canvas
+            {/* <canvas
               ref={canvasRef}
-              width={width}
-              height={height}
-              // width={595}
-              // height={840}
+              // width={width}
+              // height={height}
+              width={595}
+              height={840}
               style={{
                 borderRadius: "5px",
                 boxShadow: "0 2px 5px gray",
               }}
-            />
+            /> */}
+            {visiblePages.map((pageNumber,index) => (
+  <div style={{position:"relative"}} key={pageNumber} ref={pageNumber === visiblePages[visiblePages.length - 1] ? lastPageRef : null}>
+    <canvas
+       ref={(el) => (canvasRefs.current[index] = el!)}
+      width={595}
+      height={840}
+      style={{
+        borderRadius: "5px",
+        boxShadow: "0 2px 5px gray",
+        marginBottom: "20px",
+      }}
+    />
+    <SignatureContainer page={allPages[pageNumber - 1]} addDrawing={() => setDrawingModalOpen(true)}
+              isFetchingCordinatesData={isFetchingCordinatesData}/>
+    <TextContainer page={allPages[pageNumber - 1]}               isFetchingCordinatesData={isFetchingCordinatesData}
+  />
+    <DateContainer page={allPages[pageNumber - 1]}               isFetchingCordinatesData={isFetchingCordinatesData}
+ />
+    <CheckboxContainer page={allPages[pageNumber - 1]}               isFetchingCordinatesData={isFetchingCordinatesData}
+ />
+  </div>
+))}
 
             {/*  */}
-            <SignatureContainer
+            {/* <SignatureContainer
               page={page}
               addDrawing={() => setDrawingModalOpen(true)}
               isFetchingCordinatesData={isFetchingCordinatesData}
@@ -254,7 +296,7 @@ export const Page = ({
             <CheckboxContainer
               page={page}
               isFetchingCordinatesData={isFetchingCordinatesData}
-            />
+            /> */}
 
 {!isStartShown && (
                 <div
