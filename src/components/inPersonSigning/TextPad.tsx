@@ -38,7 +38,9 @@ export const TextPad = ({
     const [maxCharacters,setMaxCharacters]=useState(Number);
     useEffect(()=>{
       const setMaxChars=()=>{
-        let maxChar = Math.floor(((width - 4) / 7) * ((height - 4) / 19));
+        // let maxChar = Math.floor(((width - 4) / 7) * ((height - 4) / 19));
+        let maxChar = Math.floor(((width) / 8) * ((height) / 21));
+
         setMaxCharacters(maxChar);
         setRemainingText(maxChar);
         console.log("editable data ? : ",{
