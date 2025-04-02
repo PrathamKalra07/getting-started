@@ -290,8 +290,8 @@ export const Page = ({
                 >
                   <canvas
                     ref={(el) => (canvasRefs.current[index] = el!)}
-                    width={595}
-                    height={840}
+                    width={width}
+                    height={height}
                     style={{
                       borderRadius: "5px",
                       boxShadow: "0 2px 5px gray",
