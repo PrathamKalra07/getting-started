@@ -48,6 +48,14 @@ import { RootState } from "redux/store";
 import "semantic-ui-css/semantic.min.css";
 import "./App.css";
 
+type PageElement = {
+  pageNo: number;
+  x: number;
+  y: number;
+  screenY: number;
+  screenX: number;
+}
+
 const App: React.FC = () => {
   const [drawingModalOpen, setDrawingModalOpen] = useState(false);
   const [isFetchingCordinatesData, setIsFetchingCordinatesData] =
@@ -61,6 +69,8 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userErrorMsg, setUserErrorMsg] = useState("");
   const [isAuditHistoryShown, setIsAuditHistoryShown] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  const [viewportWidth, setViewportWidth] = useState(0);
 
   //
   const signatureIndicatorRef = useRef<any>(null);
@@ -305,9 +315,9 @@ const App: React.FC = () => {
       <i class="fa-solid fa-circle-arrow-down"></i> Required
     </span>`;
 
-      const { coordinateId, x, y } = innerElement;
+      const { coordinateId, x, y, screenX, screenY, pageNumber, width, height } = innerElement;
 
-      dispatch(setActiveElement({ coordinateId, y, x }));
+      dispatch(setActiveElement({ coordinateId, y, x, screenX, screenY, pageNumber, width, height }));
     } catch (err) {
       console.log(err);
     }
@@ -319,27 +329,51 @@ const App: React.FC = () => {
 
   const handleStartAndScrollElement = async () => {
     try {
-      const { activeElementCoordinateId } = elementsNavigationData;
+      
+
+      const { activeElementCoordinateId, pageNumber, screenY } = elementsNavigationData;
+      console.log("activeElementCoordinateId", activeElementCoordinateId);
+      console.log("pageNumber", pageNumber);
+      // console.log('screenYyyy' + screenY);
+      
 
       const nextIndex =
         allCoordinateDataWithCordinates.findIndex(
-          (item: any) => item.coordinateId == activeElementCoordinateId
+          (item: any) => item.coordinateId === activeElementCoordinateId
         ) + 1;
 
+      console.log("next index " + nextIndex);
+
       const indexNo =
-        activeElementCoordinateId == 0 ||
-        nextIndex == allCoordinateDataWithCordinates.length
+        activeElementCoordinateId === 0 ||
+        nextIndex === allCoordinateDataWithCordinates.length
           ? 0
           : nextIndex;
 
+      console.log("index number " + indexNo);
+
       const currentElementData: any = allCoordinateDataWithCordinates[indexNo];
 
-      if (window.innerWidth > 550) {
+      console.log("currentElementData", currentElementData);
+
+       if (window.innerWidth > 550) {
+        console.log('@@@ innerWidth more than 500...');
+        console.log('@@@ pageNumber..'+currentElementData.pageNo);
+        console.log('printinggggg' + currentElementData.pageNo + 'screenY' + screenY + 'y' + currentElementData.y);
+        
+
+        console.log('scrol!!!' + Number((currentElementData.pageNo * screenY) * (currentElementData.y - 100)));
+        
+
         window.scroll({
-          top: currentElementData.y,
+          top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * screenY + currentElementData.y - 100),
+          // top: currentElementData.y,
+          // pageNumber * screenY + y + 500 + height
+          // top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * screenY + currentElementData.y - 500 - currentElementData.height),
           behavior: "smooth",
         });
       } else {
+        console.log('@@@ innerWidth less than 500...');
         window.scroll({
           top: currentElementData.y,
           behavior: "smooth",
@@ -351,27 +385,67 @@ const App: React.FC = () => {
           coordinateId: currentElementData.coordinateId,
           y: currentElementData.y,
           x: currentElementData.x,
+          screenX: currentElementData.screen_x,
+          screenY: currentElementData.screen_y,
+          pageNumber: currentElementData.pageNo,
+          height: currentElementData.height,
+          width: currentElementData.width
         })
       );
 
-      goToPage(currentElementData.pageNo + 1);
+      dispatch(setCurrentPage({ pageIndex: currentElementData.pageNo }));
+      
+      
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    const { y, x } = elementsNavigationData;
+    const { y, x, pageNumber, screenY, height, width } = elementsNavigationData;
 
     if (signatureIndicatorRef.current && y > 0 && x > -1) {
+      console.log('signature ref' + signatureIndicatorRef.current);
+      
       const currentPageElements = allCoordinateDataWithCordinates.find(
-        (item: any) => item.pageNo == pageIndex
-      );
+        (item: any) => item.pageNo === pageNumber
+      ) as PageElement | undefined;
+
+      console.log('currentPageElement' + JSON.stringify(currentPageElements));
+      
+
+      allCoordinateDataWithCordinates.map((item: any) => {
+        console.log('page number useeffect element navigation data' + item.pageNo);
+          console.log('page index useeffect element navigation data' + pageIndex);
+      })
 
       if (currentPageElements) {
-        signatureIndicatorRef.current.style.top = `${y - 35}px`;
-        signatureIndicatorRef.current.style.left = `${x}px`;
+        
+        Object.keys(currentPageElements).forEach((key) => {
+          console.log(`key ${key}: ${currentPageElements[key]}`);
+        });
 
+        if(currentPageElements.pageNo > 0){
+          console.log('inside iffff:' + pageNumber);
+          console.log('screen y:' + screenY);
+          console.log(' y:' + y);
+          console.log(' height:' + height);
+          console.log('qwertyyy' + y + 'screeny' + viewportHeight + 'pageNo' + currentPageElements.pageNo);
+          console.log(currentPageElements.pageNo * viewportHeight + currentPageElements.y - 25);
+          
+          
+          // signatureIndicatorRef.current.style.top = `${screenY + currentPageElements.y}px`;
+          signatureIndicatorRef.current.style.top = `${currentPageElements.pageNo * viewportHeight + y - 25}px`;
+          signatureIndicatorRef.current.style.left = `${x}px`;
+          console.log('inside iqwerty');
+
+          
+        }
+        else {
+          signatureIndicatorRef.current.style.top = `${y - 35}px`;
+          signatureIndicatorRef.current.style.left = `${x}px`;
+        }
+        
         // scroll inner div
         document.getElementsByClassName("pdf-viewer-container")[0].scrollLeft =
           x - 20;
@@ -379,97 +453,20 @@ const App: React.FC = () => {
     }
 
     return () => {};
-  }, [elementsNavigationData]);
+    // elementsNavigationData will contain the active element info, on change of active elements, the above logic should be re-executed.
 
-  // useEffect(() => {
-  //   disableReactDevTools();
-  //   const handleKeyDown = (event: KeyboardEvent) => {
-  //     if (
-  //       event.key === "F12" ||
-  //       (event.ctrlKey && event.shiftKey && (event.key === "I" || event.key === "C" || event.key === "J" || event.key === "K")) ||
-  //       (event.ctrlKey && event.key === "U")
-  //     ) {
-  //       event.preventDefault();
-  //     }
-  //   };
+    // activePage:0
+    // activeElementCoordinateId:7299
+    // y:164
+    // x:14
+    // screenX:14
+    // screenY:325
+    // pageNumber:0
+    // height:57
+    // width:152
 
-  //   const handleContextMenu = (event: MouseEvent) => {
-  //     event.preventDefault();
-  //   };
-
-  //   const handleResize = () => {
-  //     if (
-  //       window.outerWidth - window.innerWidth > 100 ||
-  //       window.outerHeight - window.innerHeight > 100
-  //     ) {
-  //       // window.location.reload();
-  //     }
-  //   };
-
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   window.addEventListener("contextmenu", handleContextMenu);
-  //   window.addEventListener("resize", handleResize);
-
-  //   return () => {
-  //     window.removeEventListener("keydown", handleKeyDown);
-  //     window.removeEventListener("contextmenu", handleContextMenu);
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
-
-  useEffect(() => {
-    if (elementsNavigationData.activeElementCoordinateId > 0) {
-      const indexNoList: Array<number> = [];
-
-      const currentPageElements = allCoordinateDataWithCordinates.filter(
-        (item: any, index: number) => {
-          if (item.pageNo == pageIndex) {
-            indexNoList.push(index);
-
-            return item;
-          }
-        }
-      );
-
-      if (currentPageElements[0]) {
-        const currentElementData: any = currentPageElements[0];
-
-        if (window.innerWidth > 550) {
-          window.scroll({
-            top: currentElementData.y,
-            behavior: "smooth",
-          });
-        } else {
-          window.scroll({
-            top: currentElementData.y - 50,
-            behavior: "smooth",
-          });
-        }
-
-        dispatch(
-          setActiveElement({
-            coordinateId: currentElementData.coordinateId,
-            x: currentElementData.x,
-            y: currentElementData.y,
-          })
-        );
-      } else {
-        signatureIndicatorRef.current.style.top = "10px";
-        signatureIndicatorRef.current.style.left = "0px";
-
-        window.scroll({
-          top: 0,
-          behavior: "smooth",
-        });
-      }
-    }
-
-    if (pageIndex > -1) {
-      dispatch(setCurrentPage({ pageIndex }));
-    }
-
-    return () => {};
-  }, [currentPage]);
+    // pagenumber, x and y  will get change by user, on click event, "Next" button click
+  }, [elementsNavigationData.pageNumber, elementsNavigationData.x, elementsNavigationData.y]);
 
   // here x value change container direction !!!!!!!!!!
   const fetchingCordinates = async (
@@ -631,105 +628,6 @@ const App: React.FC = () => {
     }
   };
 
-  // const sendOtp = async (
-  //   signatoryUniqUUID: string,
-  //   uuidTemplateInstance: string
-  // ) => {
-  //   try {
-  //     // {{baseUrl}}/api/fetchCordinatesData
-  //     console.log("signatory",signatoryUniqUUID);
-  //     console.log("uuidTemplateInstance",uuidTemplateInstance);
-
-  //     const isOtpSent = localStorage.getItem("isOtpSent") ? true : false;
-  //     const signatodyUUIDStorage = localStorage.getItem("signatoryUUID")
-  //       ? localStorage.getItem("signatoryUUID")
-  //       : "";
-
-  //     console.log("isOtpSent",isOtpSent);
-  //     console.log("signatodyUUIDStorage",signatodyUUIDStorage);
-
-  //     const isOtpVerifyOffline = localStorage.getItem("isOtpVerifyOffline")
-  //     ? true
-  //     : false;
-
-  //     console.log("isOtpVerifyOffline",isOtpVerifyOffline);
-
-  //     if (isOtpVerifyOffline && signatodyUUIDStorage === signatoryUniqUUID) {
-  //       console.log("i am from app.tsx in if condition function body on line no 581");
-  //       setIsOtpVerificationDone(true);
-  //     }
-
-  //     console.log("isOtpSent",isOtpSent);
-  //     console.log("isResendOtp",isResendOtp);
-
-  //     if (isOtpSent && signatodyUUIDStorage === signatoryUniqUUID) {
-  //       console.log("i am from app.tsx in if condition function body on line no 588");
-  //       const otpValue = localStorage.getItem("otpValue") || "";
-  //       console.log("otpValue",otpValue);
-  //       setOriginalOtpValue(otpValue);
-  //       console.log("originalOtpValue",originalOtpValue);
-
-  //     }
-  //     else if (!isOtpSent || isResendOtp != false || signatodyUUIDStorage !== signatoryUniqUUID)
-  //       {
-  //       localStorage.clear();
-  //       console.log("=============else if");
-  //       console.log("i am from app.tsx in if condition function body on line no 597");
-  //       const {
-  //         data: { data: responseData },
-  //       }: AxiosResponse = await postRequest(API_ROUTES.SENDOTP, false, {
-  //         uuid_signatory: signatoryUniqUUID,
-  //         uuid_template_instance: uuidTemplateInstance,
-  //       });
-
-  //       localStorage.setItem("isOtpSent", "true");
-  //       localStorage.setItem("otpValue", responseData.otpValue);
-  //       localStorage.setItem("signatoryUUID", signatoryUniqUUID);
-  //       localStorage.setItem("signatoryName", responseData.signatoryName);
-  //       setOriginalOtpValue(responseData.otpValue);
-  //       console.log(responseData.otpValue);
-  //     }
-
-  //     await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
-  //   } catch (err: any) {
-  //     console.log(err);
-  //     console.log(err.response);
-  //     console.log("i am from app.tsx in catch block in sentotp body on line no 620");
-
-  //     if (err.response.data.msg) {
-  //       if (
-  //         err.response.data.msg.toLowerCase() ==
-  //         "Sorry Your Signature Is Already Done".toLowerCase()
-  //       ) {
-  //         const msg: string = "Sorry You Had Already Done Your Work";
-  //         setUserErrorMsg(msg);
-  //         setIsAlreadySign(true);
-  //       } else if (
-  //         err.response.data.msg.toLowerCase() ==
-  //         "Sorry Your Template Is Already Signed".toLowerCase()
-  //       ) {
-  //         const msg: string =
-  //           "Sorry Your Template Is Already Signed Either By You Or By SomeOne Else In Your Group";
-  //         setUserErrorMsg(msg);
-  //         setIsAlreadySign(true);
-  //       } else if (
-  //         err.response.data.msg.toLowerCase() ==
-  //         "Sorry Someone Had Rejected This Template".toLowerCase()
-  //       ) {
-  //         const msg: string =
-  //           "Sorry one of the signatory had rejected this template so you are unable to go further";
-  //         setUserErrorMsg(msg);
-  //         setIsAlreadySign(true);
-  //       }
-
-  //       localStorage.clear();
-  //     }
-  //     console.log("i am from app.tsx above finally block on line no 654");
-  //     } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const checkStatus = async (
     signatoryUniqUUID: string,
     uuidTemplateInstance: string
@@ -822,7 +720,7 @@ const App: React.FC = () => {
     }
   };
   console.log(
-    "trackDocumentViewed outside function",
+    "trackDocumentViewed outside function"
     // JSON.stringify(trackDocumentViewed)
   );
 
@@ -945,6 +843,7 @@ const App: React.FC = () => {
                                 handleStartAndScrollElement
                               }
                               signatureIndicatorRef={signatureIndicatorRef}
+                              updateViewportHeight={(height) => setViewportHeight(height)}
                             />
 
                             {/*  */}
@@ -965,74 +864,7 @@ const App: React.FC = () => {
             </>
           )
 
-          // (
-          //   <>
-          //     {!isOtpVerificationDone ? (
-          //       <OtpModal
-          //         otp={otp}
-          //         setOtp={setOtp}
-          //         originalOtpValue={originalOtpValue}
-          //         setIsOtpVerificationDone={setIsOtpVerificationDone}
-          //         setIsResendOtp={setIsResendOtp}
-          //         setOriginalOtpValue={setOriginalOtpValue}
-          //       />
-          //     ) :
-          //     (
-          //       <>
-          //         <MenuBar
-          //           rejectSign={handleSignRejection}
-          //           savePdf={handleSavePdf}
-          //           savingPdfStatus={isSaving}
-          //           isPdfLoaded={!!file}
-          //           setIsAuditHistoryShown={setIsAuditHistoryShown}
-          //         />
-          //         <div className="pdf-viewer-div">
-          //           {!file || isFetchingCordinatesData ? (
-          //             <Loading />
-          //           ) : (
-          //             <div className=" d-flex justify-content-center align-items-center overflow-x-scroll">
-          //               <div className="inner-container">
-          //                 {currentPage && (
-          //                   <div className="border mb-5 position-relative">
-          //                     {" "}
-          //                     <div>
-          //                       {/*  */}
-          //                       <Page
-          //                         dimensions={dimensions}
-          //                         updateDimensions={setDimensions}
-          //                         page={currentPage}
-          //                         allPages={pages}
-          //                         goToPage={goToPage}
-          //                         isFetchingCordinatesData={
-          //                           isFetchingCordinatesData
-          //                         }
-          //                         setDrawingModalOpen={setDrawingModalOpen}
-          //                         handleStartAndScrollElement={
-          //                           handleStartAndScrollElement
-          //                         }
-          //                         signatureIndicatorRef={signatureIndicatorRef}
-          //                       />
-
-          //                       {/*  */}
-          //                     </div>
-          //                   </div>
-          //                 )}
-          //               </div>
-          //             </div>
-          //           )}
-          //         </div>
-
-          //         {drawingModalOpen ? (
-          //           <DrawingModal
-          //             open={drawingModalOpen}
-          //             dismiss={() => setDrawingModalOpen(false)}
-          //           />
-          //         ) : null}
-          //       </>
-          //     )
-          //      }
-          //   </>
-          // )
+        
         }
 
         {isAuditHistoryShown && (
