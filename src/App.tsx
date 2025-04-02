@@ -366,10 +366,11 @@ const App: React.FC = () => {
         
 
         window.scroll({
-          top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * screenY + currentElementData.y - 100),
+          top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * viewportHeight + currentElementData.y - 100),
           // top: currentElementData.y,
           // pageNumber * screenY + y + 500 + height
           // top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * screenY + currentElementData.y - 500 - currentElementData.height),
+          // currentPageElements.pageNo * viewportHeight + y - 25
           behavior: "smooth",
         });
       } else {
