@@ -11,13 +11,14 @@ export const elementsNavigationHelperSlice = createSlice({
     screenY: 0,
     pageNumber: 0,
     height: 0,
-    width: 0
+    width: 0,
+    isRequired: false,
   },
   reducers: {
     setActiveElement: (state, action) => {
       console.log('payload of element navigation helper', action.payload);
       
-      const { coordinateId, y, x, screenX, screenY, pageNumber, height, width } = action.payload;
+      const { coordinateId, y, x, screenX, screenY, pageNumber, height, width, isRequired } = action.payload;
 
       state.activeElementCoordinateId = coordinateId;
       state.y = y;
@@ -27,6 +28,7 @@ export const elementsNavigationHelperSlice = createSlice({
       state.pageNumber = pageNumber;
       state.height = height;
       state.width = width;
+      state.isRequired = isRequired;
     },
     setCurrentPage: (state, action) => {
       const { pageIndex } = action.payload;

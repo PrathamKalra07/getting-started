@@ -108,19 +108,6 @@ export const TextContainer: React.FC<Props> = ({
             );
           })
         : null}
-      {/* {allCordinatesData.map((item: any, i: number) => {
-        if (item.pageNo == currentPageNo && item.fieldType == "Text") {
-          return (
-            <TextPad
-              key={i}
-              {...item}
-              handleTextChange={handleTextChange}
-              textElementIndex={i}
-            />
-          );
-        }
-        return null;
-      })} */}
     </>
   );
 };

@@ -119,7 +119,7 @@ export const DatePad = ({
                 onClick={(e: any) => {
                   if(editable){
                     e.currentTarget.showPicker();
-                    dispatch(setActiveElement({ coordinateId, y, x }));
+                    dispatch(setActiveElement({ coordinateId, y, x, isRequired }));
                   }else{
                     e.preventDefault();
                   }

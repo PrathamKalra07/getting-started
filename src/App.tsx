@@ -315,9 +315,9 @@ const App: React.FC = () => {
       <i class="fa-solid fa-circle-arrow-down"></i> Required
     </span>`;
 
-      const { coordinateId, x, y, screenX, screenY, pageNumber, width, height } = innerElement;
+      const { coordinateId, x, y, screenX, screenY, pageNumber, width, height, isRequired } = innerElement;
 
-      dispatch(setActiveElement({ coordinateId, y, x, screenX, screenY, pageNumber, width, height }));
+      dispatch(setActiveElement({ coordinateId, y, x, screenX, screenY, pageNumber, width, height, isRequired }));
     } catch (err) {
       console.log(err);
     }
@@ -390,7 +390,8 @@ const App: React.FC = () => {
           screenY: currentElementData.screen_y,
           pageNumber: currentElementData.pageNo,
           height: currentElementData.height,
-          width: currentElementData.width
+          width: currentElementData.width,
+          isRequired: currentElementData.isRequired
         })
       );
 

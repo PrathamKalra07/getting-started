@@ -41,8 +41,8 @@ export const Page = ({
   // updateViewportWidth,
 }: Props) => {
   const canvasRefs = useRef<HTMLCanvasElement[]>([]);
-  const [width, setWidth] = useState((dimensions && dimensions.width) || 0);
-  const [height, setHeight] = useState((dimensions && dimensions.height) || 0);
+  const [width, setWidth] = useState(595.303);
+  const [height, setHeight] = useState(841.889);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [isStartShown, setIsStartShown] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
