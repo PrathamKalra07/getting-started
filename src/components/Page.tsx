@@ -125,7 +125,9 @@ export const Page = ({
     });
   }, [visiblePages, allPages]);
 
-  const updateFieldStatus = () => {
+  const updateFieldStatus = React.useCallback(() => {
+    // console.log('allll date data' + JSON.stringify(allDateData));
+    
     const requiredTextFieldsFilled = Object.values(allTextData).every(
       (pageData) =>
         (pageData as any[]).every((field) => !field.isRequired || field.value)
@@ -159,24 +161,35 @@ export const Page = ({
         requiredSignatureFieldsFilled
     );
     setIsAllFieldsFilled(allFieldsFilled);
-  };
+  }, [allTextData, allDateData, allSignatureData]);
 
   useEffect(() => {
     updateFieldStatus();
-  }, [allTextData, allDateData, allSignatureData]);
+  }, [allTextData, allDateData, allSignatureData, updateFieldStatus]);
 
   const handleNextClick = () => {
     const { allCoordinateData } = allCoordinatesData;
     console.log("coordinates data length " + allCoordinateData.length);
     if (fieldCounter === allCoordinateData.length) {
       const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
+      console.log('all requiredd fields filled ' + allRequiredFieldsFilled);
+      
       if (allRequiredFieldsFilled) {
         console.log("logggggg" + showPopup);
 
         setShowPopup(true);
       } else {
         console.log("@@@ allRequiredFieldsFilled FALSE...");
-        handleStartAndScrollElement();
+        const emptyRequiredField =
+        findEmptyRequiredField(allTextData, "Text") ||
+        findEmptyRequiredField(allDateData, "Date") ||
+        findEmptyRequiredSignatureField(allSignatureData.allSignatureData);
+
+    if (emptyRequiredField) {
+        console.log("Scrolling to empty required field:", emptyRequiredField);
+        handleStartAndScrollElement(emptyRequiredField);
+    }
+        
       }
     } else {
       console.log("field counter" + fieldCounter);
@@ -184,6 +197,37 @@ export const Page = ({
       setFieldCounter((fieldCounter) => fieldCounter + 1);
     }
   };
+
+  const findEmptyRequiredField = (data: any, fieldType: string) => {
+    for (const pageData of Object.values(data)) {
+        for (const field of pageData as any[]) {
+            if (field.isRequired && (field.value === "" || field.value === 'Invalid Date')) {
+              console.log('fields checking' + JSON.stringify({ ...field, fieldType }));
+              
+                return { ...field, fieldType };
+            }
+        }
+    }
+    return null;
+};
+
+// Helper function to check for empty required signature fields
+const findEmptyRequiredSignatureField = (data: any) => {
+    if (allSignatureData.encodedImgData === "") {
+      console.log('fields checking signature' + JSON.stringify(allSignatureData.allSignatureData));
+
+        for(const pageData of Object.values(data)){
+          for(const field of pageData as any[]){
+            console.log('sigantureee fields' + JSON.stringify({...field}));
+            
+            return {...field};
+          }
+        }
+      
+        // return { fieldType: "Signature", isRequired: true, value: "" };
+    }
+    return null;
+};
 
   const checkAllRequiredFieldsFilled = () => {
     const requiredTextFieldsFilled = Object.values(allTextData).every(
