@@ -170,6 +170,8 @@ export const Page = ({
   const handleNextClick = () => {
     const { allCoordinateData } = allCoordinatesData;
     console.log("coordinates data length " + allCoordinateData.length);
+    console.log("all date data @@" + JSON.stringify(allDateData));
+    
     if (fieldCounter === allCoordinateData.length) {
       const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
       console.log('all requiredd fields filled ' + allRequiredFieldsFilled);
@@ -181,8 +183,8 @@ export const Page = ({
       } else {
         console.log("@@@ allRequiredFieldsFilled FALSE...");
         const emptyRequiredField =
-        findEmptyRequiredField(allTextData, "Text") ||
         findEmptyRequiredField(allDateData, "Date") ||
+        findEmptyRequiredField(allTextData, "Text") ||
         findEmptyRequiredSignatureField(allSignatureData.allSignatureData);
 
     if (emptyRequiredField) {
@@ -200,8 +202,14 @@ export const Page = ({
 
   const findEmptyRequiredField = (data: any, fieldType: string) => {
     for (const pageData of Object.values(data)) {
+      // console.log('pageData' + JSON.stringify(pageData));
+      
         for (const field of pageData as any[]) {
-            if (field.isRequired && (field.value === "" || field.value === 'Invalid Date')) {
+          console.log('page data field' + JSON.stringify(field));
+          
+            if (field.isRequired && (field.value === "" || field.value === 'Invalid date')) {
+              console.log('qwertyuioihgfdsasdfghnjm');
+              
               console.log('fields checking' + JSON.stringify({ ...field, fieldType }));
               
                 return { ...field, fieldType };
