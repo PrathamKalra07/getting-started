@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setActiveElement } from "redux/slices/elementsNavigationHelperReducer";
 import { RootState } from "redux/store";
 import { useState } from "react";
+import { emailRegex } from "helpers/constants/validation_constants";
 
 interface Props {
   x: number;
@@ -11,11 +12,10 @@ interface Props {
   width: number;
   height: number;
   value: string;
-  editable:boolean;
+  editable: boolean;
   textElementIndex: number;
   handleTextChange: Function;
   coordinateId: number;
-  //
   isRequired: boolean;
 }
 
@@ -32,22 +32,32 @@ export const EmailPad = ({
   isRequired,
 }: Props) => {
   const dispatch = useDispatch();
-
   const elementsNavigationHelperState = useSelector(
     (state: RootState) => state.elementsNavigationHelper
   );
-  const [remainingText,setRemainingText]=useState(Number);
-  const [maxCharacters,setMaxCharacters]=useState(Number);
+  const [remainingText, setRemainingText] = useState(Number);
+  const [maxCharacters, setMaxCharacters] = useState(Number);
   const [isActive, setIsActive] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(true);
 
-  useEffect(()=>{
-    const setMaxChars=()=>{
-      let maxChar = Math.floor(((width) / 8) * ((height) / 21));
+  const handleBlur = (e: any) => {
+    const emailValue = e.target.value.trim();
+
+    if (!emailRegex.test(emailValue) && emailValue !== "") {
+      setIsEmailValid(false);
+    } else {
+      setIsEmailValid(true);
+    }
+  };
+
+  useEffect(() => {
+    const setMaxChars = () => {
+      let maxChar = Math.floor((width / 8) * (height / 21));
       setMaxCharacters(maxChar);
       setRemainingText(maxChar);
-    }
+    };
     setMaxChars();
-  },[])
+  }, []);
   return (
     <>
       <div
@@ -67,78 +77,126 @@ export const EmailPad = ({
         // onMouseEnter={()=>setIsActive(true)}
         // onMouseLeave={()=>setIsActive(false)}
         // onClick={addDrawing}
-        
       >
-        <div className={editable?"":"readonly-container-textarea"}>
-          <span className="cannot-edit" style={editable?{display:'none'}:{}} > Cannot Edit </span>
-        
-        {/* signatureData */}
+        <div className={editable ? "" : "readonly-container-textarea"}>
+          <span
+            className="cannot-edit"
+            style={editable ? { display: "none" } : {}}
+          >
+            {" "}
+            Cannot Edit{" "}
+          </span>
 
-        <span style={{ position: "relative" }}>
-          {editable &&
-            <span style={isActive?{display:'none'}:{position:"absolute",top:'15px',right:"0px",backgroundColor:'#1d5d9b',color:'white',borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
-              {remainingText} left
-            </span>
-          }
-          <textarea
-            // maxLength={width / 7}
-            maxLength={maxCharacters}
-            key={coordinateId}
-            placeholder="Click To Enter Text Here..."
-            style={editable?{ height: height, width: width ,resize:'none',overflow:"none"}:{height: height, width: width ,resize:'none',overflow:"none",pointerEvents:"none"}}
-            onClick={(e: any) => {
-              if(editable){
+          {/* signatureData */}
 
-                dispatch(setActiveElement({ coordinateId, y, x, isRequired, value: textInputValue }));
-  
-                e.target.focus();
-              }else{
-                e.preventDefault();
-              }
-            }}
-            onChange={(e) => {
-              if (editable) {
-                handleTextChange(e, textElementIndex);
-                setRemainingText(maxCharacters - e.target.value.length);
-              } else {
-                e.preventDefault(); // Prevent accidental deletion
-              }
-            }}
-            onMouseDown={(e) => e.stopPropagation()}
-
-            value={textInputValue}
-            className={`
-            ${
-              editable?(
-              elementsNavigationHelperState.activeElementCoordinateId ===
-              coordinateId
-                ? "active-data-container-input-text"
-                : (textInputValue
-                ? "filled-data-container-input-text"
-                : "empty-data-container-input-text")):"readonly-data-container-input-text"
-            }
-          `}
-
-          readOnly={editable ? false : true}
-          />
-
-          {/* isRequired */}
-          {isRequired && (
-            <span
+          <span style={{ position: "relative" }}>
+            {editable && (
+              <span
+                style={
+                  isActive
+                    ? { display: "none" }
+                    : {
+                        position: "absolute",
+                        top: "15px",
+                        right: "0px",
+                        backgroundColor: "#1d5d9b",
+                        color: "white",
+                        borderRadius: "0px 0px 5px 5px",
+                        width: width,
+                        fontSize: "smaller",
+                        textAlign: "center",
+                      }
+                }
+              >
+                {remainingText} left
+              </span>
+            )}
+            <textarea
+              id="email-input"
+              name="email-input"
+              maxLength={maxCharacters}
+              key={coordinateId}
+              placeholder="Click To Enter Text Here..."
               style={{
-                position: "absolute",
-                fontWeight: "bold",
-                color: "#BB2525",
-                fontSize: "1.2rem",
-                top: "-10px",
-                right: "-10px",
+                height: height,
+                width: width,
+                resize: "none",
+                overflow: "none",
+                pointerEvents: editable ? "auto" : "none",
               }}
-            >
-              *
-            </span>
-          )}
-        </span>
-      </div>
+              onClick={(e: any) => {
+                if (editable) {
+                  dispatch(
+                    setActiveElement({
+                      coordinateId,
+                      y,
+                      x,
+                      isRequired,
+                      value: textInputValue,
+                    })
+                  );
+                  e.target.focus();
+                } else {
+                  e.preventDefault();
+                }
+              }}
+              onChange={(e) => {
+                if (editable) {
+                  handleTextChange(e, textElementIndex);
+                  setRemainingText(maxCharacters - e.target.value.length);
+                } else {
+                  e.preventDefault(); // Prevent accidental deletion
+                }
+              }}
+              onBlur={handleBlur}
+              onMouseDown={(e) => e.stopPropagation()}
+              value={textInputValue}
+              className={`
+                ${
+                  editable
+                    ? elementsNavigationHelperState.activeElementCoordinateId ===
+                      coordinateId
+                      ? "active-data-container-input-text"
+                      : textInputValue
+                      ? "filled-data-container-input-text"
+                      : "empty-data-container-input-text"
+                    : "readonly-data-container-input-text"
+                }
+                
+              `}
+              readOnly={!editable}
+            />
+
+            {/* isRequired */}
+            {isRequired && (
+              <span
+                style={{
+                  position: "absolute",
+                  fontWeight: "bold",
+                  color: "#BB2525",
+                  fontSize: "1.2rem",
+                  top: "-10px",
+                  right: "-10px",
+                }}
+              >
+                *
+              </span>
+            )}
+          </span>
+          <span
+            id={textInputValue}
+            style={{
+              position: "absolute",
+              fontWeight: "bold",
+              color: "#BB2525",
+              fontSize: "1rem",
+              top: "-20px",
+              right: "0px",
+            }}
+          >
+            {!isEmailValid ? " Invalid Email!" : ""}
+          </span>
+        </div>
       </div>
     </>
   );
