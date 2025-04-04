@@ -109,7 +109,7 @@
     opacity: 0;
     
   }
-  z-index: 99;
+  /* z-index: 99; */
 }
 /* .readonly-date-container{
   background-color: white;

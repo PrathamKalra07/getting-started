@@ -38,7 +38,9 @@ export const TextPad = ({
     const [maxCharacters,setMaxCharacters]=useState(Number);
     useEffect(()=>{
       const setMaxChars=()=>{
-        let maxChar = Math.floor(((width - 4) / 7) * ((height - 4) / 19));
+        // let maxChar = Math.floor(((width - 4) / 7) * ((height - 4) / 19));
+        let maxChar = Math.floor(((width) / 8) * ((height) / 21));
+
         setMaxCharacters(maxChar);
         setRemainingText(maxChar);
         console.log("editable data ? : ",{
@@ -124,7 +126,7 @@ export const TextPad = ({
       
               <span style={{ position: "relative" }}>
                 {editable && 
-                <span style={{position:"absolute",top:'15px',right:"0px",zIndex:"99",backgroundColor:'gray',color:'white',borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
+                <span style={{position:"absolute",top:'15px',right:"0px",backgroundColor:'#1d5d9b',color:'white',zIndex:"1",borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
                   {remainingText} left
                 </span>
                 }
@@ -137,7 +139,7 @@ export const TextPad = ({
                   onClick={(e: any) => {
                     if(editable){
       
-                      dispatch(setActiveElement({ coordinateId, y, x }));
+                      dispatch(setActiveElement({ coordinateId, y, x, isRequired }));
         
                       e.target.focus();
                     }else{

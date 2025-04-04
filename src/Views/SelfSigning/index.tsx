@@ -385,7 +385,7 @@ const SelfSigningPage = () => {
         })
       );
 
-      trackDocumentViewed(uuid_template_instance, signatoryUUID);
+      // trackDocumentViewed(uuid_template_instance, signatoryUUID);
       setIsFetchingCordinatesData(false);
     } catch (err: any) {
       // console.log(err);
@@ -434,28 +434,28 @@ const SelfSigningPage = () => {
     }
   };
 
-  const trackDocumentViewed = async (
-    uuidTemplateInstance: any,
-    signatoryUniqUUID: any
-  ) => {
-    try {
-      const locationData: any = await fetchIpInfo();
+  // const trackDocumentViewed = async (
+  //   uuidTemplateInstance: any,
+  //   signatoryUniqUUID: any
+  // ) => {
+  //   try {
+  //     const locationData: any = await fetchIpInfo();
 
-      const {
-        data: { data: responseData },
-      }: AxiosResponse = await postRequest(
-        API_ROUTES.AUDIT_TRACKDOCUMENTVIEWED,
-        false,
-        {
-          tiUUID: uuidTemplateInstance,
-          signatoryUUID: signatoryUniqUUID,
-          location: locationData,
-        }
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  //     const {
+  //       data: { data: responseData },
+  //     }: AxiosResponse = await postRequest(
+  //       API_ROUTES.AUDIT_TRACKDOCUMENTVIEWED,
+  //       false,
+  //       {
+  //         tiUUID: uuidTemplateInstance,
+  //         signatoryUUID: signatoryUniqUUID,
+  //         location: locationData,
+  //       }
+  //     );
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   useEffect(() => {
     const fetchParamsAndFetchPdf = async () => {
