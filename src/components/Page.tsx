@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
 // import { Modal } from "semantic-ui-react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { EmailContainer } from "containers/EmailContainer";
 
 interface Props {
   page: any;
@@ -51,6 +52,9 @@ export const Page = ({
 
   const allTextData = useSelector(
     (state: RootState) => state.textList.allTextData
+  );
+  const allEmailData = useSelector(
+    (state: RootState) => state.emailList.allEmailData
   );
   const allDateData = useSelector(
     (state: RootState) => state.dateList.allDateData
@@ -132,6 +136,10 @@ export const Page = ({
       (pageData) =>
         (pageData as any[]).every((field) => !field.isRequired || field.value)
     );
+    const requiredEmailFieldsFilled = Object.values(allEmailData).every(
+      (pageData) =>
+        (pageData as any[]).every((field) => !field.isRequired || field.value)
+    );
     const requiredDateFieldsFilled = Object.values(allDateData).every(
       (pageData) =>
         (pageData as any[]).every(
@@ -144,6 +152,9 @@ export const Page = ({
     const allTextFieldsFilled = Object.values(allTextData).every((pageData) =>
       (pageData as any[]).every((field) => field.value)
     );
+    const allEmailFieldsFilled = Object.values(allEmailData).every((pageData) =>
+      (pageData as any[]).every((field) => field.value)
+    );
     const allDateFieldsFilled = Object.values(allDateData).every((pageData) =>
       (pageData as any[]).every((field) => field.value !== "Invalid date")
     );
@@ -152,20 +163,23 @@ export const Page = ({
       requiredTextFieldsFilled &&
       requiredDateFieldsFilled &&
       requiredSignatureFieldsFilled &&
+      requiredEmailFieldsFilled &&
+      allEmailFieldsFilled &&
       allTextFieldsFilled &&
       allDateFieldsFilled;
 
     setIsAllRequiredFieldsFilled(
+      requiredEmailFieldsFilled &&
       requiredTextFieldsFilled &&
         requiredDateFieldsFilled &&
         requiredSignatureFieldsFilled
     );
     setIsAllFieldsFilled(allFieldsFilled);
-  }, [allTextData, allDateData, allSignatureData]);
+  }, [allTextData, allDateData, allSignatureData, allEmailData]);
 
   useEffect(() => {
     updateFieldStatus();
-  }, [allTextData, allDateData, allSignatureData, updateFieldStatus]);
+  }, [allTextData, allDateData, allSignatureData, allEmailData, updateFieldStatus]);
 
   const handleNextClick = () => {
     const { allCoordinateData } = allCoordinatesData;
@@ -185,6 +199,7 @@ export const Page = ({
         const emptyRequiredField =
         findEmptyRequiredField(allDateData, "Date") ||
         findEmptyRequiredField(allTextData, "Text") ||
+        findEmptyRequiredField(allEmailData, "Email") ||
         findEmptyRequiredSignatureField(allSignatureData.allSignatureData);
 
     if (emptyRequiredField) {
@@ -242,6 +257,10 @@ const findEmptyRequiredSignatureField = (data: any) => {
       (pageData) =>
         (pageData as any[]).every((field) => !field.isRequired || field.value)
     );
+    const requiredEmailFieldsFilled = Object.values(allEmailData).every(
+      (pageData) =>
+        (pageData as any[]).every((field) => !field.isRequired || field.value)
+    );
     const requiredDateFieldsFilled = Object.values(allDateData).every(
       (pageData) =>
         (pageData as any[]).every(
@@ -263,6 +282,7 @@ const findEmptyRequiredSignatureField = (data: any) => {
 
     // return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredCheckboxFieldsFilled;
     return (
+      requiredEmailFieldsFilled &&
       requiredTextFieldsFilled &&
       requiredDateFieldsFilled &&
       requiredSignatureFieldsFilled
@@ -364,6 +384,10 @@ const findEmptyRequiredSignatureField = (data: any) => {
                     isFetchingCordinatesData={isFetchingCordinatesData}
                   />
                   <CheckboxContainer
+                    page={allPages[pageNumber - 1]}
+                    isFetchingCordinatesData={isFetchingCordinatesData}
+                  />
+                  <EmailContainer
                     page={allPages[pageNumber - 1]}
                     isFetchingCordinatesData={isFetchingCordinatesData}
                   />
