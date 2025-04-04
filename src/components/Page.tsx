@@ -48,12 +48,8 @@ export const Page = ({
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [isStartShown, setIsStartShown] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
-<<<<<<< HEAD
-  const [pdfLiveUrl, setPdfLiveUrl] = useState("");
-=======
   const [fieldCounter, setFieldCounter] = useState(1);
   const [visiblePages, setVisiblePages] = useState<number[]>([1]); // Start with Page 1
->>>>>>> hetashri-new
 
   const allTextData = useSelector(
     (state: RootState) => state.textList.allTextData
@@ -64,10 +60,6 @@ export const Page = ({
   const allCheckboxData = useSelector(
     (state: RootState) => state.checkboxList.allCheckboxData
   );
-<<<<<<< HEAD
-  const basicInfoData = useSelector((state: RootState) => state.basicInfoData);
-  const scrollContainer = React.useRef(null);
-=======
   const allSignatureData = useSelector(
     (state: RootState) => state.signatureList
   );
@@ -77,7 +69,6 @@ export const Page = ({
   const [isAllRequiredFieldsFilled, setIsAllRequiredFieldsFilled] =
     useState(false);
   const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
->>>>>>> hetashri-new
 
   const lastPageRef = useRef<HTMLDivElement | null>(null);
 
@@ -136,26 +127,6 @@ export const Page = ({
     });
   }, [visiblePages, allPages]);
 
-<<<<<<< HEAD
-    // disableBodyScroll();
-
-    if (basicInfoData) {
-      const { uuid, uuidTemplateInstance } = basicInfoData;
-      const newPdfLiveUrl = `${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
-      const newDocumentLiveUrl = `${process.env.REACT_APP_API_URL}/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}`;
-
-      setPdfLiveUrl(newDocumentLiveUrl);
-    }
-    renderPage(page);
-  }, [page, updateDimensions]);
-
-  const handleNextClick = () => {
-    const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
-    if (allRequiredFieldsFilled) {
-      console.log("logggggg" + showPopup);
-
-      setShowPopup(true);
-=======
   const updateFieldStatus = React.useCallback(() => {
     // console.log('allll date data' + JSON.stringify(allDateData));
     
@@ -224,14 +195,10 @@ export const Page = ({
     }
         
       }
->>>>>>> hetashri-new
     } else {
       console.log("field counter" + fieldCounter);
       handleStartAndScrollElement();
-<<<<<<< HEAD
-=======
       setFieldCounter((fieldCounter) => fieldCounter + 1);
->>>>>>> hetashri-new
     }
   };
 
@@ -283,15 +250,12 @@ const findEmptyRequiredSignatureField = (data: any) => {
           (field) => !field.isRequired || field.value !== "Invalid date"
         )
     );
-<<<<<<< HEAD
-=======
 
     let requiredSignatureFieldsFilled = false;
     if (allSignatureData.encodedImgData !== "") {
       requiredSignatureFieldsFilled = true;
     }
 
->>>>>>> hetashri-new
     // const requiredCheckboxFieldsFilled = Object.values(allCheckboxData).every(pageData =>
     //   (pageData as any[]).every(field => !field.isRequired || field.value)
     // );
@@ -300,15 +264,11 @@ const findEmptyRequiredSignatureField = (data: any) => {
     console.log("requiredDateFieldsFilled" + requiredDateFieldsFilled);
 
     // return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredCheckboxFieldsFilled;
-<<<<<<< HEAD
-    return requiredTextFieldsFilled && requiredDateFieldsFilled;
-=======
     return (
       requiredTextFieldsFilled &&
       requiredDateFieldsFilled &&
       requiredSignatureFieldsFilled
     );
->>>>>>> hetashri-new
   };
   // console.log("width => ", width);
   // console.log("height => ", height);
@@ -357,19 +317,6 @@ const findEmptyRequiredSignatureField = (data: any) => {
           <div className="next-hidden"></div>
         )}
       </div>
-<<<<<<< HEAD
-      {/* <TransformComponent > */}
-
-      <SignatureContainer
-        page={page}
-        addDrawing={() => setDrawingModalOpen(true)}
-        isFetchingCordinatesData={isFetchingCordinatesData}
-      />
-
-      <CommonPDFViewer pdfUrl={pdfLiveUrl} />
-
-      {/* </TransformComponent>    */}
-=======
       <div
         style={{ position: "relative", overflow: "hidden" }}
         className="pdf-viewer-container"
@@ -441,7 +388,6 @@ const findEmptyRequiredSignatureField = (data: any) => {
           </TransformComponent>
         </TransformWrapper>
       </div>
->>>>>>> hetashri-new
     </>
   );
 };
