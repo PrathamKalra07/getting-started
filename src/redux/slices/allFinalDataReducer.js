@@ -4,6 +4,7 @@ import { changeTextData } from "./textReducer";
 import { changeDateData } from "./dateReducer";
 import { changeCheckboxData } from "./checkboxReducer";
 import { setSignaturePathWithEncoddedImg } from "./signatureReducer";
+import { changeEmailData } from "./emailReducer";
 
 export const allFinalDataSlice = createSlice({
   name: "allFinalData",
@@ -27,6 +28,12 @@ export const allFinalDataSlice = createSlice({
   extraReducers: (builder) => {
     //
     builder.addCase(changeTextData.type, (state, action) => {
+      const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
+      const { totalDoneElements } = FetchAllElementsStatus(action.payload);
+
+      state.completedNoOfFields = totalDoneElements;
+    });
+    builder.addCase(changeEmailData.type, (state, action) => {
       const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
       const { totalDoneElements } = FetchAllElementsStatus(action.payload);
 

@@ -5,6 +5,7 @@ import signatureReducer from "./signatureReducer";
 import coordinatesReducer from "./coordinatesReducer";
 import basicInfoReducer from "./basicInfoReducer";
 import textReducer from "./textReducer";
+import emailReducer from "./emailReducer";
 import dateReducer from "./dateReducer";
 import checkboxReducer from "./checkboxReducer";
 import externalUserReducer from "./externalUserReducer";
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   basicInfoData: basicInfoReducer,
   textList: textReducer,
   dateList: dateReducer,
+  emailList: emailReducer,
   checkboxList: checkboxReducer,
   externalUser: externalUserReducer,
   allFinalDataReducer: allFinalDataReducer,

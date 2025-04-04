@@ -64,7 +64,6 @@ export const MenuBar: React.FC<Props> = ({
     if (trackerData.completedNoOfFields === trackerData.totalNoOfFields) {
       setIsFinishAlertShown(true);
     } else {
-      // alert("All fields are required!");
       setIsIncompleteFieldsAlertShown(true);
     }
   };

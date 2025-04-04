@@ -2,6 +2,7 @@ const FetchAllElementsStatus = (allPayload) => {
   const {
     signatureList: { encodedImgData },
     textList: { allTextData: textData },
+    emailList: { allEmailData: emailData },
     dateList: { allDateData: dateData },
     checkboxList: { allCheckboxData: checkboxData },
     coordinatesList: { allCoordinateData },
@@ -19,6 +20,23 @@ const FetchAllElementsStatus = (allPayload) => {
     
     textData[i] &&
       textData[i].map((item) => {
+        if (item.isRequired) {
+          if (
+            allPayload.textValue.length > 0 &&
+            item.index === allPayload.elementIndex
+          ) {
+            listOfCompletedElements.push(item.index);
+          } else if (
+            item.value.length > 0 &&
+            item.index !== allPayload.elementIndex
+          ) {
+            listOfCompletedElements.push(item.index);
+          }
+        }
+      });
+      
+    emailData[i] &&
+      emailData[i].map((item) => {
         if (item.isRequired) {
           if (
             allPayload.textValue.length > 0 &&

@@ -248,7 +248,7 @@ const App: React.FC = () => {
 
   const handleSavePdf = () => {
     const tempState = currentReduxState as RootState;
-    const { coordinatesList, signatureList, textList, dateList, checkboxList } =
+    const { coordinatesList, signatureList, textList, dateList, checkboxList, emailList } =
       currentReduxState as RootState;
 
     console.log("DataList", dateList);
@@ -257,6 +257,7 @@ const App: React.FC = () => {
     const textData = textList.allTextData;
     const dateData = dateList.allDateData;
     const checkboxData = checkboxList.allCheckboxData;
+    const emailData = emailList.allEmailData;
 
     for (const indexNo in signatureData) {
       for (let i = 0; i < signatureData[indexNo].length; i++) {
@@ -300,6 +301,18 @@ const App: React.FC = () => {
     for (const indexNo in checkboxData) {
       for (let i = 0; i < checkboxData[indexNo].length; i++) {
         const innerElement = checkboxData[indexNo][i];
+
+        if (innerElement.isRequired && innerElement.value === false) {
+          // alert("Please Check All Checkbox Data");
+          handleRequiredFieldLogic(innerElement);
+
+          return;
+        }
+      }
+    }
+    for (const indexNo in emailData) {
+      for (let i = 0; i < emailData[indexNo].length; i++) {
+        const innerElement = emailData[indexNo][i];
 
         if (innerElement.isRequired && innerElement.value === false) {
           // alert("Please Check All Checkbox Data");
