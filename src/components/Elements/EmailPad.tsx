@@ -38,6 +38,7 @@ export const EmailPad = ({
   const [remainingText, setRemainingText] = useState(Number);
   const [maxCharacters, setMaxCharacters] = useState(Number);
   const [isActive, setIsActive] = useState(false);
+  const [isEmailEmpty, setIsEmailEmpty] = useState(true);
   const [isEmailValid, setIsEmailValid] = useState(true);
 
   const handleBlur = (e: any) => {
@@ -48,6 +49,7 @@ export const EmailPad = ({
     } else {
       setIsEmailValid(true);
     }
+    setIsEmailEmpty(textInputValue ? false : true);
   };
 
   useEffect(() => {
@@ -116,7 +118,7 @@ export const EmailPad = ({
               name="email-input"
               maxLength={maxCharacters}
               key={coordinateId}
-              placeholder="Click To Enter Text Here..."
+              placeholder="Click To Enter Email Here..."
               style={{
                 height: height,
                 width: width,
@@ -188,13 +190,17 @@ export const EmailPad = ({
             style={{
               position: "absolute",
               fontWeight: "bold",
-              color: "#BB2525",
+              color: isEmailValid ? "#00b005" : "#BB2525",
               fontSize: "1rem",
               top: "-20px",
               right: "0px",
             }}
           >
-            {!isEmailValid ? " Invalid Email!" : ""}
+            {isEmailEmpty
+              ? ""
+              : isEmailValid
+              ? "Valid Email"
+              : "Invalid Email!"}
           </span>
         </div>
       </div>

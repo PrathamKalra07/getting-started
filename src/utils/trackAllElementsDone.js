@@ -1,3 +1,5 @@
+import { emailRegex } from "helpers/constants/validation_constants";
+
 const FetchAllElementsStatus = (allPayload) => {
   const {
     signatureList: { encodedImgData },
@@ -7,37 +9,22 @@ const FetchAllElementsStatus = (allPayload) => {
     checkboxList: { allCheckboxData: checkboxData },
     coordinatesList: { allCoordinateData },
   } = allPayload.reduxState;
+
   const totalPages = allCoordinateData[allCoordinateData.length - 1].pageNo;
 
   console.log("allPayload", allPayload);
-  
 
-  // var totalDoneElements = 0;
+  // Keep track of completed elements
   const listOfCompletedElements = [];
 
   for (let i = 0; i <= totalPages; i++) {
     console.log("textData", textData);
-    
+
+    // Check for text fields
     textData[i] &&
       textData[i].map((item) => {
         if (item.isRequired) {
-          if (
-            allPayload.textValue.length > 0 &&
-            item.index === allPayload.elementIndex
-          ) {
-            listOfCompletedElements.push(item.index);
-          } else if (
-            item.value.length > 0 &&
-            item.index !== allPayload.elementIndex
-          ) {
-            listOfCompletedElements.push(item.index);
-          }
-        }
-      });
-      
-    emailData[i] &&
-      emailData[i].map((item) => {
-        if (item.isRequired) {
+          // If the current input has a value, mark as completed
           if (
             allPayload.textValue.length > 0 &&
             item.index === allPayload.elementIndex
@@ -52,6 +39,32 @@ const FetchAllElementsStatus = (allPayload) => {
         }
       });
 
+    // Check for email fields
+    emailData[i] &&
+      emailData[i].map((item) => {
+        if (item.isRequired) {
+          // Check if the email value is valid (matches emailRegex)
+          if (
+            allPayload.textValue.length > 0 &&
+            item.index === allPayload.elementIndex
+          ) {
+            if (allPayload.textValue.match(emailRegex)) {
+              // Add to completed elements if the email is valid
+              listOfCompletedElements.push(item.index);
+            }
+          } else if (
+            item.value.length > 0 &&
+            item.index !== allPayload.elementIndex
+          ) {
+            if (item.value.match(emailRegex)) {
+              // Add to completed elements if the email value is valid
+              listOfCompletedElements.push(item.index);
+            }
+          }
+        }
+      });
+
+    // Check for date fields
     dateData[i] &&
       dateData[i].map((item) => {
         if (item.isRequired && item.value !== "Invalid date") {
@@ -68,6 +81,8 @@ const FetchAllElementsStatus = (allPayload) => {
           }
         }
       });
+
+    // Check for checkbox fields
     checkboxData[i] &&
       checkboxData[i].map((item) => {
         if (item.isRequired) {
@@ -80,8 +95,9 @@ const FetchAllElementsStatus = (allPayload) => {
       });
   }
 
+  // Check for signature fields
   allCoordinateData.map((item, i) => {
-    if(item.isRequired){
+    if (item.isRequired) {
       if (
         item.fieldType === "Signature" &&
         allPayload.isSignature &&
@@ -90,12 +106,14 @@ const FetchAllElementsStatus = (allPayload) => {
         listOfCompletedElements.push("sign" + i);
       } else if (item.fieldType === "Signature" && encodedImgData.length > 0) {
         listOfCompletedElements.push("sign" + i);
-      } 
+      }
     }
   });
 
+  // Return the total count of completed elements (text and valid emails)
   return {
     totalDoneElements: listOfCompletedElements.length,
   };
 };
+
 export { FetchAllElementsStatus };
