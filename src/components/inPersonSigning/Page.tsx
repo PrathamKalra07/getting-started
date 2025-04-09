@@ -3,6 +3,7 @@ import { PaginationContainer } from "containers/PaginationContainer";
 
 import { SignatureContainer } from "containers/inPersonSigning/SignatureContainer";
 import { TextContainer } from "containers/inPersonSigning/TextContainer";
+import { EmailContainer } from "containers/inPersonSigning/EmailContainer";
 import { DateContainer } from "containers/inPersonSigning/DateContainer";
 import { CheckboxContainer } from "containers/inPersonSigning/CheckboxContainer";
 
@@ -46,7 +47,8 @@ export const Page = ({
   const [isAllRequiredFieldsFilled, setIsAllRequiredFieldsFilled] = useState(false);
 const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
   
-    const allTextData = useSelector((state: RootState) => state.inPerson.inPersonTextList.allTextData);
+const allTextData = useSelector((state: RootState) => state.inPerson.inPersonTextList.allTextData);
+const allEmailData = useSelector((state: RootState) => state.inPerson.inPersonEmailList.allEmailData);
     const allDateData = useSelector((state: RootState) => state.inPerson.inPersonDateList.allDateData);
     // const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
   const activeSignatory = useSelector(
@@ -98,6 +100,9 @@ const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
     const requiredTextFieldsFilled = Object.values(allTextData).every(pageData =>
       (pageData as any[]).every(field => !field.isRequired || field.value)
     );
+    const requiredEmailFieldsFilled = Object.values(allEmailData).every(pageData =>
+      (pageData as any[]).every(field => !field.isRequired || field.value)
+    );
     const requiredDateFieldsFilled = Object.values(allDateData).every(pageData =>
       (pageData as any[]).every(field => !field.isRequired || field.value !== 'Invalid date')
     );
@@ -106,20 +111,23 @@ const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
     const allTextFieldsFilled = Object.values(allTextData).every(pageData =>
       (pageData as any[]).every(field => field.value)
     );
+    const allEmailFieldsFilled = Object.values(allEmailData).every(pageData =>
+      (pageData as any[]).every(field => field.value)
+    );
     const allDateFieldsFilled = Object.values(allDateData).every(pageData =>
       (pageData as any[]).every(field => field.value !== 'Invalid date')
     );
   
-    const allFieldsFilled = requiredTextFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled &&
-                            allTextFieldsFilled && allDateFieldsFilled;
+    const allFieldsFilled = requiredTextFieldsFilled && requiredEmailFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled &&
+                            allTextFieldsFilled && allEmailFieldsFilled && allDateFieldsFilled;
   
-    setIsAllRequiredFieldsFilled(requiredTextFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled);
+    setIsAllRequiredFieldsFilled(requiredTextFieldsFilled && requiredEmailFieldsFilled && requiredDateFieldsFilled && requiredSignatureFieldsFilled);
     setIsAllFieldsFilled(allFieldsFilled);
   };
   
   useEffect(() => {
     updateFieldStatus();
-  }, [allTextData, allDateData, allSignatureData]);
+  }, [allTextData, allDateData, allSignatureData, allEmailData]);
   
 
   const handleNextClick = () => {
@@ -162,6 +170,11 @@ const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
         return !field.isRequired || field.value;
       })
     );
+    const requiredEmailFieldsFilled = Object.values(allEmailData).every(pageData =>
+      (pageData as any[]).every(field => {
+        return !field.isRequired || field.value;
+      })
+    );
     const requiredDateFieldsFilled = Object.values(allDateData).every(pageData =>
       (pageData as any[]).every(field => !field.isRequired || field.value !== 'Invalid date')
     );
@@ -181,7 +194,7 @@ const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
     
 
     // return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredCheckboxFieldsFilled;
-    return requiredSignatureFieldsFilled && requiredDateFieldsFilled && requiredTextFieldsFilled;
+    return requiredSignatureFieldsFilled && requiredDateFieldsFilled && requiredTextFieldsFilled && requiredEmailFieldsFilled;
   };
 
   // console.log("width => ", width);
@@ -267,6 +280,10 @@ const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
               isFetchingCordinatesData={isFetchingCordinatesData}
             />
             <TextContainer
+              page={page}
+              isFetchingCordinatesData={isFetchingCordinatesData}
+            />
+            <EmailContainer
               page={page}
               isFetchingCordinatesData={isFetchingCordinatesData}
             />
