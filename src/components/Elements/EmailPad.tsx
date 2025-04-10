@@ -40,9 +40,10 @@ export const EmailPad = ({
   const [isActive, setIsActive] = useState(false);
   const [isEmailEmpty, setIsEmailEmpty] = useState(true);
   const [isEmailValid, setIsEmailValid] = useState(true);
+  const [value,setValue]=useState("");
 
   const handleBlur = (e: any) => {
-    const emailValue = e.target.value.trim();
+    const emailValue = e.trim();
 
     if (!emailRegex.test(emailValue) && emailValue !== "") {
       setIsEmailValid(false);
@@ -80,6 +81,7 @@ export const EmailPad = ({
         // onMouseLeave={()=>setIsActive(false)}
         // onClick={addDrawing}
       >
+        
         <div className={editable ? "" : "readonly-container-textarea"}>
           <span
             className="cannot-edit"
@@ -93,9 +95,10 @@ export const EmailPad = ({
 
           <span style={{ position: "relative" }}>
             {editable && (
+              
               <span
                 style={
-                  isActive
+                  false
                     ? { display: "none" }
                     : {
                         position: "absolute",
@@ -113,6 +116,7 @@ export const EmailPad = ({
                 {remainingText} left
               </span>
             )}
+            
             <textarea
               id="email-input"
               name="email-input"
@@ -137,6 +141,7 @@ export const EmailPad = ({
                       value: textInputValue,
                     })
                   );
+                  setIsActive(true);
                   e.target.focus();
                 } else {
                   e.preventDefault();
@@ -144,14 +149,20 @@ export const EmailPad = ({
               }}
               onChange={(e) => {
                 if (editable) {
+                  setIsActive(true);
                   handleTextChange(e, textElementIndex);
+                  console.log(value);
+                  setValue(e.target.value);
                   setRemainingText(maxCharacters - e.target.value.length);
                 } else {
                   e.preventDefault(); // Prevent accidental deletion
                 }
               }}
-              onBlur={handleBlur}
-              onMouseDown={(e) => e.stopPropagation()}
+              onBlur={(e)=>{
+                handleBlur(e.target.value);
+                setIsActive(false)
+              }}
+              // onMouseDown={(e) => e.stopPropagation()}
               value={textInputValue}
               className={`
                 ${
@@ -168,7 +179,24 @@ export const EmailPad = ({
               `}
               readOnly={!editable}
             />
-
+            {isActive && 
+          <div style={{
+            top:"0",
+            left:"0",
+            position:"fixed",
+            height:"100vh",
+            width:"100vw",
+            zIndex:"9999",
+            // backgroundColor:"black"
+          }}
+          onClick={()=>{
+            handleBlur(value);
+            setIsActive(false)
+          }
+          }>
+            &nbsp;
+          </div>
+        }
             {/* isRequired */}
             {isRequired && (
               <span

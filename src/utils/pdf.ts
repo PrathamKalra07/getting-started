@@ -22,7 +22,7 @@ export async function Save(pdfFile: File, tempState: any) {
 
   try {
     pdfDoc = await PDFLib.PDFDocument.load(await readAsArrayBuffer(pdfFile));
-    console.log('@@@ pdfDoc::'+JSON.stringify(pdfDoc));
+    console.log('@@@ pdfDoc::'+pdfDoc);
   } catch (e) {
     console.log("Failed to load PDF.");
     throw e;
@@ -126,13 +126,13 @@ export async function Save(pdfFile: File, tempState: any) {
     }
   }
 
-  console.log("@@@ pageWiseAllData::" + JSON.stringify(pageWiseAllData));
+  console.log("@@@ pageWiseAllData::" + pageWiseAllData);
 
   try {
     //
 
     let locationData: any = await fetchIpInfo();
-    console.log("@@@ locationData::" + JSON.stringify(locationData));
+    console.log("@@@ locationData::" +locationData);
 
     if (!locationData) {
       locationData = {
@@ -155,13 +155,13 @@ export async function Save(pdfFile: File, tempState: any) {
       location: locationData,
     };
 
-    console.log("@@@ bodyContent" + JSON.stringify(bodyContent));
+    console.log("@@@ bodyContent", bodyContent); // ✅ safer, avoids stringifying
 
-    // const { data } = await axios.request({
-    //   url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
-    //   method: "POST",
-    //   data: bodyContent,
-    // });
+    const { data } = await axios.request({
+      url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
+      method: "POST",
+      data: bodyContent,
+    });
 
     const thankYouContainer: HTMLElement = document.getElementById(
       "thankyou-container"
@@ -316,6 +316,6 @@ export async function Save(pdfFile: File, tempState: any) {
     alert("Something Want Wrong Try Again");
     //
 
-    console.log(e);
+    // console.log(e);
   }
 }
