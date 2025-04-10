@@ -1,8 +1,10 @@
+import { emailRegex } from "helpers/constants/validation_constants";
 const FetchAllElementsStatus = (allPayload) => {
   const {
     inPerson: {
       inPersonSignatureList: { encodedImgData = [] } = {},
       inPersonTextList: { allTextData: textData = [] } = {},
+      inPersonEmailList: { allEmailData: emailData = [] } = {},
       inPersonDateList: { allDateData: dateData = [] } = {},
       inPersonCheckboxList: { allCheckboxData: checkboxData = [] } = {},
       inPersonCoordinatesList: { activeSignatoriesCoordinateData = [] } = {},
@@ -42,6 +44,30 @@ const FetchAllElementsStatus = (allPayload) => {
             item.index !== allPayload.elementIndex
           ) {
             listOfCompletedElements.push(item.index);
+          }
+        }
+      });
+    }
+
+    // Check for email fields
+    if (emailData[i]) {
+      emailData[i].forEach((item) => {
+
+        if (item.isRequired) {
+          if (
+            allPayload.textValue.length > 0 &&
+            item.index === allPayload.elementIndex
+          ) {
+            if (allPayload.textValue.match(emailRegex)) {
+              listOfCompletedElements.push(item.index);
+            }
+          } else if (
+            item.value.length > 0 &&
+            item.index !== allPayload.elementIndex
+          ) {
+            if (allPayload.textValue.match(emailRegex)) {
+              listOfCompletedElements.push(item.index);
+            }
           }
         }
       });

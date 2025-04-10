@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 //
 import { TextPad } from "components/Elements/TextPad";
-import { changeTextData, setTextData } from "redux/slices/textReducer";
+import { changeEmailData, setEmailData } from "redux/slices/emailReducer";
 //
 import { RootState } from "redux/store";
+import { EmailPad } from "components/Elements/EmailPad";
 
 interface Props {
   page: any;
@@ -13,7 +14,7 @@ interface Props {
   // allCordinatesData: any;
 }
 
-export const TextContainer: React.FC<Props> = ({
+export const EmailContainer: React.FC<Props> = ({
   page,
   isFetchingCordinatesData,
   // allCordinatesData,
@@ -28,8 +29,8 @@ export const TextContainer: React.FC<Props> = ({
     (state: RootState) => state.coordinatesList.recordData
   );
 
-  const allTextElementDataSelector = useSelector(
-    (state: RootState) => state.textList.allTextData[currentPageNo]
+  const allEmailElementDataSelector = useSelector(
+    (state: RootState) => state.emailList.allEmailData[currentPageNo]
   );
   const reduxState = useSelector((state: RootState) => state);
 
@@ -48,25 +49,25 @@ export const TextContainer: React.FC<Props> = ({
   }, [page]);
 
   useEffect(() => {
-    var textDataPagesWise: any = {};
+    var emailDataPagesWise: any = {};
 
     if (allCordinatesData) {
       //
       allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType == "Text") {
-          if (!textDataPagesWise[item.pageNo]) {
-            textDataPagesWise[item.pageNo] = [];
+        if (item.fieldType === "Email") {
+          if (!emailDataPagesWise[item.pageNo]) {
+            emailDataPagesWise[item.pageNo] = [];
           }
 
-          textDataPagesWise[item.pageNo] = [
-            ...textDataPagesWise[item.pageNo],
+          emailDataPagesWise[item.pageNo] = [
+            ...emailDataPagesWise[item.pageNo],
             { ...item, id: item.eleId, index: i },
           ];
         }
       });
-      console.log("textDataPagesWise",textDataPagesWise);
-      console.log("textDataPagesWise",JSON.stringify(textDataPagesWise));
-      dispatch(setTextData({ allTextData: textDataPagesWise }));
+      console.log("emailDataPagesWise",emailDataPagesWise);
+      console.log("emailDataPagesWise",JSON.stringify(emailDataPagesWise));
+      dispatch(setEmailData({ allEmailData: emailDataPagesWise }));
 
       // localStorage.setItem(
       //   "textDataPagesWise",
@@ -82,13 +83,14 @@ export const TextContainer: React.FC<Props> = ({
       const value = e.target.value;
 
       dispatch(
-        changeTextData({
+        changeEmailData({
           elementIndex: targetElementIndex,
           textValue: value,
           currentPageNo: currentPageNo,
           reduxState,
         })
       );
+      
     } catch (err) {
       console.log(err);
     }
@@ -96,10 +98,10 @@ export const TextContainer: React.FC<Props> = ({
 
   return (
     <>
-      {allTextElementDataSelector
-        ? allTextElementDataSelector.map((item: any, i: number) => {
+      {allEmailElementDataSelector
+        ? allEmailElementDataSelector.map((item: any, i: number) => {
             return (
-              <TextPad
+              <EmailPad
                 key={i}
                 {...item}
                 handleTextChange={handleTextChange}

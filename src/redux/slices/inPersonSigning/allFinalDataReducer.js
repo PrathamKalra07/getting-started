@@ -4,6 +4,7 @@ import { changeTextData } from "./textReducer";
 import { changeDateData } from "./dateReducer";
 import { changeCheckboxData } from "./checkboxReducer";
 import { setSignaturePathWithEncoddedImg } from "./signatureReducer";
+import { changeEmailData } from "./emailReducer";
 
 export const allFinalDataSlice = createSlice({
     name: "allFinalData",
@@ -48,6 +49,13 @@ export const allFinalDataSlice = createSlice({
             state.completedNoOfFields = listOfCompletedElements.length;
             console.log('state.completedNoOfFields' + state.completedNoOfFields);
             
+        });
+
+        builder.addCase(changeEmailData.type, (state, action) => {
+            const { FetchAllElementsStatus } = require("utils/InPersonSigning/FetchAllElementStatus");
+            const { totalDoneElements, listOfCompletedElements } = FetchAllElementsStatus(action.payload);
+    
+            state.completedNoOfFields = totalDoneElements;
         });
 
         builder.addCase(changeDateData.type, (state, action) => {

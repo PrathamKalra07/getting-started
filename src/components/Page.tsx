@@ -1,3 +1,4 @@
+//-------------> C:\Users\shiva\Desktop\ew-sign-signpad\src\components\Page.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { PaginationContainer } from "containers/PaginationContainer";
 
@@ -12,6 +13,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
 // import { Modal } from "semantic-ui-react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import CommonPDFViewer from "./Common/CommonPDFviewer";
+import { EmailContainer } from "containers/EmailContainer";
 
 interface Props {
   page: any;
@@ -41,8 +44,8 @@ export const Page = ({
   // updateViewportWidth,
 }: Props) => {
   const canvasRefs = useRef<HTMLCanvasElement[]>([]);
-  const [width, setWidth] = useState((dimensions && dimensions.width) || 0);
-  const [height, setHeight] = useState((dimensions && dimensions.height) || 0);
+  const [width, setWidth] = useState(595.303);
+  const [height, setHeight] = useState(841.889);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
   const [isStartShown, setIsStartShown] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
@@ -51,6 +54,9 @@ export const Page = ({
 
   const allTextData = useSelector(
     (state: RootState) => state.textList.allTextData
+  );
+  const allEmailData = useSelector(
+    (state: RootState) => state.emailList.allEmailData
   );
   const allDateData = useSelector(
     (state: RootState) => state.dateList.allDateData
@@ -125,8 +131,14 @@ export const Page = ({
     });
   }, [visiblePages, allPages]);
 
-  const updateFieldStatus = () => {
+  const updateFieldStatus = React.useCallback(() => {
+    // console.log('allll date data' + JSON.stringify(allDateData));
+    
     const requiredTextFieldsFilled = Object.values(allTextData).every(
+      (pageData) =>
+        (pageData as any[]).every((field) => !field.isRequired || field.value)
+    );
+    const requiredEmailFieldsFilled = Object.values(allEmailData).every(
       (pageData) =>
         (pageData as any[]).every((field) => !field.isRequired || field.value)
     );
@@ -142,6 +154,9 @@ export const Page = ({
     const allTextFieldsFilled = Object.values(allTextData).every((pageData) =>
       (pageData as any[]).every((field) => field.value)
     );
+    const allEmailFieldsFilled = Object.values(allEmailData).every((pageData) =>
+      (pageData as any[]).every((field) => field.value)
+    );
     const allDateFieldsFilled = Object.values(allDateData).every((pageData) =>
       (pageData as any[]).every((field) => field.value !== "Invalid date")
     );
@@ -150,33 +165,50 @@ export const Page = ({
       requiredTextFieldsFilled &&
       requiredDateFieldsFilled &&
       requiredSignatureFieldsFilled &&
+      requiredEmailFieldsFilled &&
+      allEmailFieldsFilled &&
       allTextFieldsFilled &&
       allDateFieldsFilled;
 
     setIsAllRequiredFieldsFilled(
+      requiredEmailFieldsFilled &&
       requiredTextFieldsFilled &&
         requiredDateFieldsFilled &&
         requiredSignatureFieldsFilled
     );
     setIsAllFieldsFilled(allFieldsFilled);
-  };
+  }, [allTextData, allDateData, allSignatureData, allEmailData]);
 
   useEffect(() => {
     updateFieldStatus();
-  }, [allTextData, allDateData, allSignatureData]);
+  }, [allTextData, allDateData, allSignatureData, allEmailData, updateFieldStatus]);
 
   const handleNextClick = () => {
     const { allCoordinateData } = allCoordinatesData;
     console.log("coordinates data length " + allCoordinateData.length);
+    console.log("all date data @@" + JSON.stringify(allDateData));
+    
     if (fieldCounter === allCoordinateData.length) {
       const allRequiredFieldsFilled = checkAllRequiredFieldsFilled();
+      console.log('all requiredd fields filled ' + allRequiredFieldsFilled);
+      
       if (allRequiredFieldsFilled) {
         console.log("logggggg" + showPopup);
 
         setShowPopup(true);
       } else {
         console.log("@@@ allRequiredFieldsFilled FALSE...");
-        handleStartAndScrollElement();
+        const emptyRequiredField =
+        findEmptyRequiredField(allDateData, "Date") ||
+        findEmptyRequiredField(allTextData, "Text") ||
+        findEmptyRequiredField(allEmailData, "Email") ||
+        findEmptyRequiredSignatureField(allSignatureData.allSignatureData);
+
+    if (emptyRequiredField) {
+        console.log("Scrolling to empty required field:", emptyRequiredField);
+        handleStartAndScrollElement(emptyRequiredField);
+    }
+        
       }
     } else {
       console.log("field counter" + fieldCounter);
@@ -185,8 +217,49 @@ export const Page = ({
     }
   };
 
+  const findEmptyRequiredField = (data: any, fieldType: string) => {
+    for (const pageData of Object.values(data)) {
+      // console.log('pageData' + JSON.stringify(pageData));
+      
+        for (const field of pageData as any[]) {
+          console.log('page data field' + JSON.stringify(field));
+          
+            if (field.isRequired && (field.value === "" || field.value === 'Invalid date')) {
+              console.log('qwertyuioihgfdsasdfghnjm');
+              
+              console.log('fields checking' + JSON.stringify({ ...field, fieldType }));
+              
+                return { ...field, fieldType };
+            }
+        }
+    }
+    return null;
+};
+
+// Helper function to check for empty required signature fields
+const findEmptyRequiredSignatureField = (data: any) => {
+    if (allSignatureData.encodedImgData === "") {
+      console.log('fields checking signature' + JSON.stringify(allSignatureData.allSignatureData));
+
+        for(const pageData of Object.values(data)){
+          for(const field of pageData as any[]){
+            console.log('sigantureee fields' + JSON.stringify({...field}));
+            
+            return {...field};
+          }
+        }
+      
+        // return { fieldType: "Signature", isRequired: true, value: "" };
+    }
+    return null;
+};
+
   const checkAllRequiredFieldsFilled = () => {
     const requiredTextFieldsFilled = Object.values(allTextData).every(
+      (pageData) =>
+        (pageData as any[]).every((field) => !field.isRequired || field.value)
+    );
+    const requiredEmailFieldsFilled = Object.values(allEmailData).every(
       (pageData) =>
         (pageData as any[]).every((field) => !field.isRequired || field.value)
     );
@@ -211,6 +284,7 @@ export const Page = ({
 
     // return requiredTextFieldsFilled && requiredDateFieldsFilled && requiredCheckboxFieldsFilled;
     return (
+      requiredEmailFieldsFilled &&
       requiredTextFieldsFilled &&
       requiredDateFieldsFilled &&
       requiredSignatureFieldsFilled
@@ -312,6 +386,10 @@ export const Page = ({
                     isFetchingCordinatesData={isFetchingCordinatesData}
                   />
                   <CheckboxContainer
+                    page={allPages[pageNumber - 1]}
+                    isFetchingCordinatesData={isFetchingCordinatesData}
+                  />
+                  <EmailContainer
                     page={allPages[pageNumber - 1]}
                     isFetchingCordinatesData={isFetchingCordinatesData}
                   />

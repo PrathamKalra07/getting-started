@@ -74,6 +74,7 @@ const App: React.FC = () => {
 
   //
   const signatureIndicatorRef = useRef<any>(null);
+  const visitedFieldsRef = useRef<Set<number>>(new Set());
 
   //
   const currentReduxState = useSelector((state: RootState) => state);
@@ -83,6 +84,19 @@ const App: React.FC = () => {
   const elementsNavigationData = useSelector(
     (state: RootState) => state.elementsNavigationHelper
   );
+
+   const allTextData = useSelector(
+      (state: RootState) => state.textList.allTextData
+    );
+    const allDateData = useSelector(
+      (state: RootState) => state.dateList.allDateData
+    );
+    const allCheckboxData = useSelector(
+      (state: RootState) => state.checkboxList.allCheckboxData
+    );
+    const allSignatureData = useSelector(
+      (state: RootState) => state.signatureList
+    );
 
   const {
     file,
@@ -234,7 +248,7 @@ const App: React.FC = () => {
 
   const handleSavePdf = () => {
     const tempState = currentReduxState as RootState;
-    const { coordinatesList, signatureList, textList, dateList, checkboxList } =
+    const { coordinatesList, signatureList, textList, dateList, checkboxList, emailList } =
       currentReduxState as RootState;
 
     console.log("DataList", dateList);
@@ -243,6 +257,7 @@ const App: React.FC = () => {
     const textData = textList.allTextData;
     const dateData = dateList.allDateData;
     const checkboxData = checkboxList.allCheckboxData;
+    const emailData = emailList.allEmailData;
 
     for (const indexNo in signatureData) {
       for (let i = 0; i < signatureData[indexNo].length; i++) {
@@ -295,6 +310,18 @@ const App: React.FC = () => {
         }
       }
     }
+    for (const indexNo in emailData) {
+      for (let i = 0; i < emailData[indexNo].length; i++) {
+        const innerElement = emailData[indexNo][i];
+
+        if (innerElement.isRequired && innerElement.value === false) {
+          // alert("Please Check All Checkbox Data");
+          handleRequiredFieldLogic(innerElement);
+
+          return;
+        }
+      }
+    }
 
     // here changed
     if (coordinatesList.allCoordinateData.length === 0) {
@@ -315,9 +342,9 @@ const App: React.FC = () => {
       <i class="fa-solid fa-circle-arrow-down"></i> Required
     </span>`;
 
-      const { coordinateId, x, y, screenX, screenY, pageNumber, width, height } = innerElement;
+      const { coordinateId, x, y, screenX, screenY, pageNumber, width, height, isRequired, value } = innerElement;
 
-      dispatch(setActiveElement({ coordinateId, y, x, screenX, screenY, pageNumber, width, height }));
+      dispatch(setActiveElement({ coordinateId, y, x, screenX, screenY, pageNumber, width, height, isRequired, value }));
     } catch (err) {
       console.log(err);
     }
@@ -327,22 +354,48 @@ const App: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const handleStartAndScrollElement = async () => {
+  // const visitedFields = new Set<Number>();
+  const handleStartAndScrollElement = (field? :any) => {
     try {
-      
+      console.log('field targeted' + JSON.stringify(field));
 
-      const { activeElementCoordinateId, pageNumber, screenY } = elementsNavigationData;
+      
+      
+      const targetField = field || elementsNavigationData;
+      console.log('targeted fields' + JSON.stringify(targetField));
+      
+      const { activeElementCoordinateId, pageNumber, screenY } = targetField;
       console.log("activeElementCoordinateId", activeElementCoordinateId);
       console.log("pageNumber", pageNumber);
       // console.log('screenYyyy' + screenY);
       
-
-      const nextIndex =
+      console.log('all text data in app' + JSON.stringify(allTextData));
+      
+      
+      let nextIndex;
+      if(field){
+        nextIndex =
+        allCoordinateDataWithCordinates.findIndex(
+          (item: any) => item.coordinateId === activeElementCoordinateId
+        );
+      }
+      else {
+          nextIndex =
         allCoordinateDataWithCordinates.findIndex(
           (item: any) => item.coordinateId === activeElementCoordinateId
         ) + 1;
+      }
+      // console.log('all cooordinate data' + JSON.stringify(allCoordinateDataWithCordinates));
 
       console.log("next index " + nextIndex);
+
+      // if (nextIndex === allCoordinateDataWithCordinates.length) {
+      //   nextIndex = allCoordinateDataWithCordinates.findIndex(
+      //     (item: any) => item.value === "" && !visitedFieldsRef.current.has(item.coordinateId)
+      //   );
+      // }
+
+      
 
       const indexNo =
         activeElementCoordinateId === 0 ||
@@ -381,6 +434,10 @@ const App: React.FC = () => {
         });
       }
 
+      visitedFieldsRef.current.add(currentElementData.coordinateId);
+      console.log('visited fields ' + Array.from(visitedFieldsRef.current));
+
+
       dispatch(
         setActiveElement({
           coordinateId: currentElementData.coordinateId,
@@ -390,7 +447,9 @@ const App: React.FC = () => {
           screenY: currentElementData.screen_y,
           pageNumber: currentElementData.pageNo,
           height: currentElementData.height,
-          width: currentElementData.width
+          width: currentElementData.width,
+          isRequired: currentElementData.isRequired,
+          value: currentElementData.value
         })
       );
 

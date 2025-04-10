@@ -139,7 +139,7 @@ export const TextPad = ({
                   onClick={(e: any) => {
                     if(editable){
       
-                      dispatch(setActiveElement({ coordinateId, y, x }));
+                      dispatch(setActiveElement({ coordinateId, y, x, isRequired }));
         
                       e.target.focus();
                     }else{
