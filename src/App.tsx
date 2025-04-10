@@ -658,7 +658,7 @@ const App: React.FC = () => {
         }
       }
 
-      // await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
+      await trackDocumentViewed(uuidTemplateInstance, signatoryUniqUUID);
     } catch (err: any) {
       if (err.response.data.msg) {
         if (
