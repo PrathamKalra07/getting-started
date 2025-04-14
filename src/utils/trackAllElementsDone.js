@@ -6,20 +6,17 @@ const FetchAllElementsStatus = (allPayload) => {
     textList: { allTextData: textData },
     emailList: { allEmailData: emailData },
     dateList: { allDateData: dateData },
+    pickList: { allPicklistData: pickListData },
     checkboxList: { allCheckboxData: checkboxData },
     coordinatesList: { allCoordinateData },
   } = allPayload.reduxState;
 
   const totalPages = allCoordinateData[allCoordinateData.length - 1].pageNo;
 
-  console.log("allPayload", allPayload);
-
   // Keep track of completed elements
   const listOfCompletedElements = [];
 
   for (let i = 0; i <= totalPages; i++) {
-    console.log("textData", textData);
-
     // Check for text fields
     textData[i] &&
       textData[i].map((item) => {
@@ -91,6 +88,18 @@ const FetchAllElementsStatus = (allPayload) => {
           } else if (item.value && item.index !== allPayload.elementIndex) {
             listOfCompletedElements.push(item.index);
           }
+        }
+      });
+
+    // Check for PickList fields
+    pickListData[i] &&
+      pickListData[i].map((item) => {
+        if (
+          item.isRequired &&
+          item.value &&
+          item.index !== allPayload.elementIndex
+        ) {
+          listOfCompletedElements.push(item.index);
         }
       });
   }

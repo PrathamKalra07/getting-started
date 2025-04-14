@@ -15,6 +15,7 @@ import { RootState } from "redux/store";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import CommonPDFViewer from "./Common/CommonPDFviewer";
 import { EmailContainer } from "containers/EmailContainer";
+import { PicklistContainer } from "containers/PicklistContainer";
 
 interface Props {
   page: any;
@@ -60,6 +61,9 @@ export const Page = ({
   );
   const allDateData = useSelector(
     (state: RootState) => state.dateList.allDateData
+  );
+  const allPicklistData = useSelector(
+    (state: RootState) => state.pickList.allPicklistData
   );
   const allCheckboxData = useSelector(
     (state: RootState) => state.checkboxList.allCheckboxData
@@ -148,10 +152,16 @@ export const Page = ({
           (field) => !field.isRequired || field.value !== "Invalid date"
         )
     );
+    const requiredPicklistFieldsFilled = Object.values(allDateData).every(
+      (pageData) => (pageData as any[]).every((field) => !field.isRequired)
+    );
     const requiredSignatureFieldsFilled =
       allSignatureData.encodedImgData !== "";
 
     const allTextFieldsFilled = Object.values(allTextData).every((pageData) =>
+      (pageData as any[]).every((field) => field.value)
+    );
+    const allPicklistFieldsFilled = Object.values(allTextData).every((pageData) =>
       (pageData as any[]).every((field) => field.value)
     );
     const allEmailFieldsFilled = Object.values(allEmailData).every((pageData) =>
@@ -164,24 +174,27 @@ export const Page = ({
     const allFieldsFilled =
       requiredTextFieldsFilled &&
       requiredDateFieldsFilled &&
+      requiredPicklistFieldsFilled &&
       requiredSignatureFieldsFilled &&
       requiredEmailFieldsFilled &&
       allEmailFieldsFilled &&
       allTextFieldsFilled &&
+      allPicklistFieldsFilled &&
       allDateFieldsFilled;
 
     setIsAllRequiredFieldsFilled(
       requiredEmailFieldsFilled &&
-      requiredTextFieldsFilled &&
+        requiredPicklistFieldsFilled &&
+        requiredTextFieldsFilled &&
         requiredDateFieldsFilled &&
         requiredSignatureFieldsFilled
     );
     setIsAllFieldsFilled(allFieldsFilled);
-  }, [allTextData, allDateData, allSignatureData, allEmailData]);
+  }, [allTextData, allDateData, allSignatureData, allEmailData, allPicklistData]);
 
   useEffect(() => {
     updateFieldStatus();
-  }, [allTextData, allDateData, allSignatureData, allEmailData, updateFieldStatus]);
+  }, [allTextData, allDateData, allSignatureData, allEmailData, allPicklistData, updateFieldStatus]);
 
   const handleNextClick = () => {
     const { allCoordinateData } = allCoordinatesData;
@@ -202,6 +215,7 @@ export const Page = ({
         findEmptyRequiredField(allDateData, "Date") ||
         findEmptyRequiredField(allTextData, "Text") ||
         findEmptyRequiredField(allEmailData, "Email") ||
+        findEmptyRequiredField(allPicklistData, "PickList") ||
         findEmptyRequiredSignatureField(allSignatureData.allSignatureData);
 
     if (emptyRequiredField) {
@@ -263,6 +277,10 @@ const findEmptyRequiredSignatureField = (data: any) => {
       (pageData) =>
         (pageData as any[]).every((field) => !field.isRequired || field.value)
     );
+    const requiredPicklistFieldsFilled = Object.values(allPicklistData).every(
+      (pageData) =>
+        (pageData as any[]).every((field) => !field.isRequired || field.value)
+    );
     const requiredDateFieldsFilled = Object.values(allDateData).every(
       (pageData) =>
         (pageData as any[]).every(
@@ -287,6 +305,7 @@ const findEmptyRequiredSignatureField = (data: any) => {
       requiredEmailFieldsFilled &&
       requiredTextFieldsFilled &&
       requiredDateFieldsFilled &&
+      requiredPicklistFieldsFilled &&
       requiredSignatureFieldsFilled
     );
   };
@@ -390,6 +409,10 @@ const findEmptyRequiredSignatureField = (data: any) => {
                     isFetchingCordinatesData={isFetchingCordinatesData}
                   />
                   <EmailContainer
+                    page={allPages[pageNumber - 1]}
+                    isFetchingCordinatesData={isFetchingCordinatesData}
+                  />
+                  <PicklistContainer
                     page={allPages[pageNumber - 1]}
                     isFetchingCordinatesData={isFetchingCordinatesData}
                   />

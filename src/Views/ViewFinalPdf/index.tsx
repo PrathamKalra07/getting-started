@@ -149,13 +149,6 @@ const ViewFinalPdf = () => {
               >
                 View History
               </DropdownItem>
-              <DropdownItem
-                onClick={() => {
-                  window.open("https://www.eruditeworks.com/", "_blank");
-                }}
-              >
-                Help & Support
-              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>

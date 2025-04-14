@@ -5,6 +5,7 @@ import axios from "axios";
 import { fetchIpInfo } from "./fetchIpInfo";
 
 export async function Save(pdfFile: File, tempState: any) {
+
   console.log("SAVE FUNTION CALLED.....pdf.js....");
 
   const PDFLib = await getAsset("PDFLib");
@@ -28,6 +29,7 @@ export async function Save(pdfFile: File, tempState: any) {
     throw e;
   }
 
+  console.log("pageWiseAllData..1");
   /**/
   // loading gif
   const thankYouContainer: HTMLElement = document.getElementById(
@@ -60,14 +62,17 @@ export async function Save(pdfFile: File, tempState: any) {
   </div>
 </div>`;
 
-  const { signatureList, textList, basicInfoData, dateList, checkboxList } =
-    tempState;
 
-  const base64OfPng = signatureList.encodedImgData;
-  const signatureDataPagesWise = signatureList.allSignatureData;
+const { signatureList, textList, basicInfoData, emailList, dateList, checkboxList, pickList } =
+tempState;   
+
+const base64OfPng = signatureList.encodedImgData;
+const signatureDataPagesWise = signatureList.allSignatureData;
   const textDataPagesWise = textList.allTextData;
+  const emailDataPagesWise = emailList.allEmailData;
   const dateDataPagesWise = dateList.allDateData;
   const checkboxDataPagesWise = checkboxList.allCheckboxData;
+  // const picklistDataPagesWise = pickList.allPickListData;
   
   const totalPages = pdfDoc.getPages().length;
   const pageWiseAllData: any = {};
@@ -124,9 +129,37 @@ export async function Save(pdfFile: File, tempState: any) {
         }))
       );
     }
+
+    //
+    if (emailDataPagesWise[i]) {
+      element = emailDataPagesWise[i];
+      // console.log('@@@ textDataPagesWise::element::'+JSON.stringify(element));
+
+      pageWiseAllData[i].push(
+        ...element.map((item: any) => ({
+          id: item.coordinateId,
+          height: item.height,
+          width: item.width,
+          value: item.value,
+        }))
+      );
+    }
+
+    //
+    // if (picklistDataPagesWise[i]) {
+    //   element = picklistDataPagesWise[i];
+
+    //   pageWiseAllData[i].push(
+    //     ...element.map((item: any) => ({
+    //       id: item.coordinateId,
+    //       value: item.value,
+    //     }))
+    //   );
+    // }
   }
 
-  console.log("@@@ pageWiseAllData::" + pageWiseAllData);
+  console.log("pageWiseAllData::::2 ", pageWiseAllData);
+     
 
   try {
     //
@@ -156,7 +189,6 @@ export async function Save(pdfFile: File, tempState: any) {
     };
 
     console.log("@@@ bodyContent", bodyContent); // ✅ safer, avoids stringifying
-
     const { data } = await axios.request({
       url: `${process.env.REACT_APP_API_URL}/api/common/saveSignedDoc`,
       method: "POST",
@@ -307,7 +339,7 @@ export async function Save(pdfFile: File, tempState: any) {
 
     localStorage.clear();
   } catch (e) {
-    console.log("Failed to save PDF.");
+    console.log("Failed to save PDF.::::", e);
 
     const thankYouContainer: HTMLElement = document.getElementById(
       "thankyou-container"

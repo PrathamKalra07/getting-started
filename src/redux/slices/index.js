@@ -6,6 +6,7 @@ import coordinatesReducer from "./coordinatesReducer";
 import basicInfoReducer from "./basicInfoReducer";
 import textReducer from "./textReducer";
 import emailReducer from "./emailReducer";
+import picklistReducer from "./picklistReducer";
 import dateReducer from "./dateReducer";
 import checkboxReducer from "./checkboxReducer";
 import externalUserReducer from "./externalUserReducer";
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   textList: textReducer,
   dateList: dateReducer,
   emailList: emailReducer,
+  pickList: picklistReducer,
   checkboxList: checkboxReducer,
   externalUser: externalUserReducer,
   allFinalDataReducer: allFinalDataReducer,
