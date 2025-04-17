@@ -1,4 +1,12 @@
 import { emailRegex } from "helpers/constants/validation_constants";
+
+
+const isFieldFilled = (field) => {
+  if (field.value && field.value.length > 0) { return true; }
+
+  return false;
+}
+
 const FetchAllElementsStatus = (allPayload) => {
   const {
     inPerson: {
@@ -131,4 +139,4 @@ const FetchAllElementsStatus = (allPayload) => {
   };
 }
 
-export { FetchAllElementsStatus }
+export { FetchAllElementsStatus, isFieldFilled }

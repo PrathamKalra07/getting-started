@@ -11,6 +11,7 @@ export const activeSignatorySlice = createSlice({
       currentState.activeSignatory = activeSignatory;
     }
   },
+ 
 });
 
 // Action creators are generated for each case reducer function

@@ -75,15 +75,6 @@ export const MenuBar: React.FC<Props> = ({
   const textList = useSelector((state: RootState) => state.textList);
   console.log("textList:", textList);
 
-  // useEffect(() => {
-  //   if (basicInfoData) {
-  //     const { uuid } = basicInfoData;
-  //     setPdfLiveUrl(`${process.env.REACT_APP_API_URL}/fetchpdf?uuid=${uuid}`);
-  //   }
-
-  //   return () => {};
-  // }, [basicInfoData]);
-
   useEffect(() => {
     if (basicInfoData) {
       console.log("basicInfo", basicInfoData);
@@ -167,11 +158,6 @@ export const MenuBar: React.FC<Props> = ({
     }
   };
 
-  const options = [
-    { label: "signer1", value: 1 },
-    { label: "signer1", value: 2 },
-  ];
-  const selectedSigner = { label: "signer1", value: 1 };
   return (
     <>
       <div className="menubar-container p-2 px-3 ">

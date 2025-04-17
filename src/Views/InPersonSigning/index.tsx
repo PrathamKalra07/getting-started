@@ -357,7 +357,7 @@ const InPersonSigningPage = () => {
       finalData.push(...t);
     });
 
-    console.log("finalData: " + JSON.stringify(finalData));
+    console.log("@@@ finalData: " + JSON.stringify(finalData));
     
 
     return finalData;
@@ -713,7 +713,7 @@ const InPersonSigningPage = () => {
           />
         ) : (
           <>
-            <>
+            
               <MenuBar
                 rejectSign={() => {}}
                 savePdf={handleSavePdf}
@@ -724,7 +724,7 @@ const InPersonSigningPage = () => {
                 {!file || isFetchingCordinatesData ? (
                   <Loading />
                 ) : (
-                  <div className=" d-flex justify-content-center align-items-center overflow-x-scroll">
+                  <div className="d-flex justify-content-center align-items-center overflow-x-scroll">
                     <div className="inner-container">
                       <CustomSelect
                         options={signatories}
@@ -758,7 +758,6 @@ const InPersonSigningPage = () => {
                               activeSignatoriesCoordinateData: coordData,
                             })
                           );
-                          // dispatch(setTotalNoOfFields({ allCoordinateData: coordData }));
                         }}
                       />
 
@@ -795,7 +794,7 @@ const InPersonSigningPage = () => {
                   dismiss={() => setDrawingModalOpen(false)}
                 />
               ) : null}
-            </>
+            
           </>
         )}
 
