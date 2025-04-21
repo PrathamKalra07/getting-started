@@ -70,7 +70,7 @@ export const MenuBar: React.FC<Props> = ({
 
   if(inPersonCoordinatesList.allCoordinateData.length > 0) {
     inPersonCoordinatesList.allCoordinateData.forEach((field: any) => {
-      if(field.fieldType == 'Signature') {
+      if(field.fieldType == 'Signature' && field.isRequired) {
         let previousCount = signatoryFieldCounts.hasOwnProperty(field.signatoryUUID) ? signatoryFieldCounts[field.signatoryUUID] : 0
         signatoryFieldCounts[field.signatoryUUID] = previousCount + 1; 
       }
