@@ -65,8 +65,15 @@ export const MenuBar: React.FC<Props> = ({
 
   let totalReqFields = 0;
   let completedFields = 0;
+
+  let signatoryFieldCounts = {};
+
   if(inPersonCoordinatesList.allCoordinateData.length > 0) {
     inPersonCoordinatesList.allCoordinateData.forEach((field: any) => {
+      if(field.fieldType == 'Signature') {
+        let previousCount = signatoryFieldCounts.hasOwnProperty(field.signatoryUUID) ? signatoryFieldCounts[field.signatoryUUID] : 0
+        signatoryFieldCounts[field.signatoryUUID] = previousCount + 1; 
+      }
       if(field.signatoryUUID == activeSignatory.value && field.isRequired) {
         totalReqFields += 1;
         // if required field is already filled, track it as completed
@@ -81,7 +88,11 @@ export const MenuBar: React.FC<Props> = ({
   if(inPersonCoordinatesList.signatoryList.length > 0) {
     inPersonCoordinatesList.signatoryList.forEach((signatureField: any) => {
       if(signatureField.signatoryUUID == activeSignatory.value && isFieldFilled(signatureField)) {
-        completedFields += 1;
+        let totalSignatureFields = 1;
+        if(signatoryFieldCounts.hasOwnProperty(signatureField.signatoryUUID)) {
+          totalSignatureFields = signatoryFieldCounts[signatureField.signatoryUUID];
+        }
+        completedFields += totalSignatureFields;
       }
     })
   }
