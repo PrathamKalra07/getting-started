@@ -62,7 +62,7 @@ export const usePdf = () => {
     try {
       await Save(file, tempState);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       setIsSaving(false);
     }

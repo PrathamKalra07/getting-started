@@ -103,7 +103,7 @@ export const PicklistContainer: React.FC<Props> = ({
               <PicklistPad
                 key={i}
                 {...item}
-                pickListArray={item.pickListArray || []}
+                pickListArray={item.options?.split(',') || []}
                 value={item.value}
                 handlePicklistValueChange={handlePicklistValueChange}
                 picklistElementIndex={item.index}

@@ -23,12 +23,12 @@ const FetchAllElementsStatus = (allPayload) => {
         if (item.isRequired) {
           // If the current input has a value, mark as completed
           if (
-            allPayload.textValue.length > 0 &&
+            allPayload.textValue?.length > 0 &&
             item.index === allPayload.elementIndex
           ) {
             listOfCompletedElements.push(item.index);
           } else if (
-            item.value.length > 0 &&
+            item.value?.length > 0 &&
             item.index !== allPayload.elementIndex
           ) {
             listOfCompletedElements.push(item.index);
@@ -42,7 +42,7 @@ const FetchAllElementsStatus = (allPayload) => {
         if (item.isRequired) {
           // Check if the email value is valid (matches emailRegex)
           if (
-            allPayload.textValue.length > 0 &&
+            allPayload.textValue?.length > 0 &&
             item.index === allPayload.elementIndex
           ) {
             if (allPayload.textValue.match(emailRegex)) {
@@ -50,7 +50,7 @@ const FetchAllElementsStatus = (allPayload) => {
               listOfCompletedElements.push(item.index);
             }
           } else if (
-            item.value.length > 0 &&
+            item.value?.length > 0 &&
             item.index !== allPayload.elementIndex
           ) {
             if (item.value.match(emailRegex)) {
@@ -71,7 +71,7 @@ const FetchAllElementsStatus = (allPayload) => {
           ) {
             listOfCompletedElements.push(item.index);
           } else if (
-            item.value.length > 0 &&
+            item.value?.length > 0 &&
             item.index !== allPayload.elementIndex
           ) {
             listOfCompletedElements.push(item.index);
@@ -92,17 +92,34 @@ const FetchAllElementsStatus = (allPayload) => {
       });
 
     // Check for PickList fields
-    pickListData[i] &&
-      pickListData[i].map((item) => {
+    // pickListData[i] &&
+    //   pickListData[i].map((item) => {
+    //     if (
+    //       item.isRequired &&
+    //       item.value //&&
+    //       // item.index !== allPayload.elementIndex
+    //     ) {
+    //       listOfCompletedElements.push(item.index);
+    //     }
+    //   });
+
+    if (
+      pickListData[i] &&
+      Array.isArray(pickListData[i])
+    ) {
+      pickListData[i].forEach((item) => {
         if (
           item.isRequired &&
-          item.value &&
-          item.index !== allPayload.elementIndex
+          item.options &&
+          item.options.includes(item.value) &&
+          item.value?.length>0
         ) {
           listOfCompletedElements.push(item.index);
         }
       });
+    }
   }
+  
 
   // Check for signature fields
   allCoordinateData.map((item, i) => {
