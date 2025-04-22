@@ -15,6 +15,7 @@ import {
 
 //
 import { RootState } from "redux/store";
+import { isFieldFilled } from "utils/InPersonSigning/FetchAllElementStatus";
 
 interface Props {
   isPdfLoaded: boolean;
@@ -47,8 +48,6 @@ export const MenuBar: React.FC<Props> = ({
   );
 
   console.log('inperson coordinate lkist' + JSON.stringify(inPersonCoordinatesList));
-  
-  // const trackerData = useSelector((state: any) => state.inPersonCoordinatesList.signatoryList.find(signatory => signatory.signatoryUUID === activeSignatory.value));
   const basicInfoData = useSelector(
     (state: RootState) => state.inPerson.inPersonBasicInfoData
   );
@@ -63,29 +62,41 @@ export const MenuBar: React.FC<Props> = ({
   );
 
   console.log('trackerDataNew' + JSON.stringify(trackerDataNew));
-  
-  // const validateAllRequireFieds = () => {
-  //   if (completedNoOfFields === totalNoOfFields) {
-  //     setIsFinishAlertShown(true);
-  //   } else {
-  //     // alert("All fields are required!");
-  //     setIsIncompleteFieldsAlertShown(true);
-  //   }
-  // };
 
-  let totalNoOfFields = 0;
-  let completedNoOfFields = 0;
-  if (inPersonCoordinatesList.signatoryList.length > 0) {
-    const trackerData: any = inPersonCoordinatesList.signatoryList.find(
-      (signatory: any) => signatory.signatoryUUID === activeSignatory.value
-    );
+  let totalReqFields = 0;
+  let completedFields = 0;
 
-    console.log('inperson tracker data' + JSON.stringify(trackerData));
-    
-    totalNoOfFields = trackerData.totalNoOfFields;
-    completedNoOfFields = trackerData.completedNoOfFields;
+  let signatoryFieldCounts = {};
+
+  if(inPersonCoordinatesList.allCoordinateData.length > 0) {
+    inPersonCoordinatesList.allCoordinateData.forEach((field: any) => {
+      if(field.fieldType == 'Signature' && field.isRequired) {
+        let previousCount = signatoryFieldCounts.hasOwnProperty(field.signatoryUUID) ? signatoryFieldCounts[field.signatoryUUID] : 0
+        signatoryFieldCounts[field.signatoryUUID] = previousCount + 1; 
+      }
+      if(field.signatoryUUID == activeSignatory.value && field.isRequired) {
+        totalReqFields += 1;
+        // if required field is already filled, track it as completed
+        if(field.fieldType != 'Signature' && isFieldFilled(field)) {
+          completedFields += 1;
+        }
+      }
+    })
   }
-  // console.log(inPersonCoordinatesList);
+
+  // for tracking signature fields
+  if(inPersonCoordinatesList.signatoryList.length > 0) {
+    inPersonCoordinatesList.signatoryList.forEach((signatureField: any) => {
+      if(signatureField.signatoryUUID == activeSignatory.value && isFieldFilled(signatureField)) {
+        let totalSignatureFields = 1;
+        if(signatoryFieldCounts.hasOwnProperty(signatureField.signatoryUUID)) {
+          totalSignatureFields = signatoryFieldCounts[signatureField.signatoryUUID];
+        }
+        completedFields += totalSignatureFields;
+      }
+    })
+  }
+
   useEffect(() => {
     if (basicInfoData) {
       console.log("basicInfo", basicInfoData);
@@ -183,8 +194,8 @@ export const MenuBar: React.FC<Props> = ({
           <div className="custom-progressbar-container">
 
             <ProgressBar
-              completed={completedNoOfFields}
-              maxCompleted={totalNoOfFields}
+              completed={completedFields}
+              maxCompleted={totalReqFields}
               isLabelVisible={false}
               height="5px"
               bgColor="#ece5c7"
@@ -194,7 +205,7 @@ export const MenuBar: React.FC<Props> = ({
               className="text-center mb-1"
               style={{ color: "#1d1c1cb3" }}
             >
-              {completedNoOfFields} of {totalNoOfFields} required fields
+              {completedFields} of {totalReqFields} required fields
               completed
             </div>
 
