@@ -5,6 +5,7 @@ import { changeDateData } from "./dateReducer";
 import { changeCheckboxData } from "./checkboxReducer";
 import { setSignaturePathWithEncoddedImg } from "./signatureReducer";
 import { changeEmailData } from "./emailReducer";
+import { changePicklistData } from "./picklistReducer";
 
 export const allFinalDataSlice = createSlice({
   name: "allFinalData",
@@ -48,6 +49,13 @@ export const allFinalDataSlice = createSlice({
     });
     //
     builder.addCase(setSignaturePathWithEncoddedImg.type, (state, action) => {
+      const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
+      const { totalDoneElements } = FetchAllElementsStatus(action.payload);
+
+      state.completedNoOfFields = totalDoneElements;
+    });
+
+    builder.addCase(changePicklistData.type, (state, action) => {
       const { FetchAllElementsStatus } = require("utils/trackAllElementsDone");
       const { totalDoneElements } = FetchAllElementsStatus(action.payload);
 

@@ -52,8 +52,8 @@ export const PicklistPad = ({
       <div
         style={{
           position: "absolute",
-          height: height,
-          width: width,
+          minHeight: height,
+          minWidth: width,
           top: y,
           left: x,
           right: 0,
@@ -79,13 +79,16 @@ export const PicklistPad = ({
             >
               <DropdownToggle
                 caret
-                style={{ backgroundColor: "#cdc2ae" }}
+                style={{ backgroundColor: "#22a699",color:'white', height: height, width : width,padding: 0 }}
                 color="black"
                 className="fw-bold"
               >
-                {selectedValue}
+                <span style={{fontSize : "smaller",}}>
+
+                {selectedValue?selectedValue:"Select Options"}
+                </span>
               </DropdownToggle>
-              <DropdownMenu style={{ minWidth: 200 }}>
+              <DropdownMenu style={{ minWidth: width }}>
                 {pickListArray.map((ListItem: String, index: Number) => {
                   return (
                     <DropdownItem

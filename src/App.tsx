@@ -342,6 +342,8 @@ const App: React.FC = () => {
       return;
     }
 
+    console.log("Save pdf called : ", tempState);
+
     savePdf(tempState);
   };
 

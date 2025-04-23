@@ -72,7 +72,7 @@ const signatureDataPagesWise = signatureList.allSignatureData;
   const emailDataPagesWise = emailList.allEmailData;
   const dateDataPagesWise = dateList.allDateData;
   const checkboxDataPagesWise = checkboxList.allCheckboxData;
-  // const picklistDataPagesWise = pickList.allPickListData;
+  const picklistDataPagesWise = pickList.allPicklistData;
   
   const totalPages = pdfDoc.getPages().length;
   const pageWiseAllData: any = {};
@@ -146,16 +146,20 @@ const signatureDataPagesWise = signatureList.allSignatureData;
     }
 
     //
-    // if (picklistDataPagesWise[i]) {
-    //   element = picklistDataPagesWise[i];
 
-    //   pageWiseAllData[i].push(
-    //     ...element.map((item: any) => ({
-    //       id: item.coordinateId,
-    //       value: item.value,
-    //     }))
-    //   );
-    // }
+    console.log("pick list data page wise : ",pickList);
+    if (picklistDataPagesWise[i]) {
+      element = picklistDataPagesWise[i];
+
+      pageWiseAllData[i].push(
+        ...element.map((item: any) => ({
+          id: item.coordinateId,
+          height : item.height,
+          width : item.width,
+          value: item.value,
+        }))
+      );
+    }
   }
 
   console.log("pageWiseAllData::::2 ", pageWiseAllData);
