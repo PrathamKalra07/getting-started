@@ -11,7 +11,7 @@ const FetchAllElementsStatus = (allPayload) => {
     coordinatesList: { allCoordinateData },
   } = allPayload.reduxState;
 
-  const totalPages = allCoordinateData[allCoordinateData.length - 1].pageNo;
+  const totalPages = allCoordinateData[allCoordinateData?.length - 1].pageNo;
 
   // Keep track of completed elements
   const listOfCompletedElements = [];
@@ -66,7 +66,7 @@ const FetchAllElementsStatus = (allPayload) => {
       dateData[i].map((item) => {
         if (item.isRequired && item.value !== "Invalid date") {
           if (
-            allPayload.textValue.length > 0 &&
+            allPayload.textValue?.length > 0 &&
             item.index === allPayload.elementIndex
           ) {
             listOfCompletedElements.push(item.index);
@@ -127,11 +127,11 @@ const FetchAllElementsStatus = (allPayload) => {
       if (
         item.fieldType === "Signature" &&
         allPayload.isSignature &&
-        allPayload.encodedImgData.length > 0
+        allPayload.encodedImgData?.length > 0
       ) {
-        listOfCompletedElements.push("sign" + i);
-      } else if (item.fieldType === "Signature" && encodedImgData.length > 0) {
-        listOfCompletedElements.push("sign" + i);
+        listOfCompletedElements.push("sign" + item);
+      } else if (item.fieldType === "Signature" && encodedImgData?.length > 0) {
+        listOfCompletedElements.push("sign" + item);
       }
     }
   });

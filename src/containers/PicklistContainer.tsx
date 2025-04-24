@@ -79,10 +79,11 @@ export const PicklistContainer: React.FC<Props> = ({
   ) => {
     try {
       if (selectedValue) {
+        console.log("dispatching selected value : ",selectedValue);
         dispatch(
           changePicklistData({
             elementIndex: targetElementIndex,
-            selectedValue: selectedValue, //value,
+            selectedValue: selectedValue?.toString(), //value,
             currentPageNo: currentPageNo,
             reduxState,
           })

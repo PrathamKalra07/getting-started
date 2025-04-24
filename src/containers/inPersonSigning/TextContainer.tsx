@@ -79,6 +79,7 @@ export const TextContainer: React.FC<Props> = ({
           reduxState,
         })
       );
+      console.log("TargetElementIndexText : ",targetElementIndex)
       dispatch(
         updateCoordinateData({
           signatoryUUID: activeSignatory.value,

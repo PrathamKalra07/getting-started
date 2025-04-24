@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { changeTextData } from "./textReducer";
 import { changeDateData } from "./dateReducer";
+import { changePicklistData } from "./picklistReducer";
 import { changeCheckboxData } from "./checkboxReducer";
 import { setSignaturePathWithEncoddedImg } from "./signatureReducer";
 import { changeEmailData } from "./emailReducer";
@@ -46,7 +47,7 @@ export const allFinalDataSlice = createSlice({
             console.log('total Done element action payload' + JSON.stringify(action.payload));
             console.log('total Done element action payload listofcompletedelements' + listOfCompletedElements.length);
                         
-            state.completedNoOfFields = listOfCompletedElements.length;
+            state.completedNoOfFields = totalDoneElements;
             console.log('state.completedNoOfFields' + state.completedNoOfFields);
             
         });
@@ -58,13 +59,22 @@ export const allFinalDataSlice = createSlice({
             state.completedNoOfFields = totalDoneElements;
         });
 
+        builder.addCase(changePicklistData.type, (state, action) => {
+            const { FetchAllElementsStatus } = require("utils/InPersonSigning/FetchAllElementStatus");
+            console.log("builder picklist payload : ", action.payload);
+            const { totalDoneElements, listOfCompletedElements } = FetchAllElementsStatus(action.payload);
+    
+            state.completedNoOfFields = totalDoneElements;
+        });
+
+
         builder.addCase(changeDateData.type, (state, action) => {
             const { FetchAllElementsStatus } = require("utils/InPersonSigning/FetchAllElementStatus");
             const { totalDoneElements, listOfCompletedElements } = FetchAllElementsStatus(action.payload);
                     console.log('total Done element action payload' + JSON.stringify(action.payload));
                     console.log('total Done element action payload listofcompletedelements' + listOfCompletedElements.length);
                     
-            state.completedNoOfFields = listOfCompletedElements.length;
+            state.completedNoOfFields = totalDoneElements;
             console.log('state.completedNoOfFields' + state.completedNoOfFields);
             
         });
