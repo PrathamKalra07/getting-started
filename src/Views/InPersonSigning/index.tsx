@@ -156,14 +156,14 @@ const InPersonSigningPage = () => {
       signatureFieldCount === 0
         ? undefined
         : tempState.inPerson.inPersonCoordinatesList.signatoryList.find(
-            (signatory) => signatory.value.length === 0
+            (signatory) => signatory.value?.length === 0
           );
 
     if (firstSignatoryWithEmptyValue) {
       alert(
         `Please Fill Signature, ${firstSignatoryWithEmptyValue.signatoryName}'s signature is pending.`
       );
-    } else if (firstFieldWithEmptyValue) {
+    } else if (firstFieldWithEmptyValue ) { //&& firstFieldWithEmptyValue.fieldType!=='Checkbox'
       alert(`Please Fill All ${firstFieldWithEmptyValue.fieldType} fields.`);
     } else {
       // savePdf(allPageAttachments, tempState);

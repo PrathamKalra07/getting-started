@@ -14,6 +14,7 @@ const FetchAllElementsStatus = (allPayload) => {
       inPersonTextList: { allTextData: textData = [] } = {},
       inPersonEmailList: { allEmailData: emailData = [] } = {},
       inPersonDateList: { allDateData: dateData = [] } = {},
+      inPersonPicklistList : {allPicklistData:picklistData = [] } = [],
       inPersonCheckboxList: { allCheckboxData: checkboxData = [] } = {},
       inPersonCoordinatesList: { activeSignatoriesCoordinateData = [] } = {},
     },
@@ -41,7 +42,7 @@ const FetchAllElementsStatus = (allPayload) => {
 
         if (item.isRequired) {
           if (
-            allPayload.textValue.length > 0 &&
+            allPayload.textValue?.length > 0 &&
             item.index === allPayload.elementIndex
           ) {
             console.log('item.index', item.index);
@@ -63,19 +64,42 @@ const FetchAllElementsStatus = (allPayload) => {
 
         if (item.isRequired) {
           if (
-            allPayload.textValue.length > 0 &&
+            allPayload.textValue?.length > 0 &&
             item.index === allPayload.elementIndex
           ) {
-            if (allPayload.textValue.match(emailRegex)) {
+            if (allPayload.textValue?.match(emailRegex)) {
               listOfCompletedElements.push(item.index);
             }
           } else if (
-            item.value.length > 0 &&
+            item.value?.length > 0 &&
             item.index !== allPayload.elementIndex
           ) {
-            if (allPayload.textValue.match(emailRegex)) {
+            if (allPayload.textValue?.match(emailRegex)) {
               listOfCompletedElements.push(item.index);
             }
+          }
+        }
+      });
+    }
+
+    if (picklistData[i]) {
+      picklistData[i].forEach((item) => {
+        console.log('items', item);
+        console.log('item index', item.index);
+
+        if (item.isRequired) {
+          if (
+            allPayload.selectedValue?.length > 0 &&
+            item.index === allPayload.elementIndex
+          ) {
+            console.log('item.index', item.index);
+
+            listOfCompletedElements.push(item.index);
+          } else if (
+            // item.value.length > 0 &&
+            item.index !== allPayload.elementIndex
+          ) {
+            listOfCompletedElements.push(item.index);
           }
         }
       });
@@ -85,7 +109,7 @@ const FetchAllElementsStatus = (allPayload) => {
       dateData[i].forEach((item) => {
         if (item.isRequired && item.value !== "Invalid date") {
           if (
-            allPayload.textValue.length > 0 &&
+            allPayload.textValue?.length > 0 &&
             item.index === allPayload.elementIndex
           ) {
             listOfCompletedElements.push(item.index);
@@ -121,17 +145,17 @@ const FetchAllElementsStatus = (allPayload) => {
       if (
         item.fieldType === "Signature" &&
         allPayload.isSignature &&
-        allPayload.encodedImgData.length > 0
+        allPayload.encodedImgData?.length > 0
       ) {
         listOfCompletedElements.push("sign" + i);
-      } else if (item.fieldType === "Signature" && encodedImgData.length > 0) {
+      } else if (item.fieldType === "Signature" && encodedImgData?.length > 0) {
         listOfCompletedElements.push("sign" + i);
       }
     }
   });
 
   console.log('listOfCompletedElements', listOfCompletedElements);
-  console.log('listOfCompletedElements length', listOfCompletedElements.length);
+  console.log('listOfCompletedElements length', listOfCompletedElements?.length);
 
   return {
     totalDoneElements,

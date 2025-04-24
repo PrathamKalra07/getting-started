@@ -6,6 +6,7 @@ import { TextContainer } from "containers/inPersonSigning/TextContainer";
 import { EmailContainer } from "containers/inPersonSigning/EmailContainer";
 import { DateContainer } from "containers/inPersonSigning/DateContainer";
 import { CheckboxContainer } from "containers/inPersonSigning/CheckboxContainer";
+import { PicklistContainer } from "containers/inPersonSigning/PicklistContainer";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Dimensions } from "types";
@@ -49,6 +50,7 @@ const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
   
 const allTextData = useSelector((state: RootState) => state.inPerson.inPersonTextList.allTextData);
 const allEmailData = useSelector((state: RootState) => state.inPerson.inPersonEmailList.allEmailData);
+const allPicklistData = useSelector((state: RootState)=> state.inPerson.inPersonPicklistList.allPicklistData);
     const allDateData = useSelector((state: RootState) => state.inPerson.inPersonDateList.allDateData);
     // const allCheckboxData = useSelector((state: RootState) => state.checkboxList.allCheckboxData);
   const activeSignatory = useSelector(
@@ -112,6 +114,9 @@ const allEmailData = useSelector((state: RootState) => state.inPerson.inPersonEm
       (pageData as any[]).every(field => field.value)
     );
     const allEmailFieldsFilled = Object.values(allEmailData).every(pageData =>
+      (pageData as any[]).every(field => field.value)
+    );
+    const allPicklistFieldsFilled = Object.values(allPicklistData).every(pageData =>
       (pageData as any[]).every(field => field.value)
     );
     const allDateFieldsFilled = Object.values(allDateData).every(pageData =>
@@ -284,6 +289,10 @@ const allEmailData = useSelector((state: RootState) => state.inPerson.inPersonEm
               isFetchingCordinatesData={isFetchingCordinatesData}
             />
             <EmailContainer
+              page={page}
+              isFetchingCordinatesData={isFetchingCordinatesData}
+            />
+            <PicklistContainer
               page={page}
               isFetchingCordinatesData={isFetchingCordinatesData}
             />
