@@ -16,6 +16,7 @@ const transformData = (inputData) => {
           value: coordData.value,
           isRequired : coordData.isRequired,
           editable:coordData.editable,
+          options : coordData.options,
           signatoryUUID: entry.signatoryUUID,
           signatoryName: entry.signatoryName,
         });

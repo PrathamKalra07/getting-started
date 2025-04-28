@@ -6,6 +6,7 @@ import inPersonActiveSignatoryReducer from "./activeSignatoryReducer";
 import inPersonSignatureReducer from "./signatureReducer";
 import inPersonTextReducer from "./textReducer";
 import inPersonEmailReducer from "./emailReducer";
+import inPersonPicklistReducer from "./picklistReducer";
 import inPersonDateReducer from "./dateReducer";
 import inPersonCheckboxReducer from "./checkboxReducer";
 import inPersonCoordinatesReducer from "./coordinatesReducer";
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   inPersonSignatureList: inPersonSignatureReducer,
   inPersonTextList: inPersonTextReducer,
   inPersonEmailList: inPersonEmailReducer,
+  inPersonPicklistList : inPersonPicklistReducer,
   inPersonDateList: inPersonDateReducer,
   inPersonCheckboxList: inPersonCheckboxReducer,
   inPersonCoordinatesList: inPersonCoordinatesReducer,
