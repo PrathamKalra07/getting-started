@@ -44,7 +44,7 @@ export const SignatureContainer: React.FC<Props> = ({
       state.inPerson.inPersonSignatureList.allSignatureData[currentPageNo]
   );
 
-  //
+
   const dispatch = useDispatch();
 
   useEffect(() => {
