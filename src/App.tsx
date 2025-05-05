@@ -373,8 +373,6 @@ const App: React.FC = () => {
     try {
       console.log('field targeted' + JSON.stringify(field));
 
-      
-      
       const targetField = field || elementsNavigationData;
       console.log('targeted fields' + JSON.stringify(targetField));
       
@@ -387,6 +385,8 @@ const App: React.FC = () => {
       
       
       let nextIndex;
+      console.log("next index after intialization" + nextIndex);
+
       if(field){
         nextIndex =
         allCoordinateDataWithCordinates.findIndex(
@@ -401,19 +401,13 @@ const App: React.FC = () => {
       }
       // console.log('all cooordinate data' + JSON.stringify(allCoordinateDataWithCordinates));
 
-      console.log("next index " + nextIndex);
-
-      // if (nextIndex === allCoordinateDataWithCordinates.length) {
-      //   nextIndex = allCoordinateDataWithCordinates.findIndex(
-      //     (item: any) => item.value === "" && !visitedFieldsRef.current.has(item.coordinateId)
-      //   );
-      // }
-
+      console.log("next index " + (nextIndex - 1));
+      console.log('all coordiates data with coordinates length ' + allCoordinateDataWithCordinates.length);
       
 
       const indexNo =
         activeElementCoordinateId === 0 ||
-        nextIndex === allCoordinateDataWithCordinates.length
+        nextIndex - 1 === allCoordinateDataWithCordinates.length
           ? 0
           : nextIndex;
 
@@ -561,160 +555,6 @@ const App: React.FC = () => {
       console.log("responseData from fetchingCordinates " + JSON.stringify(responseData));
 
       let coord = responseData.coord;
-      // TODO: Remove this static data after api latest code updated
-      // let coord = [
-      //   {
-      //     coordinateId: 7595,
-      //     activeElementCoordinateId: 7595,
-      //     isRequired: true,
-      //     x: 239,
-      //     y: 27,
-      //     height: 57,
-      //     width: 152,
-      //     pageNo: 0,
-      //     fieldId: 1,
-      //     fieldType: "Signature",
-      //     eleId: "signEle0",
-      //     value: "",
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 309,
-      //     screen_y: 125,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      //   {
-      //     coordinateId: 7596,
-      //     activeElementCoordinateId: 7596,
-      //     isRequired: true,
-      //     x: 48,
-      //     y: 181,
-      //     height: 36,
-      //     width: 104,
-      //     pageNo: 0,
-      //     fieldId: 2,
-      //     fieldType: "Text",
-      //     eleId: "textEle0",
-      //     value: "",
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 41,
-      //     screen_y: 285,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      //   {
-      //     coordinateId: 7597,
-      //     activeElementCoordinateId: 7597,
-      //     isRequired: true,
-      //     x: 317,
-      //     y: 135,
-      //     height: 39,
-      //     width: 104,
-      //     pageNo: 0,
-      //     fieldId: 3,
-      //     fieldType: "Date",
-      //     eleId: "dateEle0",
-      //     value: "",
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 333,
-      //     screen_y: 293,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      //   {
-      //     coordinateId: 7598,
-      //     activeElementCoordinateId: 7598,
-      //     isRequired: true,
-      //     x: 113,
-      //     y: 322,
-      //     height: 36,
-      //     width: 104,
-      //     pageNo: 0,
-      //     fieldId: 7,
-      //     fieldType: "Email",
-      //     eleId: "emailEle0",
-      //     value: "",
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 0,
-      //     screen_y: 0,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      //   {
-      //     coordinateId: 7599,
-      //     activeElementCoordinateId: 7599,
-      //     isRequired: true,
-      //     x: 465,
-      //     y: 308,
-      //     height: 36,
-      //     width: 104,
-      //     pageNo: 0,
-      //     fieldId: 8,
-      //     fieldType: "PickList",
-      //     eleId: "picklistEle0",
-      //     value: "",
-      //     pickListArray: [
-      //       "val",
-      //       "testing",
-      //       "this is string",
-      //       "this is testing the length",
-      //       "Subtle but surprisingly strong",
-      //       "An unconventional yet clever move",
-      //     ],
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 0,
-      //     screen_y: 0,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      //   {
-      //     coordinateId: 7600,
-      //     activeElementCoordinateId: 7600,
-      //     isRequired: true,
-      //     x: 53,
-      //     y: 522,
-      //     height: 36,
-      //     width: 104,
-      //     pageNo: 0,
-      //     fieldId: 8,
-      //     fieldType: "PickList",
-      //     eleId: "picklistEle1",
-      //     value: "mahesh test",
-      //     pickListArray: [
-      //       "test123",
-      //       "123 testing",
-      //       "3rd value in list element",
-      //     ],
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 0,
-      //     screen_y: 0,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      // ];
       const recordData = responseData.recordData;
 
       console.log("record data" + JSON.stringify(recordData));
