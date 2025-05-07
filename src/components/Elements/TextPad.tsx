@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setActiveElement } from "redux/slices/elementsNavigationHelperReducer";
 import { RootState } from "redux/store";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   x: number;
@@ -50,6 +52,7 @@ export const TextPad = ({
   },[])
   return (
     <>
+    <ToastContainer />
       <div
         style={{
           // backgroundColor: "#ffe185",
@@ -80,12 +83,6 @@ export const TextPad = ({
               {remainingText} left
             </span>
           } */}
-          {editable && <>
-            <span style={(isActive && remainingText===0)?{position:"fixed",top:`70px`, border:"1px solid #D3D3D3",right:"0px",backgroundColor:'white',color:'black',zIndex:"1",borderRadius:'5px',width:width,fontSize:"smaller",textAlign:"center"}:{display:'none'}}>
-              Maximum limit reached
-            </span>
-          </>}
-
           <textarea
             // maxLength={width / 7}
             maxLength={maxCharacters}
@@ -113,6 +110,19 @@ export const TextPad = ({
               if (editable) {
                 handleTextChange(e, textElementIndex);
                 setRemainingText(maxCharacters - e.target.value.length);
+                console.log('remaining text ' + remainingText);
+                
+              if(remainingText === 0){
+                toast.error(`You can only add ${maxCharacters} in text field`, {
+                  position: "top-center",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                });
+              }
               } else {
                 e.preventDefault(); // Prevent accidental deletion
               }
@@ -120,17 +130,18 @@ export const TextPad = ({
             onMouseDown={(e) => e.stopPropagation()}
 
             value={textInputValue}
-            className={`
-            ${
-              editable?(
-              elementsNavigationHelperState.activeElementCoordinateId ===
-              coordinateId
-                ? "active-data-container-input-text"
-                : (textInputValue
-                ? "filled-data-container-input-text"
-                : "empty-data-container-input-text")):"readonly-data-container-input-text"
-            }
-          `}
+            className="active-data-container-input-text"
+          //   className={`
+          //   ${
+          //     editable?(
+          //     elementsNavigationHelperState.activeElementCoordinateId ===
+          //     coordinateId
+          //       ? "active-data-container-input-text"
+          //       : (textInputValue
+          //       ? "filled-data-container-input-text"
+          //       : "empty-data-container-input-text")):"readonly-data-container-input-text"
+          //   }
+          // `}
 
           readOnly={editable ? false : true}
           />

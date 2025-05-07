@@ -94,7 +94,7 @@ export const EmailPad = ({
           {/* signatureData */}
 
           <span style={{ position: "relative" }}>
-            {editable && (
+            {/* {editable && (
               
               <span
                 style={
@@ -115,7 +115,7 @@ export const EmailPad = ({
               >
                 {remainingText} left
               </span>
-            )}
+            )} */}
             
             <textarea
               id="email-input"
@@ -164,19 +164,20 @@ export const EmailPad = ({
               }}
               // onMouseDown={(e) => e.stopPropagation()}
               value={textInputValue}
-              className={`
-                ${
-                  editable
-                    ? elementsNavigationHelperState.activeElementCoordinateId ===
-                      coordinateId
-                      ? "active-data-container-input-text"
-                      : textInputValue
-                      ? "filled-data-container-input-text"
-                      : "empty-data-container-input-text"
-                    : "readonly-data-container-input-text"
-                }
+              className="active-data-container-input-text"
+              // className={`
+              //   ${
+              //     editable
+              //       ? elementsNavigationHelperState.activeElementCoordinateId ===
+              //         coordinateId
+              //         ? "active-data-container-input-text"
+              //         : textInputValue
+              //         ? "filled-data-container-input-text"
+              //         : "empty-data-container-input-text"
+              //       : "readonly-data-container-input-text"
+              //   }
                 
-              `}
+              // `}
               readOnly={!editable}
             />
             {isActive && 
