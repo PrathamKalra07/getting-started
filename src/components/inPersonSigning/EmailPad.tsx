@@ -45,7 +45,7 @@ export const EmailPad = ({
       // let maxChar = Math.floor(((width - 4) / 7) * ((height - 4) / 19));
       let maxChar = Math.floor((width / 8) * (height / 21));
 
-      setMaxCharacters(maxChar);
+      // setMaxCharacters(maxChar);
       setRemainingText(maxChar);
     };
     setMaxChars();
@@ -90,7 +90,7 @@ export const EmailPad = ({
           {/* signatureData */}
 
           <span style={{ position: "relative" }}>
-            {editable && (
+            {/* {editable && (
               <span
                 style={{
                   position: "absolute",
@@ -107,12 +107,12 @@ export const EmailPad = ({
               >
                 {remainingText} left
               </span>
-            )}
+            )} */}
             <textarea
               // maxLength={width / 7}
               id="email-input"
               name="email-input"
-              maxLength={maxCharacters}
+              maxLength={35}
               key={coordinateId}
               placeholder="Click To Enter Email Here..."
               style={
@@ -145,7 +145,7 @@ export const EmailPad = ({
               onChange={(e) => {
                 if (editable) {
                   handleTextChange(e, textElementIndex);
-                  setRemainingText(maxCharacters - e.target.value.length);
+                  // setRemainingText(maxCharacters - e.target.value.length);
                 } else {
                   e.preventDefault(); // Prevent accidental deletion
                 }

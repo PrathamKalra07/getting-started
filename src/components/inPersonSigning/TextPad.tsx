@@ -125,11 +125,12 @@ export const TextPad = ({
               {/* signatureData */}
       
               <span style={{ position: "relative" }}>
-                {editable && 
+                {/* {editable && 
                 <span style={{position:"absolute",top:'15px',right:"0px",backgroundColor:'#1d5d9b',color:'white',zIndex:"1",borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
                   {remainingText} left
                 </span>
-                }
+                } */}
+                
                 <textarea
                   // maxLength={width / 7}
                   maxLength={maxCharacters}

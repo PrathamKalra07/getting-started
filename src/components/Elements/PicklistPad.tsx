@@ -54,6 +54,8 @@ export const PicklistPad = ({
           position: "absolute",
           minHeight: height,
           minWidth: width,
+          height: "min-content",
+          width : "min-comtent",
           top: y,
           left: x,
           right: 0,

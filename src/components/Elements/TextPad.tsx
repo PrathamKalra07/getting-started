@@ -69,23 +69,36 @@ export const TextPad = ({
         // onClick={addDrawing}
         
       >
-        <div className={editable?"":"readonly-container-textarea"}>
+        <div className={(editable && remainingText === 0)?"":"readonly-container-textarea"}>
           <span className="cannot-edit" style={editable?{display:'none'}:{}} > Cannot Edit </span>
         
         {/* signatureData */}
 
         <span style={{ position: "relative" }}>
-          {editable &&
+          {/* {editable &&
             <span style={isActive?{display:'none'}:{position:"absolute",top:'15px',right:"0px",backgroundColor:'#1d5d9b',color:'white',borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
               {remainingText} left
             </span>
-          }
+          } */}
+          {editable && <>
+            <span style={(isActive && remainingText===0)?{position:"fixed",top:`70px`, border:"1px solid #D3D3D3",right:"0px",backgroundColor:'white',color:'black',zIndex:"1",borderRadius:'5px',width:width,fontSize:"smaller",textAlign:"center"}:{display:'none'}}>
+              Maximum limit reached
+            </span>
+          </>}
+
           <textarea
             // maxLength={width / 7}
             maxLength={maxCharacters}
             key={coordinateId}
             placeholder="Click To Enter Text Here..."
             style={editable?{ height: height, width: width ,resize:'none',overflow:"none"}:{height: height, width: width ,resize:'none',overflow:"none",pointerEvents:"none"}}
+            onFocus={()=>{
+              setIsActive(true);
+            }}
+            
+            onBlur={()=>{
+              setIsActive(false);
+            }}
             onClick={(e: any) => {
               if(editable){
 

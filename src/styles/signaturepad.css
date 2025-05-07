@@ -76,7 +76,7 @@
 .readonly-container-textarea{
   border-radius: 10px;
   textarea{
-    background-color: white;
+  background-color: white;
   border: 1px solid #22a699;
   color: black;
   border-radius: 10px;
@@ -86,31 +86,27 @@
     display: none;
   }
 }
-.readonly-container-textarea:hover{
+/* .readonly-container-textarea:hover{
   .cannot-edit{
     display: block;
     position: absolute;
     z-index: 999;
     border-radius: 10px;
-    /* margin: auto; */
     left: 0;
     right: 0;
-    /* bottom: 0; */
     top: 50%;
     transform: translateY(-50%)
-    /* top: 0; */
     
   }
   align-items: center;
   text-align: center;
   background-color: #22a699;
-  /* display: block; */
+  color: white;
   textarea{
     opacity: 0;
     
   }
-  /* z-index: 99; */
-}
+} */
 /* .readonly-date-container{
   background-color: white;
   border: 1px solid #22a699;

@@ -56,7 +56,7 @@ export const EmailPad = ({
   useEffect(() => {
     const setMaxChars = () => {
       let maxChar = Math.floor((width / 8) * (height / 21));
-      setMaxCharacters(maxChar);
+      // setMaxCharacters(maxChar);
       setRemainingText(maxChar);
     };
     setMaxChars();
@@ -120,7 +120,7 @@ export const EmailPad = ({
             <textarea
               id="email-input"
               name="email-input"
-              maxLength={maxCharacters}
+              maxLength={35}
               key={coordinateId}
               placeholder="Click To Enter Email Here..."
               style={{
@@ -153,7 +153,7 @@ export const EmailPad = ({
                   handleTextChange(e, textElementIndex);
                   console.log(value);
                   setValue(e.target.value);
-                  setRemainingText(maxCharacters - e.target.value.length);
+                  // setRemainingText(maxCharacters - e.target.value.length);
                 } else {
                   e.preventDefault(); // Prevent accidental deletion
                 }
